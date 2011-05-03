@@ -1,4 +1,4 @@
-include(../prj.pri)
+include(../libs/libs.pri)
 TEMPLATE = app
 TARGET = simulator-for-quadcopter
 
@@ -25,3 +25,6 @@ unix:DEFINES   = _TTY_POSIX_
 win32:DEFINES  = _TTY_WIN_
 
 OTHER_FILES += readme.txt
+
+CONFIG(debug, debug|release):LIBS  += -lqextserialportd
+else:LIBS  += -lqextserialport

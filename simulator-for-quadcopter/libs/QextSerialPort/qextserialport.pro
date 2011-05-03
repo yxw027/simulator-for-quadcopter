@@ -33,9 +33,7 @@ win32:SOURCES          += win_qextserialport.cpp
 win32:DEFINES          += _TTY_WIN_
 
 win32:LIBS             += -lsetupapi
-win32 {
-    DLLDESTDIR = $$(PROJECT_BIN_PATH)
-}
+
 
 DESTDIR                 = $$PROJECT_LIB_PATH
 #DESTDIR				= examples/enumerator/debug
