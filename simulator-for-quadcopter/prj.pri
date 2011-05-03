@@ -1,0 +1,4 @@
+# common environment
+PROJECT_ROOT_PATH = $$PWD
+PROJECT_OUT_PATH = $$OUT_PWD
+PROJECT_BIN_PATH = $$PWD/bin
