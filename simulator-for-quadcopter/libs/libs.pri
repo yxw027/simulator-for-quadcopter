@@ -15,7 +15,8 @@ INCLUDEPATH += $$PROJECT_LIB_PATH/
 DEPENDPATH += \
     $$PROJECT_LIB_PATH
 
-LIBS += -L$$PROJECT_LIB_PATH
+LIBS += -L$$PROJECT_LIB_PATH \
+        -L$$PROJECT_LIB_PATH/Qwt/lib
 
 win32 {
     target.path = /bin

@@ -26,12 +26,12 @@
 
  QSize GLWidget::minimumSizeHint() const
  {
-     return QSize(100, 50);
+     return QSize(50, 50);
  }
 
  QSize GLWidget::sizeHint() const
  {
-     return QSize(300, 200);
+     return QSize(200, 200);
  }
 
  static void qNormalizeAngle(int &angle)

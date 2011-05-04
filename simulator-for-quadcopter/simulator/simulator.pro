@@ -2,18 +2,22 @@ include(../libs/libs.pri)
 TEMPLATE = app
 TARGET = simulator-for-quadcopter
 
-INCLUDEPATH += $$PROJECT_LIB_PATH/QextSerialPort
+INCLUDEPATH += $$PROJECT_LIB_PATH/QextSerialPort \
+               $$PROJECT_LIB_PATH/Qwt/include \
+               ./scope
 
 HEADERS += \
     glwidget.h \
     window.h \
     SerialThread.h \
+    scope/plot.h
 
 SOURCES += \
     glwidget.cpp \
     window.cpp \
     main.cpp \
     serialthread.cpp \
+    scope/plot.cpp
 
 QT +=  opengl
 
@@ -24,3 +28,6 @@ OTHER_FILES += README
 
 CONFIG(debug, debug|release):LIBS  += -lqextserialportd
 else:LIBS  += -lqextserialport
+
+qtAddLibrary(qwt)
+qtAddLibrary(qwtd)

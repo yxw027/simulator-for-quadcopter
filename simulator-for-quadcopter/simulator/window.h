@@ -9,6 +9,7 @@ class QPushButton;
 class GLWidget;
 class QGroupBox;
 class SerialThread;
+class Plot;
 
 class Window : public QWidget
 {
@@ -46,6 +47,7 @@ private:
 
     QextSerialPort *port;
     SerialThread *thread;
+    Plot *plot;
 };
 
 #endif // WINDOW_H
