@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     Window window;
 
 
-    window.resize(window.sizeHint());
-    window.show();
+    //window.resize(window.sizeHint());
+    window.showMaximized();
 
     //thread->start();
 

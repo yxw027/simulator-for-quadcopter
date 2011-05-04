@@ -5,7 +5,7 @@
 #include "glwidget.h"
 #include "window.h"
 #include "SerialThread.h"
-
+#include "plot.h"
 
 Window::Window()
 {
@@ -16,6 +16,7 @@ Window::Window()
     zSlider = createSlider();
 
     pushButton = new QPushButton(tr("pushButton"));
+    plot = new Plot(this);
 
     connect(xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXRotation(int)));
     connect(glWidget, SIGNAL(xRotationChanged(int)), xSlider, SLOT(setValue(int)));
@@ -46,18 +47,21 @@ Window::Window()
     gyroGroupBox = createGyroGroupBox();
     imuGroupBox = createImuGroupBox();
 
-    QVBoxLayout *rightLayout = new QVBoxLayout;
-    rightLayout->addWidget(acclGroupBox);
-    rightLayout->addWidget(gyroGroupBox);
-    rightLayout->addWidget(imuGroupBox);
+    QHBoxLayout *sensorDataLayout = new QHBoxLayout;
+    sensorDataLayout->addWidget(acclGroupBox);
+    sensorDataLayout->addWidget(gyroGroupBox);
+    sensorDataLayout->addWidget(imuGroupBox);
+
+    QVBoxLayout *sensorLayout = new QVBoxLayout;
+    sensorLayout->addWidget(plot);
+    //sensorLayout->addLayout(sensorDataLayout);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(glWidget);
     mainLayout->addWidget(xSlider);
     mainLayout->addWidget(ySlider);
     mainLayout->addWidget(zSlider);
-    mainLayout->addLayout(rightLayout);
-    //mainLayout->addWidget(gyroGroupBox);
+    mainLayout->addLayout(sensorLayout);
     setLayout(mainLayout);
 
     xSlider->setValue(15 * 16);
