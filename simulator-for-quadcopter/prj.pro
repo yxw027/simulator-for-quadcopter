@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
+CONFIG  += ordered
 
-SUBDIRS =   libs \
+SUBDIRS =   3rdlibrary \
             simulator
-
-CONFIG += ordered
