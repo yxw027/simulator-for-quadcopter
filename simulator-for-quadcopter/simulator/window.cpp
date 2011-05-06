@@ -5,7 +5,7 @@
 #include "glwidget.h"
 #include "window.h"
 #include "SerialThread.h"
-#include "plot.h"
+#include "./scope/plot.h"
 
 Window::Window()
 {

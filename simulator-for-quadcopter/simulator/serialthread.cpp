@@ -16,8 +16,10 @@ void SerialThread::run()
     // Read data from COM1
 }
 
-void SerialThread::read()
+void SerialThread::readData()
 {
+    // Check the buffer
+    if (port->bytesAvailable() == 6)
     QByteArray temp = port->readAll();
     //qDebug() << "read:" << temp;
 }

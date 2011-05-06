@@ -1,9 +1,11 @@
 #ifndef SERIALTHREAD_H
 #define SERIALTHREAD_H
 
-class QObject;
 #include <QThread>
+class QwtSamplingThread;
+class QObject;
 class QextSerialPort;
+
 
 class SerialThread : public QThread
 {
@@ -14,7 +16,7 @@ public:
     virtual ~SerialThread();
 
 public slots:
-    void read();
+    void readData();
 
 protected:
     void run();
