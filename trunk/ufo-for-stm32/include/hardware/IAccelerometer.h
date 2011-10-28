@@ -8,15 +8,13 @@
 extern int flag; /** reserverd */
 
 /**
- * Get x, y, z axis raw data
+ * Get accelerometer raw data
  *
- * @param x the pointer to x-axis data
- * @param y the pointer to y-axis data
- * @param z the pointer to z-axis data
+ * @param pointer to event
  *
  * @return 0 success, negative otherwise
- */ 
-int IAccelerometer_getXYZ(uint32_t *x, uint32_t *y, uint32_t *z);
+ */
+int accl_get_value(struct accl_event_t *event);
 
 /**
  * Helper function if necessary
@@ -45,9 +43,9 @@ typedef struct accl_event_t {
  * @note Not threadsafe
  */    
 typedef struct accl_offset_t {
-    uint32_t offset_x;
-    uint32_t offset_y;
-    uint32_t offset_z;
+    uint32_t accl_offset_x;
+    uint32_t accl_offset_y;
+    uint32_t accl_offset_z;
 } accel_offset_t;
 
 typedef struct accl_sensor_t {
