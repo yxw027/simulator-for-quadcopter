@@ -2,23 +2,22 @@
 #define MATRIX_H
 /**
  * @file matrix.h
- * matrix definition
+ * matrix interface
  */
+
+#define rowsof(m)	(sizeof(m) / sizeof(*m))
+#define colsof(m)	(sizeof(*m) / sizeof(**m))
+#define matrix_get(array)	{ rowsof(array), colsof(array), (int **)array }
 
 typedef struct matrix_t {
     int rows;
     int cols;
-    void **data;
-    void *reserved;
+    void **data;    /* only support type int */
 } matrix_t;
 
-/*
-void *matrix_malloc();
-void matrix_free();
-*/
 
-void matrix_add(matrix_t *l, matrix *r, matrix_t *out);
-void matrix_sub(matrix_t *l, matrix *r, matrix_t *out);
+void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out);
+void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
 /**
  * multiplies a m x n matrix by a n x m matrix
  *
@@ -34,7 +33,7 @@ void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
  * the dot product
  */
 void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col);
-void matrix_div(matrix_t *a, matrix *b, matrix_t *a);
+void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
 /**
  * print out a matrix
  *
