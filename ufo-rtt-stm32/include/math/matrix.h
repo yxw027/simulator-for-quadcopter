@@ -1,13 +1,15 @@
-#ifndef MATRIX_H
-#define MATRIX_H
 /**
  * @file matrix.h
  * matrix interface
  */
 
+#ifndef MATRIX_H
+#define MATRIX_H
+
+
 #define rowsof(m)	(sizeof(m) / sizeof(*m))
 #define colsof(m)	(sizeof(*m) / sizeof(**m))
-#define matrix_get(array)	{ rowsof(array), colsof(array), (int **)array }
+#define matrix_get(array)   { rowsof(array), colsof(array), (int **)array }
 
 typedef struct matrix_t {
     int rows;
@@ -25,7 +27,7 @@ void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
  * @param r the right matrix
  * @param out the answer matrix
  * @return none
- * @note you should give correct parameter of matrix, otherwise cause errror without nofication
+ * @note you should give correct parameter of matrix, otherwise errror occured
  */
 void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
 

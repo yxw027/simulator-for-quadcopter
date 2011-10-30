@@ -1,13 +1,16 @@
+/**
+ * @file quaternion.h
+ * Quaternoin math library interface
+ */
+
 #ifndef _QUATERNION_H
 #define _QUATERNION_H
 
-/**
- * @file quaternion.h
- * Quaternoin definitions
- */
+
+struct euler_t;
 
 /**
- * Quaternion orientation of earth frame relative to auxiliary frame.
+ * Quaternion elements representing the estimated orientation
  */   
 typedef struct quaternion_t {
     double q0;
@@ -25,5 +28,23 @@ typedef struct estimated_quaternion_t {
     double SEq_3;
     double SEq_4;
 } estimated_quaternion_t;  
+
+/**
+ * Get euluer from quaternion
+ *
+ * @param quaternion pointer to quaternion
+ * @param euler pointer to euluer
+ * @return none 
+ */
+void quaternion_to_euluer(struct quaternion_t *quaternion, struct euler_t *euler);
+
+/**
+ * Normalize
+ *
+ * @param quaternion the pointer to quaternion
+ * @return none
+ */
+void quaternion_norm(struct quaternion_t *quaternion);
+
 
 #endif /* _QUATERNION_H */
