@@ -5,7 +5,7 @@ Accel_calibration(struct accel_offset *offset)
 
 
     
-IMU_Init()
+init_IMU()
 {
     /* hardware initialization */
     Accel_init();
