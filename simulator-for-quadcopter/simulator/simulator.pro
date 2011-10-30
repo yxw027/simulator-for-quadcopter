@@ -38,4 +38,5 @@ CONFIG(debug, debug|release) {
     qtAddLibrary(qextserialport)
     qtAddLibrary(qwt)
 }
-else:LIBS  += -lqextserialport
+else:LIBS  += -lqextserialportd \
+              -lqwtd
