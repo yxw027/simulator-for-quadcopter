@@ -60,6 +60,21 @@ int accl_get_offset(struct accel_offset *offset)
     get_offset_z(offset->offset_z);
 }
 
+/**
+ * initialize accelerometor
+ *
+ * @return none
+ */
+void init_hw_accl(); 
+
+/**
+ * get raw data of x, y, z axis
+ *
+ * @param value the pointer to value
+ * @return none
+ */
+void accl_get_value(struct accl_event_t *value);
+
 int accl_update_offset(struct accel_offset *offset);
 
 
