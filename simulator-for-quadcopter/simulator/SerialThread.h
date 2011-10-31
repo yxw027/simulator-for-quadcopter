@@ -23,6 +23,7 @@ protected:
 
 private:
     QextSerialPort *port;
+    bool stopped;
 };
 
 #endif // SERIALTHREAD_H
