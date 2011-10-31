@@ -28,9 +28,9 @@ extern int get_offset_y(uint32_t *y);
 extern int get_offset_z(uint32_t *z);
 
 typedef struct accl_event_t {
-    uint32_t x;
-    uint32_t y;
-    uint32_t z;
+    uint32_t ax;
+    uint32_t ay;
+    uint32_t az;
 } accl_sensor_t;
 
 /**
