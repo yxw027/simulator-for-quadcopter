@@ -4,9 +4,9 @@
  */
 
  typedef struct gyro_event_t {
-    uint32_t x;
-    uint32_t y;
-    uint32_t z;
+    uint32_t gx;
+    uint32_t gy;
+    uint32_t gz;
 } gyro_event_t;
 
 typedef struct gyro_bias_t {
