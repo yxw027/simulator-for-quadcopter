@@ -71,9 +71,9 @@ void init_hw_accl();
  * get raw data of x, y, z axis
  *
  * @param value the pointer to value
- * @return none
+ * @return 0 success, negetive otherwise
  */
-void accl_get_value(struct accl_event_t *value);
+int accl_get_value(struct accl_event_t *value);
 
 int accl_update_offset(struct accel_offset *offset);
 

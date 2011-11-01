@@ -17,12 +17,29 @@ typedef struct matrix_t {
     void **data;    /* only support type int */
 } matrix_t;
 
-
+/**
+ * Addition of two matrixes
+ * out = l + r
+ * @param l the left matrix
+ * @param r the right matrix
+ * @param out the answer matrix
+ * @return none
+ */
 void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out);
+
+/**
+ * Subduction of two matrixes
+ * out = l - r
+ * @param l the left matrix
+ * @param r the right matrix
+ * @param out the answer matrix
+ * @return none
+ */
 void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
+
 /**
  * multiplies a m x n matrix by a n x m matrix
- *
+ * out = l x r
  * @param l the left matrix
  * @param r the right matrix
  * @param out the answer matrix

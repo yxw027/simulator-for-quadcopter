@@ -6,12 +6,28 @@
 
 void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out)
 {
-    printf("%s not implemented\n", __func__);
+    int i, j;
+    
+    assert(l->rows == r->rows);
+    assert(l->cols == r->cols);
+    
+    for (i = 0; i < l->rows; i++)
+        for (j = 0; j < r->cols; j++)
+            (int *)out->data + out->cols * i + j =
+            ((int *)l->data + l->cols * i + j) + ((int *)r->data + r->cols * i + j);
 }
 
 void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out)
 {
-    printf("%s not implemented\n", __func__);
+    int i, j;
+    
+    assert(l->rows == r->rows);
+    assert(l->cols == r->cols);
+    
+    for (i = 0; i < l->rows; i++)
+        for (j = 0; j < r->cols; j++)
+            (int *)out->data + out->cols * i + j =
+            ((int *)l->data + l->cols * i + j) - ((int *)r->data + r->cols * i + j);
 }
 
 void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out)
