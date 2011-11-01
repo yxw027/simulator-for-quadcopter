@@ -6,4 +6,5 @@ SOURCES += $$PWD/curvedata.cpp  \
            $$PWD/plot.cpp       \
            $$sensordata.cpp
            
-INCLUDEPATH += $$PWD
+#INCLUDEPATH += 
+include(../simulator.pri)

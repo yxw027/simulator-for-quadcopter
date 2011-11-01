@@ -1,16 +1,19 @@
 TEMPLATE = app
-TARGET = simulator-for-quadcopter
+TARGET = app
 
 PROJECT_BIN_PATH = bin
 
-INCLUDEPATH += ../3rdparty/qextserialport/include \
-               ../3rdparty/qwt/include
+#INCLUDEPATH += ../3rdparty/qextserialport/include \
+#               ../3rdparty/qwt/include
 #DEPENDPATH += \
 #    ../3rdparty/QextSerialPort/include \
 #    ../3rdparty/Qwt/include
 DESTDIR = $$PROJECT_BIN_PATH
 
+#include(../3rdparty/qwt/examples/examples.pri)
 include(scope/scope.pri)
+include(simulator.pri)
+
 HEADERS += \
     glwidget.h \
     window.h \

@@ -13,7 +13,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-public slots:
+private slots:
         void setXRotation(int angle);
         void setYRotation(int angle);
         void setZRotation(int angle);
