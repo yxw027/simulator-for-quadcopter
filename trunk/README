@@ -1,0 +1,9 @@
+DIR:
+    simulator
+        the PC software for quadcopter simulation
+        
+    ufo-rtt-stm32
+        the firmware for the quadcopter
+        
+    doc
+        user manual
