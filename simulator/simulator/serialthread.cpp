@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "SerialThread.h"
 #include "qextserialport.h"
 
@@ -6,7 +8,7 @@ SerialThread::SerialThread(QextSerialPort *port, QObject *parent) : QThread(pare
     this->port = port;
     
     stopped = false;
-    bool isOpen = this->port->open(QIODevice::Read);
+    bool isOpen = this->port->open(QIODevice::ReadOnly);
     if (isOpen) {
     // COMx is already in use
     }
@@ -31,12 +33,12 @@ void SerialThread::run()
         // Read data from COMx
     } while (!stopped);
 }
-
+/*
 void SerialThread::stopThread()
 {
     stopped = true;
 }
-    
+*/    
 void SerialThread::readData()
 {
     // Check the buffer

@@ -9,6 +9,7 @@
 
 Window::Window()
 {
+
     glWidget = new GLWidget;
 
     xSlider = createSlider();
@@ -68,6 +69,7 @@ Window::Window()
     ySlider->setValue(345 * 16);
     zSlider->setValue(0 * 16);
     setWindowTitle(tr("simulator"));
+
 }
 
 QSize Window::minimumSizeHint() const
