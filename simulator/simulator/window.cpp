@@ -1,6 +1,8 @@
 #include <QtGui>
 #include <QDebug>
+
 #include "qextserialport.h"
+//#include "abstractserial.h"
 
 #include "glwidget.h"
 #include "window.h"
@@ -26,6 +28,7 @@ Window::Window()
     connect(zSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZRotation(int)));
     connect(glWidget, SIGNAL(zRotationChanged(int)), zSlider, SLOT(setValue(int)));
 
+    // Init COM port
     port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
     port->open(QIODevice::ReadWrite);
     port->setBaudRate(BAUD9600);
@@ -36,8 +39,44 @@ Window::Window()
     port->setTimeout(300);
     if (!(port->lineStatus() & LS_DSR))
         qDebug() << "warning: device is not turned on";
+/*
+    port = new AbstractSerial();
+    port->setDeviceName("COM1");
+    if (port->open(AbstractSerial::ReadOnly)) {
+        if (!port->setBaudRate(AbstractSerial::BaudRate115200)) {
+            qDebug() << "Set baud rate " <<  AbstractSerial::BaudRate115200 << " error.";
+            goto err;
+        };
 
-    SerialThread *thread = new SerialThread(port);
+        if (!port->setDataBits(AbstractSerial::DataBits8)) {
+            qDebug() << "Set data bits " <<  AbstractSerial::DataBits8 << " error.";
+            goto err;
+        }
+
+        if (!port->setParity(AbstractSerial::ParityNone)) {
+            qDebug() << "Set parity " <<  AbstractSerial::ParityNone << " error.";
+            goto err;
+        }
+
+        if (!port->setStopBits(AbstractSerial::StopBits1)) {
+            qDebug() << "Set stop bits " <<  AbstractSerial::StopBits1 << " error.";
+            goto err;
+        }
+
+        if (!port->setFlowControl(AbstractSerial::FlowControlOff)) {
+            qDebug() << "Set flow " <<  AbstractSerial::FlowControlOff << " error.";
+            goto err;
+        }
+    }
+*/  
+    SerialThread *serialThread = new SerialThread(port);
+    //connect(serialThread, SIGNAL(SensorDataReady()), this, SLOT(SensorDataRead()));
+    
+    serialButton = new QPushButton(tr("connect"));
+    connect(serialButton, SIGNAL(clicked()), this, SLOT(startOrStopSerialThread));
+    
+
+   
     connect(port, SIGNAL(readyRead()), thread, SLOT(readData()));
     thread->start();
 
@@ -69,7 +108,14 @@ Window::Window()
     ySlider->setValue(345 * 16);
     zSlider->setValue(0 * 16);
     setWindowTitle(tr("simulator"));
+err:
+    //port->close();
+}
 
+QWindow::~Window()
+{
+    port->close();
+//    delete port;
 }
 
 QSize Window::minimumSizeHint() const
@@ -92,7 +138,18 @@ QSlider *Window::createSlider()
     slider->setTickPosition(QSlider::TicksRight);
     return slider;
 }
-
+/*
+void Window::startOrStopSerialThread()
+{
+    if (serialThread->isRunning()) {
+        serialThread->stop();
+        serialButton->setText(tr("connect"));
+    } else {
+        serialThread->start();
+        serialButton->setText(tr("disconnect"));
+    }    
+}
+*/
 QGroupBox *Window::createAcclGroupBox()
 {
     acclGroupBox = new QGroupBox(tr("Accelerometer"));
