@@ -5,7 +5,7 @@
 class QwtSamplingThread;
 class QObject;
 class QextSerialPort;
-
+class QMutex;
 
 class SerialThread : public QThread
 {
@@ -14,16 +14,19 @@ class SerialThread : public QThread
 public:
     SerialThread(QextSerialPort *port, QObject *parent = 0);
     virtual ~SerialThread();
-
+    
+    void stopThread();
+    
 public slots:
     void readData();
-
+    
 protected:
     void run();
 
 private:
     QextSerialPort *port;
-    bool stopped;
+    QMutex mutex;
+    volatile bool stopped;
 };
 
 #endif // SERIALTHREAD_H

@@ -10,6 +10,7 @@ class GLWidget;
 class QGroupBox;
 class SerialThread;
 class Plot;
+class AbstractSerial;
 
 class Window : public QWidget
 {
@@ -17,14 +18,16 @@ class Window : public QWidget
 
 public:
     Window();
-
+    virtual ~Window();
+    
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
 public slots:
     void readData();
     void sendData();
-
+    void startOrStopSerialThread();
+    
 protected:
     void keyPressEvent(QKeyEvent *event);
 
@@ -44,9 +47,13 @@ private:
     QGroupBox *imuGroupBox;
 
     QPushButton *pushButton;
-
+    QPushButton *serialButton;
+#if 1    
     QextSerialPort *port;
-    SerialThread *thread;
+#else    
+    AbstractSerial *port;
+    
+    SerialThread *serialThread;
     Plot *plot;
 };
 
