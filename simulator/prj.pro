@@ -1,6 +1,9 @@
+include(prj_common.pri)
+
 TEMPLATE = subdirs
 CONFIG  += ordered
 
-SUBDIRS =   3rdparty    \
-#            modules     \
-            simulator       
+qwt-uselib:SUBDIRS =    3rdparty    \
+                        modules     \
+
+SUBDIRS = simulator

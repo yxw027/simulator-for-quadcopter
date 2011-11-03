@@ -1,35 +1,31 @@
 TEMPLATE = app
 TARGET = app
 
-PROJECT_BIN_PATH = bin
+#PROJECT_BIN_PATH = bin
 
 #INCLUDEPATH += ../3rdparty/qextserialport/include \
 #               ../3rdparty/qwt/include
 #DEPENDPATH += \
 #    ../3rdparty/QextSerialPort/include \
 #    ../3rdparty/Qwt/include
-DESTDIR = $$PROJECT_BIN_PATH
+#DESTDIR = $$PROJECT_BIN_PATH
+
 
 #include(../3rdparty/qwt/examples/examples.pri)
 include(scope/scope.pri)
-include(simulator.pri)
+include($$PWD/../../3rdparty/modules/qmath/qmath.pri)
+#include(simulator.pri)
 
 HEADERS += \
     glwidget.h \
     window.h \
-    SerialThread.h \
-#    scope/plot.h \
-#    scope/sensordata.h \
-#    scope/curvedata.h
+    SerialThread.h
 
 SOURCES += \
     glwidget.cpp \
     window.cpp \
     main.cpp \
-    serialthread.cpp \
-#    scope/plot.cpp \
-#    scope/sensordata.cpp \
-#    scope/curvedata.cpp
+    serialthread.cpp
 
 QT +=  opengl
 
@@ -38,8 +34,8 @@ win32:DEFINES  = _TTY_WIN_
 
 OTHER_FILES += README
 
-qtAddLibrary(qextserialport)
-qtAddLibrary(qwt)
+#qtAddLibrary(qextserialport)
+#qtAddLibrary(qwt)
 #qtAddLibrary(qextmath)
 
 #CONFIG(debug, debug|release) {
