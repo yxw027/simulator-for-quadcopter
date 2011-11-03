@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
 QT_BEGIN_NAMESPACE
 class Plot;
 class QMenu;
-class QMdiArea;
+class GLWidget;
 class AbstractSerial;
 class QPushButton;
 QT_END_NAMESPACE
@@ -27,6 +28,7 @@ private:
     //AbstractSerial *port;
     QPushButton *serialButton;
 
+    GLWidget *glWidget;
     //Plot *plot;
 };
 

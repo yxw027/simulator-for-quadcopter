@@ -1,13 +1,12 @@
 TEMPLATE = lib
 CONFIG += math-buildlib
+CONFIG += qt
+CONFIG += warn_on
+CONFIG += silent
 
 include($$PWD/libmath.pri)
 
-TARGET  = $$MATH_LIB_NAME
-
-
-#CONFIG += shared
-
+TARGET = $$MATH_LIB_NAME
 
 DEFINES += QMATH_DLL
 

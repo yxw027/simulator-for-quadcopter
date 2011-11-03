@@ -3,11 +3,13 @@
 //#include "scope/plot.h"
 
 
+#include "glwidget.h"
 #include "mainwindow.h"
 
 
 MainWindow::MainWindow()
 {
+    glWidget = new GLWidget;
 /*
     port = new AbstractSerial();
     port->setDeviceName("COM1");
@@ -46,7 +48,7 @@ MainWindow::MainWindow()
     serialButton = new QPushButton(tr("connect"), centralWidget);
 
     QHBoxLayout *mainLayout = new QHBoxLayout();
-    //mainLayout->addWidget(plot);
+    mainLayout->addWidget(glWidget);
     mainLayout->addWidget(serialButton);
     //setLayout(mainLayout);
     centralWidget->setLayout(mainLayout);
