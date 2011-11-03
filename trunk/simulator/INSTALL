@@ -1,0 +1,13 @@
+building simulator
+==================
+
+
+Win32/MinGW
+-----------
+
+Qt Creator using MinGW compiler default, so you can use the 
+following comand line to build application.
+
+
+qmake
+mingw32-make
