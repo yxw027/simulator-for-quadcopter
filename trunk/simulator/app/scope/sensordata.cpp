@@ -5,12 +5,12 @@
 
 SensorData::SensorData()
 {
-    instance = new SensorData();
+    //instance = new SensorData();
 }
 
 SensorData::~SensorData()
 {
-    delete instance;
+    //delete instance;
 }
 
 SensorData& SensorData::getInstance()

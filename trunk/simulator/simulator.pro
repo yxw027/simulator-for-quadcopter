@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 CONFIG  += ordered
 
-SUBDIRS += libmath  \
-            app#simulator modules
+SUBDIRS += libmath      \
+            3rdparty    \
+            app
