@@ -67,4 +67,5 @@ QSize MainWindow::sizeHint() const
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
+//    helpMenu = menuBar()->addMenu(tr("&Help"));
 }
