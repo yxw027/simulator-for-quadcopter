@@ -1,4 +1,5 @@
 include(../../simulator.pri)
+include(../shared/qtsingleapplication/qtsingleapplication.pri)
 TEMPLATE = app
 TARGET = $$SIMULATOR_APP_TARGET
 DESTDIR = $$SIMULATOR_APP_PATH
