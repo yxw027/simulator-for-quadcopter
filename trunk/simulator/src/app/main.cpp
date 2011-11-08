@@ -1,3 +1,5 @@
+#include "qtsingleapplication.h"
+
 #include <QApplication>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginerroroverview.h>
@@ -56,9 +58,40 @@ static inline QString msgCoreLoadFailure(const QString &why)
 {
     return QCoreApplication::translate("Application", "Failed to load core: %1").arg(why);
 }
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    
+    
+    ExtensionSystem::PluginManager pluginManager;
+    pluginManager.setFileExtension(QLatinlString("pluginspec"));
+    pluginManager.setGlobalSettings(globalSettings);
+    pluginMnager.setSetttings(settings);
+    
+    const bool isFirstInstance = !app.isRunning();
+    if (!isFirstInstance) {
+        if (app.sendMessage(plugManager.serializedArguments()))
+            return 0;
+        
+        // Message could not be send, maybe it was in the process of quitting
+        if (app.isRunning()) {
+            // Nah app is still running, ask the user
+            int button = askMsgSendFailed();
+            while(button == QMessageBox::Retry) {
+                if (app.sendMessage(pluginManager.serializedArguments()))
+                    return 0;
+                if (!app.isRunning()) // App quit while we were trying so start a new creator
+                    button = QMessageBox::Yes;
+                else
+                    button = askMsgSendFailed();
+            }
+            if (button == QMessage::No)
+                return -1;
+        }        
+    }
+    
+    pluginManager.loadPlugins();
     //Window window;
     //QMainWindow mainWindow;
 

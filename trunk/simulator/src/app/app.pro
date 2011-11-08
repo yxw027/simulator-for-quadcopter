@@ -13,4 +13,4 @@ SOURCES += main.cpp
 #OTHER_FILES += simulator.rc
 
 # OpenGL support
-QT +=   opengl
+#QT +=   opengl
