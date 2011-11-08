@@ -63,11 +63,12 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     
-    
     ExtensionSystem::PluginManager pluginManager;
     pluginManager.setFileExtension(QLatinlString("pluginspec"));
     pluginManager.setGlobalSettings(globalSettings);
     pluginMnager.setSetttings(settings);
+    
+    //pluginManager.loadPlugins();
     
     const bool isFirstInstance = !app.isRunning();
     if (!isFirstInstance) {
@@ -88,17 +89,22 @@ int main(int argc, char *argv[])
             }
             if (button == QMessage::No)
                 return -1;
-        }        
+        }
     }
     
-    pluginManager.loadPlugins();
-    //Window window;
-    //QMainWindow mainWindow;
+    if (isFirstInstance) {
+        // Set up lock and remote arguments for the first instance only.
+        // Silently fallback to unconnected instances for any subsequent instances.
+        app.initialize();
+        QObject::connect(&app, SIGNAL(messageReceived(QString)),
+                        &pluginManager, SLOT(remoteArguments(QString)));
+    }
+    
+    QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), coreplugin->plugin(),
+                     SLOT(fileOpenRequest(QString)));
+                     
+    // shutdown plugin manager on the exit
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &pluginManager, SLOT(shutdown()));
 
-    //mainWindow.resize(mainWindow.sizeHint());
-    //mainWindow.show();
-
-    //thread->start();
-    qDebug() << "begin...";
     return app.exec();
 }
