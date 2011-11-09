@@ -3,15 +3,25 @@
 
 #include <extensionsystem/iplugin.h>
 
+#include <QtCore/QtPlugin>
+
+namespace Serial {
+
+namespace Internal {
+
 class SerialPlugin : public SystemExtension::IPlugin
 {
+    Q_OBJECT
+
 public:
     SerialPlugin();
     virtual ~SerialPlugin();
     
-    void extensionInitialized();
-    bool initialize(const QString &arguments, QString *errorString);
-    void shutdown();
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized();
 };
+
+} // namespace Internal
+} // namespace Serial
 
 #endif // SERIAL_PLUGIN_H

@@ -1,8 +1,7 @@
 TEMPLATE = lib
 TARGET = Serial
-include(../../qtcreatorplugin.pri)
-DESTDIR = $$SIMULATOR_PLUGIN_PATH
+include(../../simulatorplugin.pri)
 
 HEADERS += serial.h
+
 SOURCES += serial.cpp
-OTHER_FILES += serial.pluginspec

@@ -1,5 +1,8 @@
 #include "serial.h"
 
+namespace Serial {
+namespace Internal {
+
 SerialPlugin::SerialPlugin()
 {
 }
@@ -8,20 +11,19 @@ SerialPlugin::~SerialPlugin()
 {
 }
 
-bool SerialPlugin::initialize(const QString &args, QString *errMsg)
+bool SerialPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-    Q_UNUSED(args);
-    Q_UNUSED(errMsg);
+    Q_UNUSED(arguments)
+    Q_UNUSED(errorMessage);
     
     return true;
 }
 
-void SerialPlugin::extensionInitialized()
+void SerialPlugin::extensionsInitialized()
 {
 }
 
-void SerialPlugin::shutdown()
-{
-}
+} // namespace Internal
+} // namespace Serial
 
-Q_EXPROT_PLUGIN(SerialPlugin)
+Q_EXPORT_PLUGIN(Serial::Internal::SerialPlugin)
