@@ -1,6 +1,5 @@
 #include "qtsingleapplication.h"
 
-#include <QApplication>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginerroroverview.h>
 #include <extensionsystem/pluginmanager.h>
@@ -10,13 +9,17 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtGui/QApplication>
+#include <QtGui/QDesktopServices>
 #include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
 
-//#include "SerialThread.h"
 
 
+static const char appNameC[] = "Simulator";
 static const char corePluginNameC[] = "Core";
 
+
+typedef QList<ExtensionSystem::PluginSpec *> PluginSpecSet;
 
 // Helpers for displaying messages. Note that there is no console on Windows.
 #ifdef Q_OS_WIN
@@ -59,22 +62,94 @@ static inline QString msgCoreLoadFailure(const QString &why)
     return QCoreApplication::translate("Application", "Failed to load core: %1").arg(why);
 }
 
-int main(int argc, char *argv[])
+static inline int askMsgSendFailed()
 {
-    QApplication app(argc, argv);
-    
+    return QMessageBox::question(0, QApplication::translate("Application","Could not send message"),
+                                 QCoreApplication::translate("Application", "Unable to send command line arguments to the already running instance. "
+                                                             "It appears to be not responding. Do you want to start a new instance of Creator?"),
+                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Retry,
+                                 QMessageBox::Retry);
+}
+
+static inline QStringList getPluginPaths()
+{
+    QStringList rc;
+    // Figure out root:  Up one from 'bin'
+    QDir rootDir = QApplication::applicationDirPath();
+    rootDir.cdUp();
+    const QString rootDirPath = rootDir.canonicalPath();
+#if !defined(Q_OS_MAC)
+    // 1) "plugins" (Win/Linux)
+    QString pluginPath = rootDirPath;
+    pluginPath += QLatin1Char('/');
+    // pluginPath += QLatin1String(IDE_LIBRARY_BASENAME);
+    pluginPath += QLatin1String("simulator/plugins");
+    rc.push_back(pluginPath);
+#else
+    // 2) "PlugIns" (OS X)
+    QString pluginPath = rootDirPath;
+    pluginPath += QLatin1String("/PlugIns");
+    rc.push_back(pluginPath);
+#endif
+    // 3) <localappdata>/plugins/<ideversion>
+    //    where <localappdata> is e.g.
+    //    <drive>:\Users\<username>\AppData\Local\Nokia\qtcreator on Windows Vista and later
+    //    $XDG_DATA_HOME or ~/.local/share/Nokia/qtcreator on Linux
+    //    ~/Library/Application Support/Nokia/Qt Creator on Mac
+    pluginPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    pluginPath += QLatin1String("/Nokia/");
+#if !defined(Q_OS_MAC)
+    pluginPath += QLatin1String("simulator");
+#else
+    pluginPath += QLatin1String("Simulator");
+#endif
+    pluginPath += QLatin1String("/plugins/");
+//    pluginPath += QLatin1String(Core::Constants::IDE_VERSION_LONG);
+    rc.push_back(pluginPath);
+    return rc;
+}
+
+#ifdef Q_OS_MAC
+#  define SHARE_PATH "/../Resources"
+#else
+#  define SHARE_PATH "/../share/simulator"
+#endif
+
+int main(int argc, char **argv)
+{
+
+    SharedTools::QtSingleApplication app((QLatin1String(appNameC)), argc, argv);
     ExtensionSystem::PluginManager pluginManager;
-    pluginManager.setFileExtension(QLatinlString("pluginspec"));
-    pluginManager.setGlobalSettings(globalSettings);
-    pluginMnager.setSetttings(settings);
+    pluginManager.setFileExtension(QLatin1String("pluginspec"));
+    // pluginManager.setGlobalSettings(globalSettings);
+    // pluginManager.setSettings(settings);
+    // Load plugins
+    const QStringList pluginPaths = getPluginPaths();
+    pluginManager.setPluginPaths(pluginPaths);
     
-    //pluginManager.loadPlugins();
-    
+    const PluginSpecSet plugins = pluginManager.plugins();
+    ExtensionSystem::PluginSpec *coreplugin = 0;
+    foreach (ExtensionSystem::PluginSpec *spec, plugins) {
+        if (spec->name() == QLatin1String(corePluginNameC)) {
+            coreplugin = spec;
+            break;
+        }
+    }
+    if (!coreplugin) {
+        QString nativePaths = QDir::toNativeSeparators(pluginPaths.join(QLatin1String(",")));
+        const QString reason = QCoreApplication::translate("Application", "Could not find 'Core.pluginspec' in %1").arg(nativePaths);
+        displayError(msgCoreLoadFailure(reason));
+        return 1;
+    }
+    if (coreplugin->hasError()) {
+        displayError(msgCoreLoadFailure(coreplugin->errorString()));
+        return 1;
+    }
     const bool isFirstInstance = !app.isRunning();
     if (!isFirstInstance) {
-        if (app.sendMessage(plugManager.serializedArguments()))
+        if (app.sendMessage(pluginManager.serializedArguments()))
             return 0;
-        
+
         // Message could not be send, maybe it was in the process of quitting
         if (app.isRunning()) {
             // Nah app is still running, ask the user
@@ -87,11 +162,20 @@ int main(int argc, char *argv[])
                 else
                     button = askMsgSendFailed();
             }
-            if (button == QMessage::No)
+            if (button == QMessageBox::No)
                 return -1;
         }
     }
-    
+
+    pluginManager.loadPlugins();
+    if (coreplugin->hasError()) {
+        displayError(msgCoreLoadFailure(coreplugin->errorString()));
+        return 1;
+    }
+    if (pluginManager.hasError()) {
+        ExtensionSystem::PluginErrorOverview errorOverview(&pluginManager);
+    }
+
     if (isFirstInstance) {
         // Set up lock and remote arguments for the first instance only.
         // Silently fallback to unconnected instances for any subsequent instances.

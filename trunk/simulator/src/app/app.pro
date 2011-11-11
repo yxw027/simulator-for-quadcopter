@@ -4,11 +4,11 @@ TEMPLATE = app
 TARGET = $$SIMULATOR_APP_TARGET
 DESTDIR = $$SIMULATOR_APP_PATH
 
+SOURCES += main.cpp
+
 LIBS *= -l$$qtLibraryName(ExtensionSystem) -l$$qtLibraryName(Aggregation)
 
-unix:QMAKE_RPATHDIR += $$PROJECT_LIB_DIR
-    
-SOURCES += main.cpp
+
 
 #OTHER_FILES += simulator.rc
 
