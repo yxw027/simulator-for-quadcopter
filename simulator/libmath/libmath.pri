@@ -1,6 +1,6 @@
 # include and depend path
-INCLUDEPATH += $$PWD/src
-DEPENDPATH += $$PWD/src
+INCLUDEPATH += $$PWD
+DEPENDPATH += $$PWD
 
 TEMPLATE += fakelib
 MATH_LIB_NAME = $$qtLibraryTarget(math)

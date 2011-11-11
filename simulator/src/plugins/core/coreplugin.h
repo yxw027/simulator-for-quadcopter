@@ -1,36 +1,37 @@
-#ifndef CORE_PLUGIN_H
-#define CORE_PLUGIN_H
+#ifndef COREPLUGIN_H
+#define COREPLUGIN_H
 
 #include <extensionsystem/iplugin.h>
 
 
-namespace core {
+namespace Core {
+namespace Internal {
 
 class MainWindow;
 
 class CorePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    
+
 public:
     CorePlugin();
     ~CorePlugin();
-        
+
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
     virtual ShutdownFlag aboutToShutdown();
-    virtual void remoteCommand(const QStringList &/* options */, const QStringList &args);
-    
-public:
-    void someslot(const QString &);
-    
+    virtual void remoteCommand(const QStringList & /* options */, const QStringList &args);
+
+public slots:
+    // void fileOpenRequest(const QString&);
+
 private:
-    void parseArguments(const QStringList &argmenuts);
+    void parseArguments(const QStringList & arguments);
     
-    MainWindow *mMainWindow;
+    MainWindow *m_mainWindow;
 };
 
-} // namespace core
+} // namespace Internal
+} // namespace Core
 
-
-#endif // CORE_PLUGIN_H
+#endif // COREPLUGIN_H
