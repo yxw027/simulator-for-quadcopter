@@ -1,39 +1,53 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
+#include "core_global.h"
+
+#include "eventfilteringmainwindow.h"
 #include <QMainWindow>
 
-namespace core {
+QT_BEGIN_NAMESPACE
+class QSettings;
+class QShortcut;
+class QToolButton;
+class MyTabWidget;
+QT_END_NAMESPACE
+
+namespace Core {
 
 class ActionManager;
 
-class MainWindow : public QMainWindow
+
+namespace Internal {
+class CORE_EXPORT MainWindow : public EventFilteringMainWindow
 {
     Q_OBJECT
     
-public:    
+public:
     MainWindow();
     ~MainWindow();
     
     bool init(QString *errorMessage);
-    void extenstionInitialized();
+    void extensionsInitialized();
     void aboutToShutdown();
     
     Core::ActionManager *actionManager() const;
     
 public slots:
-    void newFile();
-    void exit();
+    // void newFile();
+    // void exit();
     
 protected:
-    virtual void changeEvent(QEvent *e);
-    virtual void closeEvent(QCloseEvent *e);
+    // virtual void changeEvent(QEvent *e);
+    // virtual void closeEvent(QCloseEvent *event);
 
+private slots:
 private:
     QAction *mNewAction;
     QAction *mexitAction;
 };
 
-} // namespace core
+} // namespace Internal
+} // namespace Core
 
-#endif // MAIN_WINDOW_H
+#endif // MAINWINDOW_H

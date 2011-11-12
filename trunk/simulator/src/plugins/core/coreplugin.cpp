@@ -9,7 +9,7 @@
 using namespace Core;
 using namespace Core::Internal;
 
-CorePlugin::CorePlugin : m_mainWindow(new MainWindow)
+CorePlugin::CorePlugin() : m_mainWindow(new MainWindow)
 {
 }
 
@@ -18,12 +18,12 @@ CorePlugin::~CorePlugin()
     delete m_mainWindow;
 }
 
-void CorePlugin::parseArguments(const QString &arguments)
+void CorePlugin::parseArguments(const QStringList &arguments)
 {
     Q_UNUSED(arguments)
 }
 
-bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage);
+bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments)
     const bool success = m_mainWindow->init(errorMessage);

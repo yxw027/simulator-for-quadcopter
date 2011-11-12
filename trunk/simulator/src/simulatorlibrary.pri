@@ -1,12 +1,13 @@
 include(../simulator.pri)
 
-win32 {
-    DLLDESTDIR = $$SIMULATOR_APP_PATH
-}
-
 DESTDIR = $$SIMULATOR_LIBRARY_PATH
 
 TARGET = $$qtLibraryName($$TARGET)
+
+win32 {
+    DLLDESTDIR = $$SIMULATOR_APP_PATH
+    QMAKE_DISTCLEAN += $$DLLDESTDIR/$${TARGET}.dll
+}
 
 !macx {
     win32 {
