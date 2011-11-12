@@ -7,7 +7,7 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-class QSettings;
+class QMenu;
 class QShortcut;
 class QToolButton;
 class MyTabWidget;
@@ -43,6 +43,9 @@ protected:
 
 private slots:
 private:
+    QWidget *centralWidget;
+    QMenu *fileMenu;
+
     QAction *mNewAction;
     QAction *mexitAction;
 };
