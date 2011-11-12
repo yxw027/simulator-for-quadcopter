@@ -10,3 +10,6 @@ HEADERS = aggregate.h \
 
 SOURCES = aggregate.cpp
 
+win32 {
+    QMAKE_DISTCLEAN += $$DLLDESTDIR/$${TARGET}.dll
+}

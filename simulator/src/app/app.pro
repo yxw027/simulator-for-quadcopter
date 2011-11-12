@@ -6,6 +6,7 @@ DESTDIR = $$SIMULATOR_APP_PATH
 
 SOURCES += main.cpp
 
+include(../rpath.pri)
 LIBS *= -l$$qtLibraryName(ExtensionSystem) -l$$qtLibraryName(Aggregation)
 
 

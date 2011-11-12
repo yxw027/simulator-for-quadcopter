@@ -3,7 +3,7 @@
 
 TEMPLATE  = subdirs
 
-SUBDIRS   = plugin_core \
+SUBDIRS   = plugin_core
 #            plugin_welcome \
 #            plugin_find \
 #            plugin_texteditor \
@@ -46,45 +46,11 @@ SUBDIRS   = plugin_core \
 #            plugin_madde \
 #            plugin_valgrind
 
-isEmpty(IDE_PACKAGE_MODE) {
-    SUBDIRS += plugin_helloworld \
-               plugin_updateinfo
-} else:!isEmpty(UPDATEINFO_ENABLE) {
-    SUBDIRS += plugin_updateinfo
-}
 
-linux-* {
-     SUBDIRS += debugger/ptracepreload.pro
-}
+#include(../../qtcreator.pri)
 
-include(../../qtcreator.pri)
 
-contains(QT_CONFIG, declarative) {
-    SUBDIRS += \
-            plugin_qmlprojectmanager \
-            plugin_qmljsinspector
-
-    include(../private_headers.pri)
-    exists($${QT_PRIVATE_HEADERS}/QtDeclarative/private/qdeclarativecontext_p.h) {
-
-        minQtVersion(4, 7, 1) {
-            SUBDIRS += plugin_qmldesigner
-        } else {
-            warning()
-            warning("QmlDesigner plugin has been disabled.")
-            warning("QmlDesigner requires Qt 4.7.1 or later.")
-        }
-    } else {
-        warning()
-        warning("QmlDesigner plugin has been disabled.")
-        warning("The plugin depends on private headers from QtDeclarative module.")
-        warning("To enable it, pass 'QT_PRIVATE_HEADERS=$QTDIR/include' to qmake, where $QTDIR is the source directory of qt.")
-    }
-}
-
-include (debugger/lldb/guest/qtcreator-lldb.pri)
-
-#plugin_core.subdir = core
+plugin_core.subdir = core
 
 #plugin_updateinfo.subdir = updateinfo
 #plugin_updateinfo.depends = plugin_coreplugin

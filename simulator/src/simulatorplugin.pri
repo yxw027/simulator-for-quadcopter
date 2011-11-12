@@ -1,7 +1,11 @@
-include(../qtcreator.pri)
+include(../simulator.pri)
+
+isEmpty(PROVIDER) {
+    PROVIDER = Nokia
+}
 
 isEmpty(USE_USER_DESTDIR) {
-    DESTDIR = $$IDE_PLUGIN_PATH/$$PROVIDER
+    DESTDIR = $$SIMULATOR_PLUGIN_PATH/$$PROVIDER
 }
 LIBS += -L$$DESTDIR
 
@@ -9,5 +13,7 @@ LIBS += -L$$DESTDIR
 isEmpty(TARGET) {
     error("simulatorplugin.pri: You must provide a TARGET")
 }
+
 PLUGINSPEC = $$_PRO_FILE_PWD_/$${TARGET}.pluginspec
+
 TARGET = $$qtLibraryName($$TARGET)
