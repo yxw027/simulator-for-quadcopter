@@ -5,6 +5,22 @@
 #ifndef _I2C_H
 #define _I2C_H
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup Hardware Abstract Layer
+ * @{
+ */
+
+/**
+ * @defgroup i2c
+ * I2C bus support
+ * @{
+ */
+
 typedef struct i2c_dev_t {
     char *name;
     int addr;
@@ -14,5 +30,10 @@ int i2c_probe();
 int i2c_read();
 int i2c_write();
 
+/** @} */
+
+/** @} */
+
+/** @} */
 
 #endif /* _I2C_H */

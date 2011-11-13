@@ -1,6 +1,21 @@
+/**
+ * @file imufilter.c
+ * imufilter implementation
+ */
+
 #include "imufilter.h"
 
 #include "math/quaternion.h"
+
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup imu
+ * @{
+ */
 
 int IMUfilter_computeEnler(struct quaternion_t *quaternion, struct estimated_quaternion_t *est, struct orientation_t *orientation)
 {
@@ -38,3 +53,6 @@ int IMUfilter_computeEnler(struct quaternion_t *quaternion, struct estimated_qua
     
     return retval;
 }
+/** @} */
+
+/** @} */

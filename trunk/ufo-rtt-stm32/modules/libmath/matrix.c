@@ -1,8 +1,21 @@
+/**
+ * @file matrix.c
+ * matrix implementation
+ */
 #include <stdio.h>
 #include <assert.h>
 
 #include "matrix.h"
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
 
 void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out)
 {
@@ -67,3 +80,7 @@ void matrix_print(struct matrix_t *matrix)
     }
     putchar('\n');
 }
+
+/** @} */
+
+/** @} */
