@@ -6,6 +6,21 @@
 #ifndef _QUATERNION_H
 #define _QUATERNION_H
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
+
+/**
+ * @defgroup quaternion
+ * quaternion math support
+ * @{
+ */
 
 struct euler_t;
 
@@ -66,5 +81,10 @@ void quaternion_from_euler(struct euler_t *euler, struct quaternion_t *quad);
  */
 void quaternion_norm(struct quaternion_t *quaternion);
 
+/** @} */
+
+/** @} */
+
+/** @} */
 
 #endif /* _QUATERNION_H */

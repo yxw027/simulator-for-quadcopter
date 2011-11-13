@@ -1,8 +1,21 @@
+/**
+ * @file quaternion.c
+ * quaternion implementation
+ */
 #include <math.h>
 
 #include "quaternion.h"
 #include "euler.h"
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
 
 void quaternion_to_euler(struct quaternion_t *quaternion, struct euler_t *euler)
 {
@@ -53,3 +66,7 @@ void quaternion_norm(struct quaternion_t *quaternion)
     quaternion->q2 /= norm;
     quaternion->q3 /= norm; 
 }
+
+/** @} */
+
+/** @} */

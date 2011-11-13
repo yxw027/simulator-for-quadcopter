@@ -2,9 +2,25 @@
  * @file crc16.h
  * CRC-16 interface
  */
- 
+
 #ifndef _CRC16_H
 #define _CRC16_H
+
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
+
+/**
+ * @defgroup crc16
+ * crc16 support
+ * @{
+ */
 
 /**
  * Generator Polynomial
@@ -26,5 +42,10 @@ uint16_t crc16(uint16_t crc, const uint8_t *buffer, int len);
  */
 unsigned short CRC_CHECK(unsigned char *Buf, unsigned char CRC_CNT);
 
+/** @} */
+
+/** @} */
+
+/** @} */
 
 #endif /* _CRC16_H */ 

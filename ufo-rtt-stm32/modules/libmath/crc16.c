@@ -1,4 +1,18 @@
+/**
+ * @file crc16.c
+ * crc16 math implementation
+ */
 #include "crc16.h"
+
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
 
 /** CRC table for the CRC-16. The poly is 0x8005 (x^16 + x^15 + x^2 + 1) */
 static uint16_t crc16_table[256] = {
@@ -69,3 +83,7 @@ unsigned short CRC_CHECK(unsigned char *Buf, unsigned char CRC_CNT)
     }
     return(CRC_Temp);
 }
+
+/** @} */
+
+/** @} */

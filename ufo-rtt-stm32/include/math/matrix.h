@@ -6,6 +6,15 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */ 
 
 #define rowsof(m)	(sizeof(m) / sizeof(*m))
 #define colsof(m)	(sizeof(*m) / sizeof(**m))
@@ -60,5 +69,9 @@ void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
  * @return none
  */
 void matrix_print(struct matrix_t *matrix);
+
+/** @} */
+
+/** @} */
 
 #endif  /* MATRIX_H */

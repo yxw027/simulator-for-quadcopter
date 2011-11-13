@@ -1,8 +1,19 @@
-#ifndef _IACCELEROMETER_H
-#define _IACCELEROMETER_H
 /**
  * @file IAccelerometer.h
  * Accelerometer Sensor Interface.
+ */
+
+#ifndef _IACCELEROMETER_H
+#define _IACCELEROMETER_H
+
+/**
+ * @addtogroup ufo
+ * @}
+ */
+
+/**
+ * @addtogroup Hardware Abstract Layer
+ * @{
  */
 
 extern int flag; /** reserverd */
@@ -77,5 +88,8 @@ int accl_get_value(struct accl_event_t *value);
 
 int accl_update_offset(struct accel_offset *offset);
 
+/** @} */
+
+/** @} */
 
 #endif /* _IACCELEROMETER_H */

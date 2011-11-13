@@ -7,6 +7,16 @@
 #include "imu.h"
 
 /**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup imu
+ * @{
+ */
+
+/**
  * @def Definitions
  */ 
 #define Kp 2.0f	        // proportional gain governs rate of convergence to accelerometer/magnetometer
@@ -67,3 +77,7 @@ void imu_update(float gx, float gy, float gz, float ax, float ay, float az)
     q2 = q2 / norm;
     q3 = q3 / norm;
 }
+
+/** @} */
+
+/** @} */

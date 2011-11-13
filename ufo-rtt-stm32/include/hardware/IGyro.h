@@ -3,6 +3,19 @@
  * Gyroscope Sensor Interface.
  */
 
+#ifndef _IGYRO_H
+#define _IGYRO_H
+
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup Hardware Abstract Layer
+ * @{
+ */
+
  typedef struct gyro_event_t {
     uint32_t gx;
     uint32_t gy;
@@ -35,4 +48,9 @@ void init_hw_gyro();
  * @return 0 success, negative otherwise
  */
 int gyro_get_value(struct gyro_event_t *event);
- 
+
+/** @} */
+
+/** @} */
+
+#endif /* _IGYRO_H */

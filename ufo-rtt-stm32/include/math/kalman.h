@@ -8,6 +8,22 @@
 #ifndef _KALMAN_H
 #define _KALMAN_H
 
+/**
+ * @addtogroup ufo
+ * @{
+ */
+
+/**
+ * @addtogroup math
+ * @{
+ */
+
+/**
+ * @defgroup kalman
+ * kalman support
+ * @{
+ */
+
 typedef struct kalman_t {
 } kalman_t;
 
@@ -19,5 +35,10 @@ typedef struct kalman_t {
  * Extend Kalman Filtering
  */
 
- 
+/** @} */
+
+/** @} */
+
+/** @} */
+
 #endif /* _KALMAN_H */
