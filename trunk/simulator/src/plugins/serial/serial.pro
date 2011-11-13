@@ -1,7 +1,13 @@
 TEMPLATE = lib
 TARGET = Serial
+DEFINES += SERIAL_LIBRARY
 include(../../simulatorplugin.pri)
+include(serial_dependencies.pri)
 
-HEADERS += serial.h
+HEADERS += serialplugin.h \
+           serialthread.h 
 
-SOURCES += serial.cpp
+SOURCES += serialplugin.cpp \
+           serialthread.cpp
+
+#RESOURCES += serial.qrc

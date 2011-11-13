@@ -21,6 +21,7 @@ bool SerialPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void SerialPlugin::extensionsInitialized()
 {
+//    addAutoReleasedObject(new SerialConnection);
 }
 
 } // namespace Internal

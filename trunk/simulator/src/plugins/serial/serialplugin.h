@@ -1,5 +1,5 @@
-#ifndef SERIAL_PLUGIN_H
-#define SERIAL_PLUGIN_H
+#ifndef SERIALPLUGIN_H
+#define SERIALPLUGIN_H
 
 #include <extensionsystem/iplugin.h>
 
@@ -24,4 +24,4 @@ public:
 } // namespace Internal
 } // namespace Serial
 
-#endif // SERIAL_PLUGIN_H
+#endif // SERIALPLUGIN_H
