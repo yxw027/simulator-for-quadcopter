@@ -6,10 +6,17 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
+
+/*
+ * debug macros
+ */
+#define GYRO_DEBUG      0
+#define IMU_DEBUG       1
+
 #if DBG_VS
 
 
- 
+
 /**
  * VisualScope adapter
  */
