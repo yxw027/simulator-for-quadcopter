@@ -26,7 +26,7 @@ typedef struct i2c_dev_t {
     int addr;
 } i2c_dev_t ;
     
-int i2c_probe();
+int i2c_probe(uint16_t addr);
 int i2c_read();
 int i2c_write();
 

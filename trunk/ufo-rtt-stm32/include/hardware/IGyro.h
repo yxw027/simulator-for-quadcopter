@@ -16,7 +16,11 @@
  * @{
  */
 
- typedef struct gyro_event_t {
+/**
+ * @struct gyro_event_t
+ * gyroscope sensor event
+ */
+typedef struct gyro_event_t {
     uint32_t gx;
     uint32_t gy;
     uint32_t gz;
