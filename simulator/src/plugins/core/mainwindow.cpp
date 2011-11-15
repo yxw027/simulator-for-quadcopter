@@ -19,7 +19,7 @@ MainWindow::~MainWindow()
 {
 }
 
-bool MainWindow::init(QString *errorMessage)
+bool MainWindow::initialize(QString *errorMessage)
 {
     Q_UNUSED(errorMessage)
     //ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();

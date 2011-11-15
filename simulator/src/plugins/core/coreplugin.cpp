@@ -26,7 +26,7 @@ void CorePlugin::parseArguments(const QStringList &arguments)
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments)
-    const bool success = m_mainWindow->init(errorMessage);
+    const bool success = m_mainWindow->initialize(errorMessage);
     if (success) {
     }
 
