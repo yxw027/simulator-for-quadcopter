@@ -2,6 +2,7 @@
 #include "euler.h"
 
 #include <QVector>
+#include <qmath.h>
 
 using namespace math;
 
@@ -10,7 +11,7 @@ Quat::Quat()
     m_quat.insert(0, 1);
     m_quat.insert(1, 0);
     m_quat.insert(2, 0);
-    m_quat.insert(3, 0);    
+    m_quat.insert(3, 0);
 }
 
 Quat::Quat(double q0, double q1, double q2, double q3)

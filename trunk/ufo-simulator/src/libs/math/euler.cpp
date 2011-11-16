@@ -12,7 +12,7 @@ Euler::Euler(double phi, double theta, double psi)
 {
     m_euler.insert(0, phi);
     m_euler.insert(1, theta);
-    m_euler.insert(2, psi);    
+    m_euler.insert(2, psi);
 }
 
 Euler::~Euler()

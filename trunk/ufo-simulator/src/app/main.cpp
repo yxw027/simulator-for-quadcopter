@@ -14,8 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include <QApplication>
+#include <QMainWindow>
 int main(int argc, char **argv)
 {
-    return 0;
+    QApplication app(argc, argv);
+    
+    QMainWindow window;
+    window.show();
+    
+    return app.exec();
 }
