@@ -4,6 +4,7 @@
  */
 
 #include "hardware/IUart.h"
+#include "hardware/IGyro.h"
 #include "math/crc16.h"
 
 #include <stdio.h>
@@ -45,7 +46,7 @@ int uart_packet_tx(struct uart_packet_t *packet)
     for (i = 0; i < buf[1]; i++) {
         printf("%d ", buf[i + 2]);
         if ((i % 4) == 0)
-            puts('\n');
+            putchar('\n');
     }
 #endif
 
@@ -57,18 +58,24 @@ int uart_packet_tx(struct uart_packet_t *packet)
 int gyro_packet_tx()
 {
     struct uart_packet_t packet;
+    struct gyro_event_t event;
+    int err;
+    
+    err = gyro_get_value(&event);
+    if (err)
+        return err;
 
     packet.type = GET_GYRO_DATA;
     packet.length = 6;
     /* x axis */
-    packet.buf[0] = 0x00;
-    packet.buf[1] = 0x00;
+    packet.buf[0] = (event.gx >> 8) & 0xFF;
+    packet.buf[1] = event.gx & 0xFF;
     /* y axis */
-    packet.buf[2] = 0x00;
-    packet.buf[3] = 0x00;
+    packet.buf[2] = (event.gy >> 8) & 0xFF;
+    packet.buf[3] = event.gy & 0xFF;
     /* z axis */
-    packet.buf[4] = 0x00;
-    packet.buf[5] = 0x00;
+    packet.buf[4] = (event.gz >> 8) & 0xFF;
+    packet.buf[5] = event.gz & 0xFF;
 
     return uart_packet_tx(&packet);
 }
