@@ -38,7 +38,7 @@ public slots:
 private:
     QList<PluginSpec> m_specs;
     QList<QObject* > m_objList;
-
+    static PluginManager *m_instance;
     void LoadPluginSpec(const QDir& dir);
 };
 

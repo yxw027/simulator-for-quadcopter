@@ -6,6 +6,8 @@ DESTDIR = $$SIMULATOR_APP_PATH
 
 SOURCES += main.cpp
 
+LIBS *= -l$$qtLibraryName(Math)
+
 win32 {
     RC_FILE = simulator.rc
     target.path = /bin

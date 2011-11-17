@@ -1,5 +1,7 @@
 #include "iplugin.h"
 
+#include <QDebug>
+
 using namespace ExtensionSystem;
 
 IPlugin::IPlugin() : QObject(0)
