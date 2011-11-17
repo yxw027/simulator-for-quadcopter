@@ -9,71 +9,42 @@
 
 using namespace ExtensionSystem;
 
-PluginManager::PluginManager() :
-        QObject(0) {
+
+PluginManager *PluginManager::m_instance = 0;
+
+PluginManager::PluginManager() : m_instance(new PluginManager())
+{
     QDir dir(Global::Const::PluginPath);
     this->LoadPluginSpec(dir);
-    this->LoadAllPlugin();
     this->connect(QCoreApplication::instance(),SIGNAL(aboutToQuit()),this,SLOT(aboutToClose()));
-
 }
 
 
-PluginManager* PluginManager::instance() {
-    static PluginManager* ins = new PluginManager() ;
-    return ins;
+PluginManager* PluginManager::instance()
+{
+    return m_instance;
 }
 
 
-PluginManager::~PluginManager() {
+PluginManager::~PluginManager()
+{
     for (QList<QObject* >::iterator it = this->m_objList.begin();
             it != this->m_objList.end();++it) {
         delete *it;
     }
 }
 
-
-void PluginManager::LoadPluginSpec(const QDir &dir) {
-    QFileInfoList flist = dir.entryInfoList();
-
-    foreach(const QFileInfo& inf, flist) {
-        if (inf.isDir()
-                && !inf.isSymLink()
-                && inf.fileName() != "."
-                && inf.fileName() != "..") {
-            this->LoadPluginSpec(inf.dir());
-        }
-
-        else
-            if (inf.completeSuffix() == "pluginspec") {
-                m_specs.append(PluginSpec(inf.filePath()));
-            }
-    }
+void PluginManager::addObject(QObject *obj)
+{
+    this->m_objList.push_back(obj);
 }
 
-
-namespace Inner {
-
-struct AuxLoadStruct {
-    SpecDependencyData key;
-    QList<SpecDependencyData> depends;
-    AuxLoadStruct(const PluginSpec& spec) {
-        key.Name = spec.name();
-        key.Version = spec.version();
-        foreach(const SpecDependencyData& dep , spec.dependencyList()) {
-            depends.push_back(dep);
-        }
-    }
-
-    bool operator == (const AuxLoadStruct& other) {
-        return this->key.Name == other.key.Name && this->key.Version == other.key.Version;
-    }
-};
+void PluginManager::removeObject(QObject *obj)
+{
 }
 
-
-void PluginManager::LoadAllPlugin() {
-
+void PluginManager::loadPlugins()
+{
     QList<Inner::AuxLoadStruct> specList;
     QList<IPlugin* > olist;
     foreach(const PluginSpec& spec, this->m_specs) {
@@ -154,12 +125,6 @@ void PluginManager::LoadAllPlugin() {
 
         this->m_specs[index].setState(PluginSpec::Loaded | PluginSpec::Inited);
     }
-
-}
-
-
-void PluginManager::addObject(QObject *object) {
-    this->m_objList.push_back(object);
 }
 
 void ExtensionSystem::PluginManager::aboutToClose()
@@ -168,7 +133,48 @@ void ExtensionSystem::PluginManager::aboutToClose()
         IPlugin* plugin = qobject_cast<IPlugin* >(obj);
         if(plugin!=0)
         {
-            plugin->aboutShutDown();
+            plugin->aboutToShutdown();
         }
     }
 }
+
+void PluginManager::LoadPluginSpec(const QDir &dir)
+{
+    QFileInfoList flist = dir.entryInfoList();
+
+    foreach(const QFileInfo& inf, flist) {
+        if (inf.isDir()
+                && !inf.isSymLink()
+                && inf.fileName() != "."
+                && inf.fileName() != "..") {
+            this->LoadPluginSpec(inf.dir());
+        }
+
+        else
+            if (inf.completeSuffix() == "pluginspec") {
+                m_specs.append(PluginSpec(inf.filePath()));
+            }
+    }
+}
+
+
+namespace Inner {
+
+struct AuxLoadStruct {
+    SpecDependencyData key;
+    QList<SpecDependencyData> depends;
+    AuxLoadStruct(const PluginSpec& spec) {
+        key.Name = spec.name();
+        key.Version = spec.version();
+        foreach(const SpecDependencyData& dep , spec.dependencyList()) {
+            depends.push_back(dep);
+        }
+    }
+
+    bool operator == (const AuxLoadStruct& other) {
+        return this->key.Name == other.key.Name && this->key.Version == other.key.Version;
+    }
+};
+}
+
+

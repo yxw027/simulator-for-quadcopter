@@ -1,22 +1,36 @@
 #include "iplugin.h"
 
 using namespace ExtensionSystem;
-IPlugin::IPlugin() :
-        QObject(0) {
+
+IPlugin::IPlugin() : QObject(0)
+{
 }
 
-
-void IPlugin::setSpec(const PluginSpec *ptr) {
-    this->m_spec = ptr;
+IPlugin::~IPlugin()
+{
+    for (QList<QObject* >::iterator it = this->m_objList.begin();
+            it != this->m_objList.end();++it) {
+        delete *it;
+        *it = 0;
+    }
 }
 
+IPlugin::ShutdownFlag IPlugin::aboutToShutdown()
+{
+    return SynchronousShutdown;
+}
 
-const PluginSpec* IPlugin::getSpec() const {
+PluginSpec *IPlugin::pluginSpec() const
+{
     return this->m_spec;
 }
 
+void addObject(QObject *obj)
+{
+}
 
-void IPlugin::addAutoReleaseObject(QObject *obj) {
+void IPlugin::addAutoReleasedObject(QObject *obj)
+{
     if (obj == NULL) {
         qWarning() << tr("%1:%2 Try Insert Null Object").arg(__FILE__).arg(__LINE__);
         return;
@@ -30,16 +44,6 @@ void IPlugin::addAutoReleaseObject(QObject *obj) {
     this->m_objList.append(obj);
 }
 
-
-IPlugin::~IPlugin() {
-    for (QList<QObject* >::iterator it = this->m_objList.begin();
-            it != this->m_objList.end();++it) {
-        delete *it;
-        *it = 0;
-    }
-}
-
-
-IPlugin::ShutdownFlag IPlugin::aboutShutDown() {
-    return SynchronousShutdown;
+void IPlugin::removeObject(QObject *obj)
+{
 }

@@ -1,9 +1,11 @@
 #ifndef PLUGINSPEC_H
 #define PLUGINSPEC_H
 
+#include "extensionsystem_global.h"
+
 #include <QObject>
 #include <QtCore>
-#include "ExtensionSystem_global.h"
+
 
 namespace ExtensionSystem {
 //struct PluginSpecInnerData;/// Plugin Spec Inner Data. Plugin的成员变量
@@ -153,6 +155,6 @@ private:
     int m_state;
 };
 
-}
+} // namespace ExtensionSystem
 
-#endif                                            // PLUGINSPEC_H
+#endif // PLUGINSPEC_H
