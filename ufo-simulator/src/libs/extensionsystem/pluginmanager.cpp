@@ -1,7 +1,7 @@
 #include "pluginmanager.h"
 #include "pluginspec.h"
 #include <QList>
-#include <global_const.h>
+//#include <global_const.h>
 #include <QtCore>
 #include <QSettings>
 #include <QPluginLoader>
@@ -12,11 +12,12 @@ using namespace ExtensionSystem;
 
 PluginManager *PluginManager::m_instance = 0;
 
-PluginManager::PluginManager() : m_instance(new PluginManager())
+PluginManager::PluginManager()
 {
-    QDir dir(Global::Const::PluginPath);
-    this->LoadPluginSpec(dir);
-    this->connect(QCoreApplication::instance(),SIGNAL(aboutToQuit()),this,SLOT(aboutToClose()));
+    m_instance = this;
+    //QDir dir(Global::Const::PluginPath);
+    //this->LoadPluginSpec(dir);
+    //this->connect(QCoreApplication::instance(),SIGNAL(aboutToQuit()),this,SLOT(aboutToClose()));
 }
 
 
@@ -45,6 +46,7 @@ void PluginManager::removeObject(QObject *obj)
 
 void PluginManager::loadPlugins()
 {
+#if 0
     QList<Inner::AuxLoadStruct> specList;
     QList<IPlugin* > olist;
     foreach(const PluginSpec& spec, this->m_specs) {
@@ -125,6 +127,7 @@ void PluginManager::loadPlugins()
 
         this->m_specs[index].setState(PluginSpec::Loaded | PluginSpec::Inited);
     }
+#endif   
 }
 
 void ExtensionSystem::PluginManager::aboutToClose()

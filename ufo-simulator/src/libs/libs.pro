@@ -2,4 +2,5 @@ TEMPLATE  = subdirs
 CONFIG   += ordered
 
 SUBDIRS	= \
-    math
+    math \
+    extensionsystem

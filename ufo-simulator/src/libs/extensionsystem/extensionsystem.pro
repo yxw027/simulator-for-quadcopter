@@ -15,33 +15,32 @@ include(../../simulatorlibrary.pri)
 HEADERS += extensionsystem_global.h \
 #    plugindetailsview.h \
 #    invoker.h \
-#    iplugin.h \
+    iplugin.h \
 #    iplugin_p.h \
-    
-#    pluginmanager.h \
+    pluginmanager.h \
 #    pluginmanager_p.h \
-    pluginspec.h \
-    pluginspec_p.h \
-    pluginview.h \
-    pluginview_p.h \
-    optionsparser.h \
-    plugincollection.h \
-    pluginerroroverview.h
-SOURCES += pluginerrorview.cpp \
-    plugindetailsview.cpp \
-    invoker.cpp \
+    pluginspec.h
+#    pluginspec_p.h \
+#    pluginview.h \
+#    pluginview_p.h \
+#    optionsparser.h \
+#    plugincollection.h \
+#    pluginerroroverview.h
+
+SOURCES += \
+#    pluginerrorview.cpp \
+#    plugindetailsview.cpp \
+#    invoker.cpp \
     iplugin.cpp \
     pluginmanager.cpp \
-    pluginspec.cpp \
-    pluginview.cpp \
-    optionsparser.cpp \
-    plugincollection.cpp \
-    pluginerroroverview.cpp
-FORMS += pluginview.ui \
-    pluginerrorview.ui \
-    plugindetailsview.ui \
-    pluginerroroverview.ui
-RESOURCES += pluginview.qrc
+    pluginspec.cpp
+#    pluginview.cpp \
+#    optionsparser.cpp \
+#    plugincollection.cpp \
+#    pluginerroroverview.cpp
 
-
-
+#FORMS += pluginview.ui \
+#    pluginerrorview.ui \
+#    plugindetailsview.ui \
+#    pluginerroroverview.ui
+#RESOURCES += pluginview.qrc

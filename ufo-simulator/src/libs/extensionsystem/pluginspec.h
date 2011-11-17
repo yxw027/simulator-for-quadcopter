@@ -26,7 +26,7 @@ struct SpecDependencyData {
  *
  */
 
-class EXTENSIONSYSTEMSHARED_EXPORT PluginSpec { //: public QObject
+class EXTENSIONSYSTEM_EXPORT PluginSpec { //: public QObject
 //Q_OBJECT
 
 public:

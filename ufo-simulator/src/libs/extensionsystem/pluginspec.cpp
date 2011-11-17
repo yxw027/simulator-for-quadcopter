@@ -1,5 +1,5 @@
 #include "pluginspec.h"
-#include <QtXml>
+//#include <QtXml>
 #include <QtCore>
 
 using namespace ExtensionSystem;
@@ -10,6 +10,7 @@ PluginSpec::~PluginSpec() {
 
 
 PluginSpec::PluginSpec(const QString& fn) {
+#if 0
     qDebug() << "Loading " << fn<<" Spec";
     QDomDocument document;
     QFile file(fn);
@@ -94,6 +95,7 @@ PluginSpec::PluginSpec(const QString& fn) {
     file.close();
 
     this->m_state = NotLoad;
+#endif    
 }
 
 

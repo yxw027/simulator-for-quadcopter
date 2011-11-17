@@ -4,11 +4,11 @@
 #include "extensionsystem_global.h"
 
 #include <QtCore/QObject>
+#include <QtCore/QString>   //removed when unuse QList
 
 namespace ExtensionSystem {
 
 class PluginSpec;
-class QList;
 
 class EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
 {
@@ -38,7 +38,7 @@ signals:
 
 private:
     void setSpec(const PluginSpec * ptr);
-    const PluginSpec * m_spec;
+    PluginSpec *m_spec;
     QList<QObject*> m_objList;
 
     friend class PluginManager;
