@@ -1,36 +1,41 @@
 #ifndef IPLUGIN_H
 #define IPLUGIN_H
 
-#include <QObject>
-#include "ExtensionSystem_global.h"
-#include "pluginspec.h"
-#include <QtCore>
+#include "extensionsystem_global.h"
+
+#include <QtCore/QObject>
 
 namespace ExtensionSystem {
 
-class EXTENSIONSYSTEMSHARED_EXPORT IPlugin : public QObject {
+class PluginSpec;
+class QList;
+
+class EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
+{
     Q_OBJECT
+
 public:
     enum ShutdownFlag {
         SynchronousShutdown,
         AsynchronousShutdown
     };
 
-    virtual bool Initialize(const QStringList& cmdArgs) = 0;
-    virtual void Initialized() {}
-
-    explicit IPlugin();
-
-    const PluginSpec* getSpec() const;
-
-    void addAutoReleaseObject(QObject* obj);
-
+    IPlugin();
     virtual ~IPlugin();
 
-    virtual ShutdownFlag aboutShutDown();
+    virtual bool initialize(const QStringList &arguments, QString *errorString) = 0;
+    virtual void extensionsInitialized() = 0;
+    virtual ShutdownFlag aboutToShutdown();
+
+    PluginSpec *pluginSpec() const;
+
+    void addObject(QObject *obj);
+    void addAutoReleasedObject(QObject *obj);
+    void removeObject(QObject *obj);
 
 signals:
     void asynchronousShutdownFinished();
+
 private:
     void setSpec(const PluginSpec * ptr);
     const PluginSpec * m_spec;
@@ -38,6 +43,7 @@ private:
 
     friend class PluginManager;
 };
-}
 
-#endif                                            // IPLUGIN_H
+} // namespace ExtensionSystem
+
+#endif // IPLUGIN_H
