@@ -3,156 +3,115 @@
 
 #include "extensionsystem_global.h"
 
-#include <QObject>
-#include <QtCore>
+#include <QtCore/QString>
+#include <QtCore/QList>
+#include <QtCore/QHash>
 
+QT_BEGIN_NAMESPACE
+class QStringList;
+QT_END_NAMESPACE
 
 namespace ExtensionSystem {
-//struct PluginSpecInnerData;/// Plugin Spec Inner Data. Plugin的成员变量
-/**
- * 表示Plugin 依赖关系的Data
- *       有依赖于的Name和相应的Version
- *
- */
 
-struct SpecDependencyData {
-    QString Name;
-    QString Version;
-};
-
-/**
- * Plugin Spec
- *       Plugin描述文件的抽象。通过描述文件，来加载Plugin
- *
- */
-
-class EXTENSIONSYSTEM_EXPORT PluginSpec { //: public QObject
-//Q_OBJECT
-
-public:
-    enum State {
-        NotLoad = 0,
-        Loaded = 1,
-        BeforeInit = 2,
-        Inited = 4,
-        Completed = 8,
-        Error = -1
+struct EXTENSIONSYSTEM_EXPORT PluginDependency
+{
+    enum Type {
+        Required,
+        Optional
     };
 
-//! 默认构造函数 ,以Spec文件名为参数.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:13 created by Reyoung
-    \return
-    */
-    explicit PluginSpec(const QString& fn);
-    virtual ~PluginSpec();
-//! 返回Spec Name.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:14 created by Reyoung
-    \return QString
-    */
+    PluginDependency() : type(Required) {}
+
+    QString name;
+    QString version;
+    Type type;
+    bool operator==(const PluginDependency &other) const;
+};
+
+uint qHash(const ExtensionSystem::PluginDependency &value);
+
+struct EXTENSIONSYSTEM_EXPORT PluginArgumentDescription
+{
+    QString name;
+    QString parameter;
+    QString description;
+};
+
+class EXTENSIONSYSTEM_EXPORT PluginSpec
+{
+public:
+    enum State { Invalid, Read, Resolved, Loaded, Initialized, Running, Stopped, Deleted };
+
+    PluginSpec(const QString &fileName);
+    ~PluginSpec();
+
+    // information from the xml file, valid after 'Read' state is reached
     QString name() const;
-//! 返回Plugin的版本.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:14 created by Reyoung
-    \return QString
-    */
     QString version() const;
-//! 返回Plugin的作者.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:15 created by Reyoung
-    \return QString
-    */
-    QString author() const;
-//! 返回Plugin的Bug Report E-mail.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:14 created by Reyoung
-    \return QString
-    */
-    QString bugReportEmail() const;
-
-//! 返回该Plugin依赖的Plugin.
-    /*!
-     \author Reyoung
-     \date 2011.01.08
-    \version ver 0.0.1
-    -
-    \exception
-    \test
-    \note
-    \attention
-    \sa
-    \remark 1.2011.01.08 21:15 created by Reyoung
-    \return QList
-    */
-    QList<SpecDependencyData> dependencyList() const;
-
-    QString description() const;
-    QString category() const;
-    QString copyRight() const;
+    QString compatVersion() const;
+    QString vendor() const;
+    QString copyright() const;
     QString license() const;
-    int getState() const;
-    void setState(int st);
-//    signals:
-    bool operator == (const QString& name);
-    bool operator == (const PluginSpec& other);
+    QString description() const;
+    QString url() const;
+    QString category() const;
+    bool isExperimental() const;
+    bool isDisabledByDefault() const;
+    bool isEnabled() const;
+    bool isDisabledIndirectly() const;
+    QList<PluginDependency> dependencies() const;
+
+    typedef QList<PluginArgumentDescription> PluginArgumentDescriptions;
+    PluginArgumentDescriptions argumentDescriptions() const;
+
+    // other information, valid after 'Read' state is reached
+    QString location() const;
+    QString filePath() const;
+
+    void setEnabled(bool value);
+    void setDisabledByDefault(bool value);
+    void setDisabledIndirectly(bool value);
+
+    QStringList arguments() const;
+    void setArguments(const QStringList &arguments);
+    void addArgument(const QString &argument);
+
+    bool provides(const QString &pluginName, const QString &version) const;
+
+    // dependency specs, valid after 'Resolved' state is reached
+    QHash<PluginDependency, PluginSpec *> dependencySpecs() const;
+
+    // state
+    State state() const;
+    bool hasError() const;
+    QString errorString() const;
+
 private:
-    QString Version;
-    QString Name;
-    QString Author;
-    QString CopyRight;
-    QString License;
-    QString Url;
-    QString BugReportEMail;
-    QString Description;
-    QString Category;
-    QList<SpecDependencyData > DependencyList;
-    int m_state;
+    QString name;
+    QString version;
+    QString compatVersion;
+    QString vendor;
+    QString copyright;
+    QString license;
+    QString description;
+    QString url;
+    QString category;
+    QList<PluginDependency> dependencies;
+
+//    QString location;
+//    QString errorString;
+
+//    bool enabled;
+//    bool hasError;
+
+    PluginSpec::State state;
+    
+    bool read(const QString &fileName);
+    void readPluginSpec(QXmlStreamReader &reader);    
+    void readPluginSpec(QXmlStreamReader &reader);
+    void readDependencies(QXmlStreamReader &reader);
+    void readArgumentDescriptions(QXmlStreamReader &reader);
+    void readArgumentDescription(QXmlStreamReader &reader);    
 };
 
 } // namespace ExtensionSystem
