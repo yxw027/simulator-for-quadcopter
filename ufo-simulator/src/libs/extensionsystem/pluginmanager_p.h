@@ -19,7 +19,7 @@ public:
 
     // Plugin operations
     void loadPlugins();
-    void shutdown();
+    void aboutToClose();
     void setPluginPaths(const QStringList &paths);
 
 private:

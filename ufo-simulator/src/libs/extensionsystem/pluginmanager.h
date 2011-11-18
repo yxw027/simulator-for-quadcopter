@@ -30,16 +30,22 @@ public:
 
     // Plugin operations
     void loadPlugins();
+//    void unLoadPlugins();
+//    enablePlugins();
+//    disablePlugins();
 signals:
-
+    void pluginsChanged();
+    
 public slots:
     void aboutToClose();
 
 private:
-    QList<PluginSpec> m_specs;
-    QList<QObject* > m_objList;
     static PluginManager *m_instance;
     void LoadPluginSpec(const QDir& dir);
+    QList<PluginSpec> m_pluginSpecs;    
+    QStringList m_pluginPaths;
+    QString extension;
+    QList<QObject *> m_allObjects;    // ### make this a QList<QPointer<QObject> > > ?
 };
 
 } // namespace ExtensionSystem

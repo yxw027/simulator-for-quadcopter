@@ -29,15 +29,15 @@ PluginManager* PluginManager::instance()
 
 PluginManager::~PluginManager()
 {
-    for (QList<QObject* >::iterator it = this->m_objList.begin();
-            it != this->m_objList.end();++it) {
+    for (QList<QObject* >::iterator it = this->m_allObjects.begin();
+            it != this->m_allObjects.end();++it) {
         delete *it;
     }
 }
 
 void PluginManager::addObject(QObject *obj)
 {
-    this->m_objList.push_back(obj);
+    this->m_allObjects.push_back(obj);
 }
 
 void PluginManager::removeObject(QObject *obj)
@@ -49,7 +49,7 @@ void PluginManager::loadPlugins()
 #if 0
     QList<Inner::AuxLoadStruct> specList;
     QList<IPlugin* > olist;
-    foreach(const PluginSpec& spec, this->m_specs) {
+    foreach(const PluginSpec& spec, this->m_pluginSpecs) {
         specList.push_back(Inner::AuxLoadStruct(spec));
     }
 
@@ -79,7 +79,7 @@ void PluginManager::loadPlugins()
                     this->addObject(obj);
 
                     IPlugin* plugin = qobject_cast<IPlugin*> (obj);
-                    foreach(const PluginSpec& s, this->m_specs) {
+                    foreach(const PluginSpec& s, this->m_pluginSpecs) {
                         if (s.name() == spec.key.Name) {
                             plugin->setSpec(&s);
                             break;
@@ -92,8 +92,8 @@ void PluginManager::loadPlugins()
 
 /// Set Statue
 
-                for (QList<PluginSpec>::iterator it = this->m_specs.begin();
-                        it != this->m_specs.end();++it) {
+                for (QList<PluginSpec>::iterator it = this->m_pluginSpecs.begin();
+                        it != this->m_pluginSpecs.end();++it) {
                     it->setState(PluginSpec::BeforeInit | PluginSpec::Loaded);
                 }
 
@@ -123,16 +123,16 @@ void PluginManager::loadPlugins()
         IPlugin* plugin = *it;
         plugin->Initialized();
 
-        int index = this->m_specs.indexOf(*plugin->getSpec());
+        int index = this->m_pluginSpecs.indexOf(*plugin->getSpec());
 
-        this->m_specs[index].setState(PluginSpec::Loaded | PluginSpec::Inited);
+        this->m_pluginSpecs[index].setState(PluginSpec::Loaded | PluginSpec::Inited);
     }
 #endif   
 }
 
 void ExtensionSystem::PluginManager::aboutToClose()
 {
-    foreach (QObject* obj, this->m_objList) {
+    foreach (QObject* obj, this->m_allObjects) {
         IPlugin* plugin = qobject_cast<IPlugin* >(obj);
         if(plugin!=0)
         {
@@ -155,7 +155,7 @@ void PluginManager::LoadPluginSpec(const QDir &dir)
 
         else
             if (inf.completeSuffix() == "pluginspec") {
-                m_specs.append(PluginSpec(inf.filePath()));
+                m_pluginSpecs.append(PluginSpec(inf.filePath()));
             }
     }
 }
