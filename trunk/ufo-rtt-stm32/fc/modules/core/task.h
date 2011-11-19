@@ -2,13 +2,14 @@ extern struct main_task_data {
 };
 
 /**
- * @defgroup flight controller
+ * @defgroup fc flight controller
+ * @ingroup ufo
  * @{
  */
 
 /**
  * @defgroup core
- * @ingroup flight controller
+ * @ingroup fc
  * @{
  */
 

@@ -11,7 +11,7 @@
  */
 
 /**
- * @addtogroup hal
+ * @addtogroup HAL
  * Hardware Abstract Layer
  * @{
  */
@@ -28,7 +28,8 @@
 typedef struct i2c_dev_t i2c_dev_t;
 
 /**
- * A i2c device
+ * @struct i2c_dev_t i2c.h
+ * @brief Describe A i2c device
  */ 
 struct i2c_dev_t {
     char *name; /**< name the name of the i2c device */
