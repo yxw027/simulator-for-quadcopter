@@ -23,7 +23,7 @@
  * \f$ K_p \f$ : Proportional gain, a tuning paramter\n
  * \f$ K_i \f$ : Integral gain, a tuning parameter\n
  * \f$ K_d \f$ : Derivative gain, a tuning parameter\n
- * \f$ e \f$ : Errorr = SP = PV\n
+ * \f$ e \f$ : Errorr = SP - PV\n
  * \f$ t \f$ : Time or instantaneous time(the present)
  */
 struct pid_t {
@@ -35,7 +35,7 @@ struct pid_t {
     int Ki;     /**< Integral gain, a tuning parameter */
     int Kd;     /**< Derivative gain, a tuning parameter */
 };
-
+#define SAT_FILTER(val, min, max)   val > max ? max : (val < min ? min : val)
 /**
  * PID controller parameter initialization
  *
@@ -48,7 +48,7 @@ struct pid_t {
  * @note Should be initialized before invoked
  */
 void pid_init(struct pid_t *pid, int Kp, int Ki, int Kd, int sp);
-
+#define pid_init(pid, Kp, Ki, Kd, err)  {}
 /**
  * PID update routine in it's ideal
  *

@@ -1,6 +1,6 @@
 /**
  * @file uart.c
- * uart modules implementation
+ * @brief UART modules implementation
  */
 
 #include "hardware/IUart.h"

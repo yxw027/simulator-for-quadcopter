@@ -1,6 +1,6 @@
 /**
  * @file crc16.c
- * crc16 math implementation
+ * @brief crc16 math implementation
  */
 #include "crc16.h"
 

@@ -1,6 +1,6 @@
 /**
  * @file math.h
- * math interface
+ * @brief math interface
  */
 #ifndef _MATH_H
 #define _MATH_H

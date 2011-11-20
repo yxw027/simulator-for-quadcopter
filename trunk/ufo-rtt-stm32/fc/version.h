@@ -1,6 +1,6 @@
 /**
  * @file version.h
- * version info interface
+ * @brief version infomation
  */
  
 #ifndef _VERSION_H

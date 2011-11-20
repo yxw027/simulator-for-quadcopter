@@ -37,6 +37,8 @@ pid_update(struct pid_t *pid, int pv, int dt)
     
     /* calculate output */
     mv = (pid->Kp * e) + (pid->Ki * i) + (pid->Kd * d);
+    /* saturation filter */
+    mv = SAT_FILTER(mv, MIN, MAX);
     
     return mv;
 }

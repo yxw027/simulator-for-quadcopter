@@ -1,6 +1,6 @@
 /**
  * @file crc16.h
- * CRC-16 interface
+ * @brief CRC-16 interface
  */
 
 #ifndef _CRC16_H

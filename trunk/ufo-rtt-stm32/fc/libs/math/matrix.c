@@ -1,6 +1,6 @@
 /**
  * @file matrix.c
- * matrix implementation
+ * @brief matrix implementation
  */
 #include <stdio.h>
 #include <assert.h>

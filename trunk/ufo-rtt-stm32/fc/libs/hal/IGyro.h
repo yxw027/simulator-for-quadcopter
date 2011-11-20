@@ -1,6 +1,6 @@
 /**
  * @file IGyro.h
- * Gyroscope Sensor Interface.
+ * @brief Gyroscope Sensor Interface.
  */
 
 #ifndef _IGYRO_H

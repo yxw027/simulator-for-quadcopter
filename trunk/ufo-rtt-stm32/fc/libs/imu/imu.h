@@ -1,6 +1,6 @@
 /**
  * @file imu.h
- * imu module interface
+ * @brief IMU module interface
  */
 
 #ifndef _IMU_H

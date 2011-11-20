@@ -1,6 +1,6 @@
 /**
  * @file imufilter.h
- * IMU orientation filter.
+ * @brief IMU orientation filter.
  */
 
 #ifndef _IMUFILTER_H
