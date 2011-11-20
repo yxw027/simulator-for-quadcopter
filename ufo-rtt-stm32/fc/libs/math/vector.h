@@ -1,6 +1,6 @@
 /**
  * @file vector.h
- * vector interface
+ * @brief vector interface
  */
 #ifndef _VECTOR_H
 #define _VECTOR_H

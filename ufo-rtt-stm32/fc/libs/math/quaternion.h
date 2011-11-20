@@ -1,6 +1,6 @@
 /**
  * @file quaternion.h
- * Quaternoin math library interface
+ * @brief Quaternoin math library interface
  */
 
 #ifndef _QUATERNION_H

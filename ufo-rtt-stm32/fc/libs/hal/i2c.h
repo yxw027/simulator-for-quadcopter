@@ -1,6 +1,6 @@
 /**
  * @file i2c.h
- * i2c interface
+ * @brief I2C interface
  */
 #ifndef _I2C_H
 #define _I2C_H
@@ -17,7 +17,7 @@
  */
 
 /**
- * @defgroup i2c
+ * @defgroup i2c i2c
  * I2C bus support
  * @{
  */
@@ -37,12 +37,13 @@ struct i2c_dev_t {
 };
 
 /**
- * Probe i2c device
+ * @brief Probe i2c device
+ *
  * Mode details about i2c probe
  * @param addr The address of the slave
  * @return Return 0 if success, negetive otherwise
  * @note Some note.
- * @sa i2c_read
+ * @sa i2c_read i2c_write
  */
 int i2c_probe(uint16_t addr);
 
@@ -53,6 +54,7 @@ int i2c_probe(uint16_t addr);
  * @param buf Data will be written to the slave
  * @param count How many bytes to write
  * @return The number of bytes written if success, negative otherwise
+ * @sa i2c_read
  */
 int i2c_write(uint16_t addr, const char *buf, int count);
 
@@ -63,6 +65,7 @@ int i2c_write(uint16_t addr, const char *buf, int count);
  * @param buf Where to store data read from slave 
  * @param count How many bytes to read
  * @return The number of bytes read if success, negative otherwise
+ * @sa i2c_write
  */
 int i2c_read(uint16_t addr, char *buf, int count);
 

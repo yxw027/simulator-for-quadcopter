@@ -1,6 +1,6 @@
 /**
  * @file IAccelerometer.h
- * Accelerometer Sensor Interface.
+ * @brief Accelerometer Sensor Interface.
  */
 
 #ifndef _IACCELEROMETER_H

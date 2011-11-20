@@ -1,6 +1,6 @@
 /**
  * @file imu.c
- * imu module implement
+ * @brief IMU module implement
  */
 
 #include <math.h>

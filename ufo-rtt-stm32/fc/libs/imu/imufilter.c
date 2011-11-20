@@ -1,6 +1,6 @@
 /**
  * @file imufilter.c
- * imufilter implementation
+ * @brief imufilter implementation
  */
 
 #include "imufilter.h"

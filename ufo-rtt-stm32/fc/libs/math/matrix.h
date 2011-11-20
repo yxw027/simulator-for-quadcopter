@@ -1,6 +1,6 @@
 /**
  * @file matrix.h
- * matrix interface
+ * @brief matrix interface
  */
 
 #ifndef MATRIX_H
