@@ -27,9 +27,9 @@
  * \f$ t \f$ : Time or instantaneous time(the present)
  */
 struct pid_t {
-    int e;      /**< Error, SP(set point) - PV(process value) */
-    int i;      /**< Integral variable */
-    int d;      /**< Derivative variable */
+    int Ep;      /**< Error, SP(set point) - PV(process value) */
+    int Ei;      /**< Error Integral variable */
+    int Ed;      /**< Error derivative variable */
     int sp;     /**< Set point */
     int Kp;     /**< Proportional gain, a tuning parameter */
     int Ki;     /**< Integral gain, a tuning parameter */
