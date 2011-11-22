@@ -3,8 +3,10 @@
  * @brief IMU module implement
  */
 
-#include <math.h>
 #include "imu.h"
+
+#include <math.h>
+
 
 /**
  * @addtogroup ufo
@@ -76,6 +78,17 @@ void imu_update(float gx, float gy, float gz, float ax, float ay, float az)
     q1 = q1 / norm;
     q2 = q2 / norm;
     q3 = q3 / norm;
+}
+
+void accel2euler(struct accel_event_t *accel, struct euler_t *euler)
+{
+    uint16_t ax = accel->ax;
+    uint16_t ay = accel->ay;
+    uint16_t az = accel->az;
+    
+    euler->pitch = arctan(ax / sqrt(ay * ay + az * az));
+    euler->roll = arctan(ay / sqrt(ax * ax + az * az));
+    euler->yaw = arctan(sqrt(ax * ax + ay * ay) / az);
 }
 
 /** @} */

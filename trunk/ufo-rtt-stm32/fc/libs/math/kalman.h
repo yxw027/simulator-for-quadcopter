@@ -28,7 +28,7 @@
 /**
  * @struct kalman_t kalman.h
  * @brief Describe a Kalman filter
- */ 
+ */
 typedef struct kalman_t {
 } kalman_t;
 
@@ -42,7 +42,7 @@ typedef struct kalman_t {
  * \f$ H_k \f$ , the observation model; \f$ Q_k \f$ , the covrariance of the process noise; \f$ R_k \f$ , covariance\n
  * of the observation noise; and sometimes \f$ B_k \f$ , the control-input model, for each time-step, \f$ k \f$ , as\n
  * describe as below:\n
- * \f[ X_k = F_kX_k-1 + B_ku_k + w_k \f]
+ * \f[ X_k = F_kX_{k-1} + B_ku_k + w_k \f]
  */
 int kalman();
 /**

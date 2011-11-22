@@ -6,7 +6,8 @@
 #ifndef _IMU_H
 #define _IMU_H
 
-#include "euler.h"
+#include "hal/accel.h"
+#include "math/euler.h"
 
 /**
  * @addtogroup ufo
@@ -17,6 +18,14 @@
  * @addtogroup imu
  * @{
  */
+
+/**
+ * helper definitions
+ */
+#define GET_PITCH(accel)    (accel->pitch)
+#define GET_ROLL(accel)     (accel->roll)
+#define GET_YAW(accel)      (accel->yaw)
+
 /**
  * imu orientation update
  * 
@@ -31,6 +40,19 @@
  * @note TODO
  */
 void imu_update(float gx, float gy, float gz, float ax, float ay, float az);
+
+/**
+ * Get the euler angle from accelerometer at inital state, according to the following formuala(s) \n
+ * Pitch \f$ \psi \f$ defined as \f[ \psi = \arctan(\frac{A_x}{\sqrt{A_y^2+A_z^2}}) \f]
+ * Roll( \f$ \phi \f$ ) defined as \f[ \phi = \arctan(\frac{A_y}{\sqrt{A_x^2+A_z^2}}) \f]
+ * Theta( \f$ \theta \f$ ) defined as \f[ \theta = arctan(\frac{\sqrt{A_x^2+A_y^2}}{Az}) \f]
+ * @param accel The pointer to the accelerometer raw data
+ * @param euler The point to euler angle
+ * @return None
+ * @note The funtion only be used when the flight is not in motion
+ */
+void accel2euler(struct accel_event_t *accel, struct euler_t *euler);
+
 /** @} */
 
 /** @} */
