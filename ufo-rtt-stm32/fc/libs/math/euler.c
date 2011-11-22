@@ -1,6 +1,6 @@
 /**
  * @file euler.c
- * @breif euler math implementation
+ * @brief euler math implementation
  */
 
 #include "math.h"
