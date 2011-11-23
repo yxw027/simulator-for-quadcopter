@@ -26,8 +26,8 @@ void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out)
     
     for (i = 0; i < l->rows; i++)
         for (j = 0; j < r->cols; j++)
-            (int *)out->data + out->cols * i + j =
-            ((int *)l->data + l->cols * i + j) + ((int *)r->data + r->cols * i + j);
+            *((int *)out->data + out->cols * i + j) =
+            *((int *)l->data + l->cols * i + j) + *((int *)r->data + r->cols * i + j);
 }
 
 void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out)
@@ -39,8 +39,8 @@ void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out)
     
     for (i = 0; i < l->rows; i++)
         for (j = 0; j < r->cols; j++)
-            (int *)out->data + out->cols * i + j =
-            ((int *)l->data + l->cols * i + j) - ((int *)r->data + r->cols * i + j);
+            *((int *)out->data + out->cols * i + j) =
+            *((int *)l->data + l->cols * i + j) - *((int *)r->data + r->cols * i + j);
 }
 
 void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out)
@@ -66,6 +66,18 @@ void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col)
 void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out)
 {
     printf("%s not implemented\n", __func__);
+}
+
+void matrix_transpose(matrix_t *input, matrix_t *o)
+{
+    int i, j;
+    
+    assert(o->rows == input->cols);
+    assert(o->cols == input->rows);
+    
+    for (i = 0; i < input->cols; i++)
+        for (j = 0; j < input->rows; j++)
+            *((int *)o->data + o->cols * i + j) = *((int *)input->data + input->cols * j + i);
 }
 
 void matrix_print(struct matrix_t *matrix)

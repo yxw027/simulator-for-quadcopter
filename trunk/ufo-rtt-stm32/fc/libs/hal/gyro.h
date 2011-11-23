@@ -1,10 +1,10 @@
 /**
- * @file IGyro.h
+ * @file gyro.h
  * @brief Gyroscope Sensor Interface.
  */
 
-#ifndef _IGYRO_H
-#define _IGYRO_H
+#ifndef _GYRO_H
+#define _GYRO_H
 
 /**
  * @addtogroup ufo
