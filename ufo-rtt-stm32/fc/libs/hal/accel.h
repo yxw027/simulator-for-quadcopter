@@ -25,7 +25,7 @@ extern int flag; /** reserverd */
  *
  * @return 0 success, negative otherwise
  */
-int accl_get_value(struct accl_event_t *event);
+int accel_get_value(struct accel_event_t *event);
 
 /**
  * Helper function if necessary
@@ -38,11 +38,11 @@ extern int get_offset_x(uint32_t *x);
 extern int get_offset_y(uint32_t *y);
 extern int get_offset_z(uint32_t *z);
 
-typedef struct accl_event_t {
+typedef struct accel_event_t {
     uint32_t ax;
     uint32_t ay;
     uint32_t az;
-} accl_sensor_t;
+} accel_sensor_t;
 
 /**
  * accelerometor bias varible for accelerometer calibration
@@ -53,18 +53,18 @@ typedef struct accl_event_t {
  *
  * @note Not threadsafe
  */    
-typedef struct accl_offset_t {
-    uint32_t accl_offset_x;
-    uint32_t accl_offset_y;
-    uint32_t accl_offset_z;
+typedef struct accel_offset_t {
+    uint32_t a_offset_x;
+    uint32_t a_offset_y;
+    uint32_t a_offset_z;
 } accel_offset_t;
 
-typedef struct accl_sensor_t {
-    struct accl_event_t value;
-    struct accl_offset_t offset;
-} accl_sensor_t;
-    
-int accl_get_offset(struct accel_offset *offset)
+typedef struct accel_sensor_t {
+    struct accel_event_t value;
+    struct accel_offset_t offset;
+} accel_sensor_t;
+
+int accel_get_offset(struct accel_offset *offset)
 {
     get_offset_x(offset->offset_x);
     get_offset_y(offset->offset_y);
@@ -76,7 +76,7 @@ int accl_get_offset(struct accel_offset *offset)
  *
  * @return none
  */
-void init_hw_accl(); 
+void init_hw_accel(); 
 
 /**
  * get raw data of x, y, z axis
@@ -84,9 +84,9 @@ void init_hw_accl();
  * @param value the pointer to value
  * @return 0 success, negetive otherwise
  */
-int accl_get_value(struct accl_event_t *value);
+int accel_get_value(struct accel_event_t *value);
 
-int accl_update_offset(struct accel_offset *offset);
+int accel_update_offset(struct accel_offset *offset);
 
 /** @} */
 

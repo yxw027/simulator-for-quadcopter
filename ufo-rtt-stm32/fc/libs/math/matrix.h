@@ -66,6 +66,15 @@ void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
 void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col);
 void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
 /**
+ * Transpose a matrix
+ *
+ * @param i The input matrix
+ * @param o The output matrix
+ * @return None
+ */
+void matrix_transpose(matrix_t *i, matrix_t *o);
+
+/**
  * print out a matrix
  *
  * @param matrix the matrix printed out
