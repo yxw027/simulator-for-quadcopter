@@ -42,10 +42,10 @@
 void imu_update(float gx, float gy, float gz, float ax, float ay, float az);
 
 /**
- * Get the euler angle from accelerometer at inital state, according to the following formuala(s) \n
- * Pitch \f$ \psi \f$ defined as \f[ \psi = \arctan(\frac{A_x}{\sqrt{A_y^2+A_z^2}}) \f]
- * Roll( \f$ \phi \f$ ) defined as \f[ \phi = \arctan(\frac{A_y}{\sqrt{A_x^2+A_z^2}}) \f]
- * Theta( \f$ \theta \f$ ) defined as \f[ \theta = arctan(\frac{\sqrt{A_x^2+A_y^2}}{Az}) \f]
+ * Get the euler angle from accelerometer at inital state, according to the following formula(s): \n
+ * Pitch \f$ \rho \f$ defined as \f[ \rho = \arctan(\frac{A_x}{\sqrt{A_y^2+A_z^2}}) \f]
+ * Roll \f$ \psi \f$ defined as \f[ \psi = \arctan(\frac{A_y}{\sqrt{A_x^2+A_z^2}}) \f]
+ * Theta \f$ \theta \f$ defined as \f[ \theta = arctan(\frac{\sqrt{A_x^2+A_y^2}}{Az}) \f]
  * @param accel The pointer to the accelerometer raw data
  * @param euler The point to euler angle
  * @return None

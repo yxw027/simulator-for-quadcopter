@@ -61,11 +61,11 @@ typedef struct kalman_t {
  * \f$ H_k \f$ , the observation model; \f$ Q_k \f$ , the covrariance of the process noise; \f$ R_k \f$ , covariance\n
  * of the observation noise; and sometimes \f$ B_k \f$ , the control-input model, for each time-step, \f$ k \f$ , as\n
  * describe as below:\n
- * \f[ X_k = F_kX_k-1 + B_ku_k + w_k \f]
+ * \f[ X_k = F_kX_{k-1} + B_ku_k + w_k \f]
  */
 int kalman();
 /**
- * Initialize the kalman filter
+ * Initialize the Kalman filter
  *
  * @param kalman The pointer to the kalman structure
  * @return None
@@ -73,27 +73,32 @@ int kalman();
 void kalman_init(struct kalman_t *kalman);
 
 /**
- * Kalman predict \n
- * Predicted (a priori) state estimate\n
- * \f[ X_k = F_kX_k-1 + B_ku_k \f]
- * Predicted (a priori) estimate covariance \n
+ * Kalman Time Update("Predict")
+ *
+ * (1)Project the state ahead
+ * \f[ X_k = A_kX_k-1 + B_ku_k \f]
+ * (2)Project the error covariance ahead
  * \f[ P_{k|k-1} = F_kP_{k-1|k-1}F_k + Q_k \f]
  *
  * @param kalman The pointer to the kalman structure
  * @param None
- * @sa kalman_update
+ * @sa kalman_correct
  */
 void kalman_predict(struct kalman_t *kalman);
 
 /**
- * Kalman update
+ * Kalman Measurement Update("Correct")
  *
- * \f[ \f]
+ * (1)Compute the Kalman gian
+ * \f[ K_k = \bar{P_k}H(HP_kH+R) \f]
+ * (2)Update estimate with measurement \f$ z_k \f$
+ * \f[ x_k = \hat{x_k}+K_k(z_k-H\hat{x_k}) \f]
+ * (3)Update the error covariance
  * @param kalman The pointer to the kalman structure
  * @return None
  * @sa kalman_predict
  */
-void kalman_update(struct kalman_t *kalman);
+void kalman_correct(struct kalman_t *kalman);
 
 
 /**
