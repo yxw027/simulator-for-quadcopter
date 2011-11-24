@@ -45,10 +45,12 @@ typedef struct kalman_t {
     /*
      * The following variable is private, DO NOT modify anyway.
      */
+    matrix_t *A;    /**< A is the state transtion model which is applied to the previous stare \f$ x_{k-1} \f$ */
+    matrix_t *B;    /**< B is the control-input model which is applied to the controller vector \f$ u_k \f$ */
     vector_t;
-    matrix_t P;     /**< apriori covariance matrix */
-    matrix_t R;     /**< measurement noise variance vector (R) */
-    matrix_t K;     /**< the Kalman gain matrix */
+    matrix_t *P;    /**< apriori covariance matrix */
+    matrix_t *R;    /**< measurement noise variance vector (R) */
+    matrix_t *K;    /**< the Kalman gain matrix */
 } kalman_t;
 
 /**
@@ -74,7 +76,10 @@ void kalman_init(struct kalman_t *kalman);
 
 /**
  * Kalman Time Update("Predict")
- *
+ * \f[ \hat{x}^{-}_{k} = A \hat{x}_{k - 1} \f]
+ * \f[ P^{-}_{k} = A P_{k - 1} A^{T} + Q \f]
+ * \f[ \hat{x}^{-}_{k} = A \hat{x}_{k - 1} + B u_{k - 1} \f]
+ * \f[ P^{-}_{k} = A P_{k - 1} A^{T} + Q \f] 
  * (1)Project the state ahead
  * \f[ X_k = A_kX_k-1 + B_ku_k \f]
  * (2)Project the error covariance ahead
@@ -88,7 +93,9 @@ void kalman_predict(struct kalman_t *kalman);
 
 /**
  * Kalman Measurement Update("Correct")
- *
+ * \f[ K_{k} = P^{-}_{k} H^{T} \left( H P^{-}_{k} H^{T} + R \right)^{-1} \f]
+ * \f[ \hat{x}_{k} = \hat{x}^{-}_{k} + K_{k} \left( z_{k} - H \hat{x}^{-}_{k} \right) \f]
+ * \f[ P_{k} = \left( I - K_{k} H \right) P^{-}_{k} \f]
  * (1)Compute the Kalman gian
  * \f[ K_k = \bar{P_k}H(HP_kH+R) \f]
  * (2)Update estimate with measurement \f$ z_k \f$
@@ -104,6 +111,8 @@ void kalman_correct(struct kalman_t *kalman);
 /**
  * Extend Kalman Filtering
  */
+typedef struct ext_kalman_t {
+} ext_kalman_t;
 
 /** @} */
 

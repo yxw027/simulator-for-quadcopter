@@ -58,6 +58,18 @@ void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out)
         
 }
 
+void matrix_scalar(matrix_t *matrix, int c)
+{
+    int i, j;
+    int rows = matrix->rows;
+    int cols = matrix->cols;
+    int *data = matrix->data;
+    
+    for (i = 0; i < rows; i++)
+        for (j = 0; j < cols; j++)
+            *(data + cols * i + j) = *(data + cols * i + j) * c;
+}
+
 void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col)
 {
     printf("%s not implemented\n", __func__);
@@ -78,6 +90,50 @@ void matrix_transpose(matrix_t *input, matrix_t *o)
     for (i = 0; i < input->cols; i++)
         for (j = 0; j < input->rows; j++)
             *((int *)o->data + o->cols * i + j) = *((int *)input->data + input->cols * j + i);
+}
+
+int matrix_det(matrix_t *matrix)
+{
+    int i;
+    int det;
+    int rows = matrix->rows;
+    int cols = matrix->cols;
+    int *data = matrix->data;
+    
+    //if ()
+    return ((*(data + cols * 0 + 0)) * (*(data + cols * 1 + 1)) * (*(data + cols * 2 + 2)) + 
+            (*(data + cols * 0 + 1)) * (*(data + cols * 1 + 2)) * (*(data + cols * 2 + 0)) + 
+            (*(data + cols * 0 + 2)) * (*(data + cols * 1 + 0)) * (*(data + cols * 2 + 1))) -
+           ((*(data + cols * 0 + 2)) * (*(data + cols * 1 + 1)) * (*(data + cols * 2 + 0)) + 
+            (*(data + cols * 0 + 1)) * (*(data + cols * 1 + 0)) * (*(data + cols * 3 + 3)) + 
+            (*(data + cols * 0 + 0)) * (*(data + cols * 1 + 2)) * (*(data + cols * 2 + 1)));
+            
+            
+}
+
+int matrix_inverse(matrix_t *in, matrix_t *out)
+{
+    int retval = 0;
+    int det;
+    int rows = in->rows;
+    int cols = in->cols;
+    int *data = in->data;
+
+    /* matrix of cofactors */
+    int cofactor[8][8];
+
+    /* adjugate matrix */
+    int adjoint[8][8];
+    
+    assert(in->rows == in->cols);
+    assert(out->rows == out->cols);
+    assert(in->rows == out->rows);
+
+    det = matrix_det(in);
+    printf("det:%d\n", det);    
+    matrix_scalar(out, (1 / det));
+
+    return retval;
 }
 
 void matrix_print(struct matrix_t *matrix)
