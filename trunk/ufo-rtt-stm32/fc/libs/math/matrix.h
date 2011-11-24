@@ -18,7 +18,7 @@
 
 #define rowsof(m)	(sizeof(m) / sizeof(*m))
 #define colsof(m)	(sizeof(*m) / sizeof(**m))
-#define matrix_get(array)   { rowsof(array), colsof(array), (int **)array }
+#define matrix_get(array)   { rowsof(array), colsof(array), (int *)array }
 /**
  * @struct matrix_t matrix.h
  * @brief Describe a matrix
@@ -26,8 +26,9 @@
 typedef struct matrix_t {
     int rows;       /**< hom many rows of matrix */
     int cols;       /**< how many columns of matrix */
-    void **data;    /**< pointer to data's pointer */
+    void *data;     /**< pointer to data */
 } matrix_t;
+
 
 /**
  * Addition of two matrixes
@@ -61,6 +62,14 @@ void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
 void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
 
 /**
+ * Matrix scalar multiplication
+ *
+ * @param matrix The pointer to the matrix
+ * @param c The scalar
+ * @return None
+ */
+void matrix_scalar(matrix_t *matrix, int c);
+/**
  * the dot product
  */
 void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col);
@@ -68,11 +77,29 @@ void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
 /**
  * Transpose a matrix
  *
- * @param i The input matrix
- * @param o The output matrix
+ * @param in The input matrix
+ * @param out The output matrix
  * @return None
  */
-void matrix_transpose(matrix_t *i, matrix_t *o);
+void matrix_transpose(matrix_t *in, matrix_t *out);
+
+/**
+ * Find the determinant of the matrix
+ * @param matrix The pointer to the matrix
+ * @return The determinant of the matrix
+ */
+int matrix_det(matrix_t *matrix);
+
+/**
+ * Inverse of a square matrix
+ *
+ * @param in The input matrix
+ * @param out The output matrix
+ * @return 0 success, negative otherwise
+ * @note The function can be an efficient way to calculate the inverse of small matrices,
+ * but the recursive method is inefficient for large matrices.
+ */
+int matrix_inverse(matrix_t *in, matrix_t *out);
 
 /**
  * print out a matrix
