@@ -21,9 +21,9 @@
  * gyroscope sensor event
  */
 typedef struct gyro_event_t {
-    uint32_t gx;
-    uint32_t gy;
-    uint32_t gz;
+    uint32_t x;     /**< x-axis value of gyro */
+    uint32_t y;     /**< y-axis value of gyro */
+    uint32_t z;     /**< z-axis value of gyro */
 } gyro_event_t;
 
 typedef struct gyro_bias_t {

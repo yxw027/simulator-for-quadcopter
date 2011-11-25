@@ -27,19 +27,14 @@
 #define GET_YAW(accel)      (accel->yaw)
 
 /**
- * imu orientation update
+ * IMU orientation update
  * 
- * @param gx x-axis value of gyro
- * @param gy y-axis value of gyro
- * @param gz z-axis value of gyro
- * @param ax x-axis value of accelerometer
- * @param ay y-axis value of accelerometer
- * @param az z-axis value of accelerometer
- * 
+ * @param g Values of gyro
+ * @param a Values of accelerometer
  * @retval None
  * @note TODO
  */
-void imu_update(float gx, float gy, float gz, float ax, float ay, float az);
+void imu_update(gyro_event_t g, accel_event_t a);
 
 /**
  * Get the euler angle from accelerometer at inital state, according to the following formula(s): \n

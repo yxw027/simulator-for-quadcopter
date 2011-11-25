@@ -25,7 +25,7 @@
 struct euler_t;
 
 /**
- * Quaternion elements representing the estimated orientation
+ * @deprecated Quaternion elements representing the estimated orientation
  */   
 typedef struct quaternion_t {
     double q0;
@@ -33,7 +33,15 @@ typedef struct quaternion_t {
     double q2;
     double q3;
 } quaternion_t;  
-  
+
+typedef int quat_t[4];
+/*{
+    double w;
+    double x;
+    double y;
+    double z;
+} quat_t;*/
+
 /**
  * Estimated orientation quaternion elements with initial conditions.
  */
@@ -81,6 +89,7 @@ void quaternion_from_euler(struct euler_t *euler, struct quaternion_t *quad);
  */
 void quaternion_norm(struct quaternion_t *quaternion);
 
+void quat_mul(quat_t lhs, quat_t rhs, quat_t out);
 /** @} */
 
 /** @} */

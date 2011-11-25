@@ -29,9 +29,14 @@ void kalman_init(struct kalman_t *kalman)
 void kalman_predict(struct kalman_t *kalman)
 {
     /* Project the state ahead */
-    X_prior = A * X_post + B * U;
+    AX = matrix_mul(A, X);
+    BU = matrix_mul(B, U);
+    
+    X = matrix_add(AX + BU);
     /* Project the error covariance ahead */
-    P_prior = A * P_post * A.transpose() + Q;
+    AP = matrix_mul(A, P);
+    APA = matrix_mul(AP, A.transpose());
+    P = matrix_add(APA, Q);
 }
 
 void kalman_correct(struct kalman_t *kalman)
@@ -39,9 +44,9 @@ void kalman_correct(struct kalman_t *kalman)
     /* Innovation or measurement residual */
     /* Innovation (or residual) covariance */
     /* Compute the Kalman gian */
-    K = P_prior * H.transpose() * (H * P_prior * H.transpose() + R).inverse();
+    K = P * H.transpose() * (H * P * H.transpose() + R).inverse();
     /* Update estimate with measurement \f$ z_k \f$ */
-    X_post = X_prior + K * (z - H * X_prior);
+    X = X + K * (z - H * X);
     /* Update the error covariance */
-    P_post = (I - K * H) * P_prior;
+    P = (I - K * H) * P;
 }
