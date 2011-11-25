@@ -29,6 +29,47 @@ typedef struct matrix_t {
     void *data;     /**< pointer to data */
 } matrix_t;
 
+/**
+ * Matrix constructor
+ *
+ * @param rows The number of the matrix rows
+ * @param cols The number of the matrix columns
+ * @return The pointer to the new matrix
+ */
+matrix_t *matrix_new(int rows, int cols);
+
+/**
+ * Matrix Destructor
+ * 
+ * @param matrix The matrix to be free
+ * @return None
+ */
+void matrix_delete(matrix_t *matrix);
+
+/**
+ * Setup the data field by malloc()
+ *
+ * @param matrix The pointer to the matrix
+ * @return 0 success, negative otherwise
+ */
+int matrix_create(matrix_t *matrix);
+
+/**
+ * Cleanup the data field by free()
+ *
+ * @param The pointer to the matrix
+ * @return None
+ */
+void matrix_destroy(matrix_t *matrix);
+
+/**
+ * Copy the matrix from src to dst
+ *
+ * @param dst The target matrix copy to
+ * @param src The source matrix take from
+ * @return None
+ */
+void matrix_copy(matrix_t *dst, matrix_t *src);
 
 /**
  * Addition of two matrixes

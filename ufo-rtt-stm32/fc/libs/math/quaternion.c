@@ -66,7 +66,22 @@ void quaternion_norm(struct quaternion_t *quaternion)
     quaternion->q2 /= norm;
     quaternion->q3 /= norm; 
 }
-
+/*
+void quat_mul(quat_t lhs, quat_t rhs, quat_t out)
+{
+    out->w = lhs->w * rhs->w - lhs->x * lhs->x - lhs->y * rhs->y - lhs->z * rhs->z;
+    out->x = lhs->w * rhs->x + lhs->x * rhs->w + lhs->y * rhs->z - lhs->z * rhs->y;
+    out->y = lhs->w * rhs->y + lhs->y * rhs->w + lhs->z * rhs->x - lhs->x * rhs->z;
+    out->z = lhs->w * rhs->z + lhs->z * rhs->w + lhs->x * rhs->y - lhs->y * rhs->x;
+}
+*/
+void quat_mul(quat_t l, quat_t r, quat_t out)
+{
+    out[0] = l[0] * r[0] - l[1] * l[1] - l[2] * r[2] - l[3] * r[3];
+    out[1] = l[0] * r[1] + l[1] * r[0] + l[2] * r[3] - l[3] * r[2];
+    out[2] = l[0] * r[2] + l[2] * r[0] + l[3] * r[1] - l[1] * r[3];
+    out[3] = l[0] * r[3] + l[3] * r[0] + l[1] * r[2] - l[2] * r[1];
+}
 /** @} */
 
 /** @} */

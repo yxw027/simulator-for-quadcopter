@@ -39,10 +39,10 @@ extern int get_offset_y(uint32_t *y);
 extern int get_offset_z(uint32_t *z);
 
 typedef struct accel_event_t {
-    uint32_t ax;
-    uint32_t ay;
-    uint32_t az;
-} accel_sensor_t;
+    uint32_t x;     /**< x-axis value of accelerometer */
+    uint32_t y;     /**< y-axis value of accelerometer */
+    uint32_t z;     /**< z-axis value of accelerometer */
+} accel_event_t;
 
 /**
  * accelerometor bias varible for accelerometer calibration

@@ -3,6 +3,9 @@
  * @brief matrix implementation
  */
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 #include <assert.h>
 
 #include "matrix.h"
@@ -16,6 +19,59 @@
  * @addtogroup math
  * @{
  */
+
+matrix_t *matrix_new(int rows, int cols)
+{
+    int size = rows * cols;
+
+    matrix_t *new = (matrix_t *)malloc(sizeof(matrix_t));
+    void *data = (void *)malloc(size*sizeof(int));
+
+    new->rows = rows;
+    new->cols = cols;
+    new->data = data;
+
+    memset(data, 0, size * sizeof(int));
+
+    return new;
+}
+
+void matrix_delete(matrix_t *matrix)
+{
+    if (matrix->data)
+        free(matrix->data);
+    if (matrix);
+        free(matrix);
+}
+
+int matrix_create(matrix_t *matrix)
+{
+    int size = matrix->rows * matrix->cols;
+
+    void *data = (void *)malloc(size*sizeof(int));
+    if (!data)
+        return -1;
+
+    memset(data, 0, size * sizeof(int));
+    matrix->data = data;
+
+    return 0;    
+}
+
+void matrix_destroy(matrix_t *matrix)
+{
+    if (matrix->data)
+        free(matrix->data);
+}
+
+void matrix_copy(matrix_t *dst, matrix_t *src)
+{
+    int size = src->rows * src->cols * sizeof(int);
+
+    dst->rows = src->rows;
+    dst->cols = src->cols;
+    memcpy(dst->data, src->data, size);
+}
 
 void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out)
 {
@@ -91,47 +147,126 @@ void matrix_transpose(matrix_t *input, matrix_t *o)
         for (j = 0; j < input->rows; j++)
             *((int *)o->data + o->cols * i + j) = *((int *)input->data + input->cols * j + i);
 }
+/**
+ * @internal
+ */
+static int matrix_minor(matrix_t *m, matrix_t *minor, int row, int col)
+{
+
+    int order;
+    int i, j;
+    int x, y;
+    int retval;
+    assert(m->rows == m->cols);
+    order = m->rows;
+    
+    if (order <= 1)
+        return -1;
+    minor->rows = order - 1;
+    minor->cols = order - 1;
+    retval = matrix_create(minor);
+    if (retval)
+        return -1;
+
+    x = y = 0;
+    for (i = 0; i < order; i++) {
+        if (i != row) {
+            y = 0;
+            for (j = 0; j < order; j++) {
+                if (j != col) {
+                    *((int *)minor->data + minor->cols * x + y) = *((int *)m->data + order * i + j);
+                    y++;
+                }    
+            }
+            x++;
+        }
+    }    
+
+    return 0;
+}
 
 int matrix_det(matrix_t *matrix)
 {
     int i;
-    int det;
-    int rows = matrix->rows;
-    int cols = matrix->cols;
-    int *data = matrix->data;
+    int det = 0;
+    int order;
+    int cols;
+    int *data;
+    matrix_t minor;
     
-    //if ()
-    return ((*(data + cols * 0 + 0)) * (*(data + cols * 1 + 1)) * (*(data + cols * 2 + 2)) + 
-            (*(data + cols * 0 + 1)) * (*(data + cols * 1 + 2)) * (*(data + cols * 2 + 0)) + 
-            (*(data + cols * 0 + 2)) * (*(data + cols * 1 + 0)) * (*(data + cols * 2 + 1))) -
-           ((*(data + cols * 0 + 2)) * (*(data + cols * 1 + 1)) * (*(data + cols * 2 + 0)) + 
-            (*(data + cols * 0 + 1)) * (*(data + cols * 1 + 0)) * (*(data + cols * 3 + 3)) + 
-            (*(data + cols * 0 + 0)) * (*(data + cols * 1 + 2)) * (*(data + cols * 2 + 1)));
-            
-            
+    assert(matrix->rows == matrix->cols);
+    
+    order = matrix->rows;
+    cols = matrix->cols;
+    data = matrix->data;
+
+    /* The stopping condition */
+    if (order == 1)
+        return *((int *)data + cols * 0 + 0);
+
+    for (i = 0; i < order; i++) {
+    
+        if (matrix_minor(matrix, &minor, 0, i)) {
+            printf("%s error\n", __func__);
+            return -1;
+        }
+//        printf("%2d %2d\n", pow(-1, i), *((int *)matrix->data + matrix->cols * 0 + i)); 
+//        matrix_print(&minor);
+        det += (pow(-1, i) * (*(data + cols * 0 + i)) * matrix_det(&minor));
+        matrix_destroy(&minor);
+    }
+    
+    return det;
 }
 
 int matrix_inverse(matrix_t *in, matrix_t *out)
 {
     int retval = 0;
     int det;
+    int i, j;
+    
     int rows = in->rows;
     int cols = in->cols;
     int *data = in->data;
-
+    
+    matrix_t minor;
+    
     /* matrix of cofactors */
-    int cofactor[8][8];
+    matrix_t *cofactor;
 
     /* adjugate matrix */
-    int adjoint[8][8];
+    matrix_t *adjoint;
     
     assert(in->rows == in->cols);
     assert(out->rows == out->cols);
     assert(in->rows == out->rows);
+    cofactor = matrix_new(rows, cols);
+    adjoint = matrix_new(cols, rows);
 
     det = matrix_det(in);
-    printf("det:%d\n", det);    
-    matrix_scalar(out, (1 / det));
+//    printf("det:%d\n", det);
+    if (det == 0)
+        return -1;
+    /*Forming Cofactor Matrix */
+    for (i = 0; i < rows; i++)
+        for (j = 0; j < cols; j++) {
+            matrix_minor(in, &minor, i, j);
+            int p = pow(-1, i + j);
+            *((int *)cofactor->data + cofactor->cols * i + j) = matrix_det(&minor) * p;
+            matrix_destroy(&minor);
+        }
+    matrix_print(cofactor);
+
+    matrix_transpose(cofactor, adjoint);
+    matrix_print(adjoint);
+   
+    matrix_scalar(adjoint, (1 / det));
+
+    matrix_copy(out, adjoint);
+    matrix_print(out);
+    
+    matrix_delete(cofactor);
+    matrix_delete(adjoint);
 
     return retval;
 }
