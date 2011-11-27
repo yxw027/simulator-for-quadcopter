@@ -4,7 +4,7 @@
  */
 
 #ifndef _IMUFILTER_H
-#define _IMUFILTER_H#include "euler.h"
+#define _IMUFILTER_H#include "math/euler.h"
 /** * @addtogroup ufo * @{ *//** * @addtogroup imu * @{ */
 /**
  * imu filter update

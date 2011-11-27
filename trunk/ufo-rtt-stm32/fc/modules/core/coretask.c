@@ -1,8 +1,12 @@
-#include "debug.h"
+#include "utils/debug.h"
 
-#include "hal/IGyro.h"
-#include "hal/IAccelerometor.h"
+#include "hal/led.h"
+#include "hal/gyro.h"
+#include "hal/accel.h"
+#include "hal/uart.h"
 
+#include "imu/imu.h"
+#include "imu/imufilter.h"
 
 #include "task.h"
 
@@ -11,13 +15,13 @@ static struct core_task_data core_task_data;
 /**
  * forward declare
  */
-static void init_IMU();
 static void self_check();
 static int take_off();
 
 void core_task_init()
 {
     /* init hardware */
+    uart_hw_init();
     init_IMU();
     /* self check */
     self_check();
@@ -36,7 +40,6 @@ void core_task(void *arg)
     /*data->quaternion;
     data->euler.pitch;*/
     
-
     /* main loop */
     while (1) {
     }
@@ -45,15 +48,7 @@ void core_task(void *arg)
 }
 
 
-static void init_IMU()
-{
-    /* hardware initialization */
-    init_hw_accl();
-    init_hw_gyro();
-    
-    Accel_calibration();
-    Gyro_calibration();
-}
+
 
 
 static void self_check()

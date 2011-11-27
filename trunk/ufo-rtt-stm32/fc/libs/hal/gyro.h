@@ -42,8 +42,8 @@ typedef struct gyro_sensor_t {
  *
  * @return none
  */
-void init_hw_gyro();
- 
+void gyro_hw_init();
+
 /**
  * Get gyro raw data
  *

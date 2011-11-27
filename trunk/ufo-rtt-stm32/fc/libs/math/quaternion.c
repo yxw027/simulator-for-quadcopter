@@ -17,7 +17,7 @@
  * @{
  */
 
-void quaternion_to_euler(struct quaternion_t *quaternion, struct euler_t *euler)
+void quat2euler(struct quat_t *quat, struct euler_t *euler)
 {
     double pitch;
     double roll;
