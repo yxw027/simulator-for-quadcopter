@@ -15,8 +15,8 @@
 typedef struct core_task_data {
     struct gyro_event_t     gyro;
     struct gyro_bias_t      gyro_bias;
-    struct accl_event_t     accl;
-    struct accl_offset_t    accl_offset;
+    struct accel_event_t     accl;
+    struct accel_offset_t    accl_offset;
 //    struct euler_t          euler;
 //    struct quat_t           quat;
 } core_task_core;

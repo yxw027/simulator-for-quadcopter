@@ -34,6 +34,19 @@ float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
  */
 float exInt = 0, eyInt = 0, ezInt = 0;
 
+int init_IMU()
+{
+    int retval = -1;
+    
+    /* hardware initialization */
+    accel_hw_init();
+    gyro_hw_init();
+/*    
+    accel_calibrate();
+    gyro_calibrate();*/
+    return retval;
+}
+
 void imu_update(float gx, float gy, float gz, float ax, float ay, float az)
 {
     float norm;

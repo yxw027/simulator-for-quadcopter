@@ -69,6 +69,10 @@ int i2c_write(uint16_t addr, const char *buf, int count);
  */
 int i2c_read(uint16_t addr, char *buf, int count);
 
+/**
+ * portings
+ */
+extern void i2c_start();
 
 /** @} */
 

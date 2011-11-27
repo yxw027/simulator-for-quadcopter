@@ -8,7 +8,7 @@
 
 /**
  * @addtogroup ufo
- * @}
+ * @{
  */
 
 /**
@@ -72,14 +72,14 @@ int accel_get_offset(struct accel_offset *offset)
 }
 
 /**
- * initialize accelerometor
+ * Initialize accelerometor
  *
  * @return none
  */
-void init_hw_accel(); 
+void accel_hw_init(); 
 
 /**
- * get raw data of x, y, z axis
+ * Get raw data of x, y, z axis
  *
  * @param value the pointer to value
  * @return 0 success, negetive otherwise
@@ -91,4 +91,5 @@ int accel_update_offset(struct accel_offset *offset);
 /** @} */
 
 /** @} */
+
 #endif /* _ACCEL_H */

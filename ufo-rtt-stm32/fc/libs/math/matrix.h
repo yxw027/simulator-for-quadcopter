@@ -16,9 +16,14 @@
  * @{
  */ 
 
-#define rowsof(m)	(sizeof(m) / sizeof(*m))
-#define colsof(m)	(sizeof(*m) / sizeof(**m))
+#define rowsof(m)           (sizeof(m) / sizeof(*m))
+#define colsof(m)           (sizeof(*m) / sizeof(**m))
 #define matrix_get(array)   { rowsof(array), colsof(array), (int *)array }
+
+#define M_INDEX(m, x, y)    (((Type *)m->data)[m->cols * x + y])
+
+typedef int     Type;
+
 /**
  * @struct matrix_t matrix.h
  * @brief Describe a matrix
@@ -92,7 +97,7 @@ void matrix_add(matrix_t *l, matrix_t *r, matrix_t *out);
 void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
 
 /**
- * multiplies a m x n matrix by a n x m matrix
+ * Multiplies a m x n matrix by a n x m matrix
  * out = l x r
  * @param l the left matrix
  * @param r the right matrix
@@ -100,7 +105,7 @@ void matrix_sub(matrix_t *l, matrix_t *r, matrix_t *out);
  * @return none
  * @note you should give correct parameter of matrix, otherwise errror occured
  */
-void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
+void matrix_mult(matrix_t *l, matrix_t *r, matrix_t *out);
 
 /**
  * Matrix scalar multiplication
@@ -109,12 +114,14 @@ void matrix_mul(matrix_t *l, matrix_t *r, matrix_t *out);
  * @param c The scalar
  * @return None
  */
-void matrix_scalar(matrix_t *matrix, int c);
+void matrix_scalar_mult(matrix_t *matrix, int scalar);
+
 /**
- * the dot product
+ * Matrix dot product
  */
 void matrix_mul_at(matrix_t *l, matrix_t *r, int row, int col);
 void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
+
 /**
  * Transpose a matrix
  *
@@ -126,6 +133,7 @@ void matrix_transpose(matrix_t *in, matrix_t *out);
 
 /**
  * Find the determinant of the matrix
+ *
  * @param matrix The pointer to the matrix
  * @return The determinant of the matrix
  */
@@ -143,12 +151,12 @@ int matrix_det(matrix_t *matrix);
 int matrix_inverse(matrix_t *in, matrix_t *out);
 
 /**
- * print out a matrix
+ * Print out a matrix
  *
  * @param matrix the matrix printed out
  * @return none
  */
-void matrix_print(struct matrix_t *matrix);
+void matrix_print(matrix_t *matrix);
 
 /** @} */
 

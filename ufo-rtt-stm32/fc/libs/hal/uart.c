@@ -3,8 +3,8 @@
  * @brief UART modules implementation
  */
 
-#include "hardware/IUart.h"
-#include "hardware/IGyro.h"
+#include "hal/uart.h"
+#include "hal/gyro.h"
 #include "math/crc16.h"
 
 #include <stdio.h>
