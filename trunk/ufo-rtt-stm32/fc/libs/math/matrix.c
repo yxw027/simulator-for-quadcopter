@@ -132,16 +132,16 @@ void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out)
     printf("%s not implemented\n", __func__);
 }
 
-void matrix_transpose(matrix_t *input, matrix_t *o)
+void matrix_transpose(matrix_t *input, matrix_t *out)
 {
     int i, j;
     
-    assert(o->rows == input->cols);
-    assert(o->cols == input->rows);
+    assert(out->rows == input->cols);
+    assert(out->cols == input->rows);
     
     for (i = 0; i < input->cols; i++)
         for (j = 0; j < input->rows; j++)
-            M_INDEX(o, i, j) = M_INDEX(input, j, i);
+            M_INDEX(out, i, j) = M_INDEX(input, j, i);
 }
 
 /**

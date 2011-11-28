@@ -16,7 +16,16 @@
  * @{
  */ 
 
+ /**
+  * @def rowsof(m)
+  * Calculate the rows of 2-D array @a m
+  */
 #define rowsof(m)           (sizeof(m) / sizeof(*m))
+
+/**
+ * @def colsof(m)
+ * Calculate the columns of 2-D array @a m
+ */
 #define colsof(m)           (sizeof(*m) / sizeof(**m))
 #define matrix_get(array)   { rowsof(array), colsof(array), (int *)array }
 
@@ -125,11 +134,11 @@ void matrix_div(matrix_t *l, matrix_t *r, matrix_t *out);
 /**
  * Transpose a matrix
  *
- * @param in The input matrix
+ * @param input The input matrix
  * @param out The output matrix
  * @return None
  */
-void matrix_transpose(matrix_t *in, matrix_t *out);
+void matrix_transpose(matrix_t *input, matrix_t *out);
 
 /**
  * Find the determinant of the matrix
@@ -153,8 +162,8 @@ int matrix_inverse(matrix_t *in, matrix_t *out);
 /**
  * Print out a matrix
  *
- * @param matrix the matrix printed out
- * @return none
+ * @param matrix The matrix printed out
+ * @return None
  */
 void matrix_print(matrix_t *matrix);
 
