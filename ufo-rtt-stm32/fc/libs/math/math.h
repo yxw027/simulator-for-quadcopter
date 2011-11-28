@@ -19,9 +19,22 @@
  * @{
  */
 
-#define PI  3.14
+#define M_PI  3.14
 /**
- * acceleration of gravity
+ * @def toDegrees(radians)
+ * Convert @a radians to @a degrees
+ */
+#define toDegrees(radians)  ((radians) * 180.0 / M_PI)
+
+/**
+ * @def toRadians(degrees)
+ * Convert @a degrees to @a radians
+ */
+#define toRadians(degrees)  ((degrees) / 180.0 * M_PI)
+
+/**
+ * @def G
+ * Acceleration of gravity
  */
 #define G   9.18
 
