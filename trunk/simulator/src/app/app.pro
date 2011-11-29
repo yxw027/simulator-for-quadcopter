@@ -6,12 +6,15 @@ DESTDIR = $$SIMULATOR_APP_PATH
 
 SOURCES += main.cpp
 
-include(../rpath.pri)
-LIBS *= -l$$qtLibraryName(ExtensionSystem) -l$$qtLibraryName(Aggregation)
+LIBS *= -l$$qtLibraryName(ExtensionSystem) -l$$qtLibraryName(qextserialport)
 
-
-
-#OTHER_FILES += simulator.rc
-
+win32 {
+    RC_FILE = simulator.rc
+    target.path = /bin
+    INSTALLS += target
+} else {
+    target.path  = /bin
+    INSTALLS    += target
+}    
 # OpenGL support
 #QT +=   opengl

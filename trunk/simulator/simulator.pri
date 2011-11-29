@@ -55,9 +55,12 @@ macx {
 INCLUDEPATH += \
     $$SIMULATOR_BUILD_TREE/src \ # for <app/app_version.h>
     $$SIMULATOR_SOURCE_TREE/src/libs \
+    $$SIMULATOR_SOURCE_TREE/src/libs/3rdparty/qextserialport/src \    
     $$IDE_SOURCE_TREE/src/plugins
 
 CONFIG += depend_includepath
+CONFIG += warn_on
+CONFIG += silent
 
 LIBS += -L$$SIMULATOR_LIBRARY_PATH
 

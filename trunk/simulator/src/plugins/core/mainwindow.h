@@ -1,5 +1,5 @@
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include "core_global.h"
 
@@ -19,6 +19,8 @@ class ActionManager;
 
 
 namespace Internal {
+
+class CoreImpl;
 class CORE_EXPORT MainWindow : public EventFilteringMainWindow
 {
     Q_OBJECT
@@ -46,6 +48,8 @@ private:
     QWidget *centralWidget;
     QMenu *fileMenu;
 
+    CoreImpl *m_coreImpl;
+    ActionManagerPrivate *m_actionManager;
     QAction *mNewAction;
     QAction *mexitAction;
 };

@@ -24,7 +24,7 @@ public:
 
 public slots:
     // void fileOpenRequest(const QString&);
-
+//    void helloworld();
 private:
     void parseArguments(const QStringList & arguments);
     

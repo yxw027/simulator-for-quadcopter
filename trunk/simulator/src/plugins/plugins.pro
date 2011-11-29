@@ -51,7 +51,7 @@ SUBDIRS   = plugin_core
 
 
 plugin_core.subdir = core
-
+#plugin_coreplugin.subdir = coreplugin
 #plugin_updateinfo.subdir = updateinfo
 #plugin_updateinfo.depends = plugin_coreplugin
 
