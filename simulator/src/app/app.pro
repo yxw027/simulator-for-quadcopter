@@ -1,12 +1,12 @@
 include(../../simulator.pri)
-include(../shared/qtsingleapplication/qtsingleapplication.pri)
+#include(../libs/3rdparty/qextserialport/qextserialport.pri)
+#include(../plugins/digitalscope/digitalscope.pri)
+
 TEMPLATE = app
 TARGET = $$SIMULATOR_APP_TARGET
 DESTDIR = $$SIMULATOR_APP_PATH
 
 SOURCES += main.cpp
-
-LIBS *= -l$$qtLibraryName(ExtensionSystem) -l$$qtLibraryName(qextserialport)
 
 win32 {
     RC_FILE = simulator.rc
@@ -15,6 +15,6 @@ win32 {
 } else {
     target.path  = /bin
     INSTALLS    += target
-}    
+}
 # OpenGL support
 #QT +=   opengl

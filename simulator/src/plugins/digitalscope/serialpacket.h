@@ -1,6 +1,8 @@
 #ifndef _SERIALPACKET_H
 #define _SERIALPACKET_H
 
+#include <QString>
+
 class SerialPacket
 {
 public:
@@ -11,12 +13,12 @@ public:
     QString getPacketDescriptor();
 
 
-    int checksum() const;
+    int checksum();
     int packetSize();
 
 private:
     QString m_packetDescriptor;
-    uint16 m_checksum;
+    int m_checksum;
     
     void computeChecksum();    
 };

@@ -1,6 +1,6 @@
 #include "serialpacket.h"
 
-SerialPacket:SerialPacket()
+SerialPacket::SerialPacket()
 {
     m_checksum = 0;
 }
@@ -29,7 +29,7 @@ int SerialPacket::packetSize()
     return size;
 }
 
-int SerialPacket::checksum() const
+int SerialPacket::checksum()
 {
     computeChecksum();
 
