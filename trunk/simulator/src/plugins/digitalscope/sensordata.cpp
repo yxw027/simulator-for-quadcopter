@@ -18,12 +18,12 @@ SensorData& SensorData::instance()
 }
 
 void SensorData::append(const QPointF &pos)
-{
+{/*
     m_mutex.lock();
     
     const bool isLocked = m_lock.tryLockForWrite();
     if (isLocked) {
-        const int numValues = d_data->pendingValues.size();
+        //const int numValues = d_data->pendingValues.size();
         const QPointF *pendingValues = d_data->pendingValues.data();
 
         for (int i = 0; i < numValues; i++)
@@ -33,7 +33,7 @@ void SensorData::append(const QPointF &pos)
 
         d_data->lock.unlock();
     }
-    m_mutex.unlock();
+    m_mutex.unlock();*/
 }
 
 int SensorData::size() const

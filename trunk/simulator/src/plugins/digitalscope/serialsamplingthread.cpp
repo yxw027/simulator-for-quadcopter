@@ -1,6 +1,10 @@
-#include "SerialThread.h"
+#include "serialsamplingthread.h"
+#include "qextserialport.h"
 
-SerialThread::SerialThread(/*QextSerialPort *port, */QObject *parent) : QThread(parent)
+#include <QDebug>
+
+
+SerialSamplingThread::SerialSamplingThread(/*QextSerialPort *port, */QObject *parent)
 {
     this->port = port;
 /*    
@@ -13,16 +17,20 @@ SerialThread::SerialThread(/*QextSerialPort *port, */QObject *parent) : QThread(
     qDebug() << port->portName() << "Connected";
 }
 
-SerialThread::~SerialThread()
+SerialSamplingThread::~SerialSamplingThread()
 {
     qDebug() << port->portName() << "Disconnected";
 }
 
-void SerialThread::read()
+void SerialSamplingThread::read()
 {
     // Check the buffer
     if (port->bytesAvailable() == 6)
     QByteArray temp = port->readAll();
     //qDebug() << "read:" << temp;
     //emit sensorDataReady;
+}
+
+void SerialSamplingThread::sample(double elapsed)
+{
 }

@@ -1,6 +1,12 @@
 #ifndef SENSORDATA_H
 #define SENSORDATA_H
 
+class QPointF;
+#include <QRectF>
+#include <QVector>
+#include <QReadWriteLock>
+#include <QMutex>
+
 class SensorData
 {
 public:

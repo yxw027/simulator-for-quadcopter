@@ -17,8 +17,9 @@
 
 #include <QApplication>
 
-#include <QMainWindow>
+#include "mainwindow.h"
 #include <QDebug>
+#include <QMainWindow>
 /*
 #include "math/quat.h"
 #include <math/euler.h>
@@ -29,9 +30,9 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     
-    QMainWindow window;
+    QMainWindow mainWindow;
 
-    window.show();
+    mainWindow.show();
     
     return app.exec();
 }

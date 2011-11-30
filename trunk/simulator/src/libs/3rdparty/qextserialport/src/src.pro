@@ -1,6 +1,6 @@
 PROJECT = qextserialport
 TEMPLATE = lib
-TARGET = qextserialport
+TARGET = QextSerialPort
 CONFIG += qt
 CONFIG += dll
 
