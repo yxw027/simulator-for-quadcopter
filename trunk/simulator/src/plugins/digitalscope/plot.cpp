@@ -1,5 +1,6 @@
 #include "plot.h"
 #include "curvedata.h"
+
 #include <qwt_plot_grid.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
@@ -45,7 +46,6 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
 
     this->setAutoFillBackground(true);
 }
-
 
 void Plot::timerEvent(QTimerEvent *e)
 {

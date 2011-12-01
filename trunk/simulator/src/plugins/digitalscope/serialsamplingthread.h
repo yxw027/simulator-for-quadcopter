@@ -20,7 +20,7 @@ public slots:
 
 protected:
     virtual void sample(double elapsed);
-    
+
 private:
     QextSerialPort *port;
 };

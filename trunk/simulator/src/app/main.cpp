@@ -19,20 +19,20 @@
 
 #include "mainwindow.h"
 #include <QDebug>
-#include <QMainWindow>
+#include <QMainWindow> // del
 /*
 #include "math/quat.h"
 #include <math/euler.h>
 */
-#include "qextserialport.h"
+
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    
+
     QMainWindow mainWindow;
 
     mainWindow.show();
-    
+
     return app.exec();
 }
