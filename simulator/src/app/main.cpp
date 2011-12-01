@@ -19,7 +19,7 @@
 
 #include "mainwindow.h"
 #include <QDebug>
-#include <QMainWindow> // del
+
 /*
 #include "math/quat.h"
 #include <math/euler.h>
@@ -30,7 +30,13 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    QMainWindow mainWindow;
+    MainWindow mainWindow;
+
+
+    mainWindow.setMinimumSize(640, 480);
+
+    qDebug() << "stating...";
+
 
     mainWindow.show();
 
