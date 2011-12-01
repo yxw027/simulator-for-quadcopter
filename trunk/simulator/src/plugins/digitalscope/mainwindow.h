@@ -7,6 +7,8 @@
 QT_BEGIN_NAMESPACE
 class QMenu;
 class QAction;
+class QStatusBar;
+class GLWidget;
 class Plot;
 QT_END_NAMESPACE
 
@@ -19,7 +21,7 @@ public:
     ~MainWindow();
 
 public slots:
-    // void newFile();
+    void newFile();
     void exit();
 
 protected:
@@ -27,8 +29,8 @@ protected:
     // virtual void closeEvent(QCloseEvent *event);
 
 private:
-    createMenu();
-    createToolBar();
+    void createMenu();
+    void createToolBar();
 
     QWidget *centralWidget;
 
@@ -39,6 +41,8 @@ private:
     QMenu *helpMenu;
     QAction *m_aboutAction;
 
+    QStatusBar *m_statusBar;
+    GLWidget *glWidget;
     Plot *plot;
 };
 

@@ -1,6 +1,5 @@
 include(../../simulator.pri)
-#include(../libs/3rdparty/qextserialport/qextserialport.pri)
-#include(../plugins/digitalscope/digitalscope.pri)
+include(../plugins/digitalscope/digitalscope.pri)
 
 TEMPLATE = app
 TARGET = $$SIMULATOR_APP_TARGET
@@ -16,5 +15,4 @@ win32 {
     target.path  = /bin
     INSTALLS    += target
 }
-# OpenGL support
-#QT +=   opengl
+

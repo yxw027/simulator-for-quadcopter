@@ -30,5 +30,5 @@ win32 {
     LIBS += -lsetupapi
 }
 
-win32::CONFIG(release, debug|release): RC_FILE = qextserialport_resource.rc
-else win32:CONFIG(debug, debug|release): RC_FILE = qextserialportd_resource.rc
+win32:CONFIG(debug, debug|release):RC_FILE = qextserialportd_resource.rc
+else RC_FILE = qextserialport_resource.rc

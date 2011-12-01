@@ -1,5 +1,5 @@
-#ifndef SERIALTHREAD_H
-#define SERIALTHREAD_H
+#ifndef SERIALSAMPLINGTHREAD_H
+#define SERIALSAMPLINGTHREAD_H
 
 #include <qwt_sampling_thread.h>
 
@@ -12,7 +12,7 @@ class SerialSamplingThread : public QwtSamplingThread
     Q_OBJECT
 
 public:
-    SerialSamplingThread(QObject *parent = 0);
+    SerialSamplingThread(QObject *parent = 0/*, QString &portName*/);
     virtual ~SerialSamplingThread();
 
 public slots:
@@ -23,6 +23,7 @@ protected:
 
 private:
     QextSerialPort *port;
+    bool m_isOpen;
 };
 
-#endif // SERIALTHREAD_H
+#endif // SERIALSAMPLINGTHREAD_H
