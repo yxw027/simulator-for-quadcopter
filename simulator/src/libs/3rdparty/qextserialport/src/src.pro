@@ -26,7 +26,9 @@ macx {
 
 win32 {
     SOURCES += win_qextserialport.cpp qextserialenumerator_win.cpp
-     DEFINES += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
-     LIBS += -lsetupapi
+    DEFINES += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
+    LIBS += -lsetupapi
 }
 
+win32::CONFIG(release, debug|release): RC_FILE = qextserialport_resource.rc
+else win32:CONFIG(debug, debug|release): RC_FILE = qextserialportd_resource.rc

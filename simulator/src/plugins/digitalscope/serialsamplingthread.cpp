@@ -6,15 +6,15 @@
 
 SerialSamplingThread::SerialSamplingThread(/*QextSerialPort *port, */QObject *parent)
 {
-    this->port = port;
-/*    
+/*    this->port = port;
+    
     port->setBaudRate(BAUD9600);
     port->setDataBits(DATA_8);
     port->setParity(PAR_NONE);
     port->setStopBits(STOP_1);
     port->setFlowControl(FLOW_OFF);
-*/    
-    qDebug() << port->portName() << "Connected";
+   
+    qDebug() << port->portName() << "Connected";*/ 
 }
 
 SerialSamplingThread::~SerialSamplingThread()

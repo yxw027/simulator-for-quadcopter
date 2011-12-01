@@ -12,14 +12,13 @@ public:
     void setPacketDescriptor(QString &packetDescriptor);
     QString getPacketDescriptor();
 
-
     int checksum();
     int packetSize();
 
 private:
     QString m_packetDescriptor;
     int m_checksum;
-    
+
     void computeChecksum();    
 };
 

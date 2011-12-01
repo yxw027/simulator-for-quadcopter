@@ -7,7 +7,8 @@ class QwtPlotGrid;
 class QwtPlotCurve;
 
 
-class Plot : public QwtPlot {
+class Plot : public QwtPlot
+{
     Q_OBJECT
 
 public:
