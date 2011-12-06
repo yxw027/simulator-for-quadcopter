@@ -1,1 +1,22 @@
 IDI_ICON1   ICON    DISCARDABLE     "simulator.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0,0,0,1
+PRODUCTVERSION  0,0,0,1
+
+BEGIN
+    BLOCK "SringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",        "Open Robtics\0"
+            VALUE "FileDescription",    "Simulator\0"
+            VALUE "FileVersion",        "0.0.0.1\0"
+            VALUE "InternalName",       "Simulator\0"
+            VALUE "LegalCopyright",     "Copyright (C) 2011"
+            VALUE "OriginalFilename",   "Simulator.exe\0"
+            VALUE "ProductName",        "Open Robotics Simulator\0"
+            VALUE "ProductVersion",     "0.1\0"
+        END
+    END
+END
