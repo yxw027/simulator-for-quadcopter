@@ -4,6 +4,8 @@
 #include <qwt_plot_grid.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
+#include <qwt_legend.h>
+
 
 Plot::Plot(QWidget *parent) : QwtPlot(parent)
 {
@@ -19,6 +21,11 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
 
     this->setAxisTitle(QwtPlot::yLeft, tr("Sensor Value(v)"));
     this->setAxisScale(QwtPlot::yLeft, 0, 50.0);
+
+    // Legend
+    QwtLegend *legend = new QwtLegend;
+    legend->setItemMode(QwtLegend::CheckableItem);
+    insertLegend(legend, QwtPlot::RightLegend);
 
     // Insert Grid
     grid = new QwtPlotGrid;
