@@ -5,6 +5,8 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>
+#include <qwt_system_clock.h>
+#include <qwt_plot_directpainter.h>
 
 
 Plot::Plot(QWidget *parent) : QwtPlot(parent)
@@ -28,11 +30,11 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
     insertLegend(legend, QwtPlot::RightLegend);
 
     // Insert Grid
-    grid = new QwtPlotGrid;
-    grid->setPen(QPen(Qt::gray, 0.0, Qt::DotLine));
-    grid->enableXMin(true);
-    grid->enableYMin(true);
-    grid->attach(this);
+    m_grid = new QwtPlotGrid;
+    m_grid->setPen(QPen(Qt::gray, 0.0, Qt::DotLine));
+    m_grid->enableXMin(true);
+    m_grid->enableYMin(true);
+    m_grid->attach(this);
 
     // Insert markers
     QwtPlotMarker *mY = new QwtPlotMarker();
@@ -52,9 +54,36 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
     //curve->setRawSamples();
 
     this->setAutoFillBackground(true);
+
+    m_directPainter = new QwtPlotDirectPainter(this);
 }
 
-void Plot::timerEvent(QTimerEvent *e)
+Plot::~Plot()
 {
+}
 
+void Plot::replot()
+{
+    QwtPlot::replot();
+}
+
+void Plot::start()
+{
+    m_clock.start();
+    m_timerId = startTimer(100);
+}
+
+void Plot::pause()
+{
+}
+
+void Plot::stop()
+{
+}
+
+void Plot::timerEvent(QTimerEvent *event)
+{
+    if (m_timerId == event->timerId) {
+    }
+    QwtPlot::timerEvent(event);
 }
