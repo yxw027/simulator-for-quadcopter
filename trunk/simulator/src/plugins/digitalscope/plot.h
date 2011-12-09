@@ -5,6 +5,8 @@
 
 class QwtPlotGrid;
 class QwtPlotCurve;
+class QwtSystemClock;
+class QwtPlotDirectPainter;
 
 
 class Plot : public QwtPlot
@@ -13,13 +15,25 @@ class Plot : public QwtPlot
 
 public:
     Plot(QWidget *parent = 0);
+    virtual ~Plot();
+
+public slots:
+    virtual void replot();
+
+    void start();
+    void pause();
+    void stop();
 
 protected:
-    virtual void timerEvent(QTimerEvent *e);
+    virtual void timerEvent(QTimerEvent *);
 
 private:
-    QwtPlotGrid *grid;
-    QwtPlotCurve *curve;
+    QwtPlotGrid *m_grid;
+    QwtPlotCurve *m_curve;
+    QwtSystemClock m_clock;
+    QwtPlotDirectPainter *m_directPainter;
+    
+    int m_timerId;
 };
 
 #endif // PLOT_H

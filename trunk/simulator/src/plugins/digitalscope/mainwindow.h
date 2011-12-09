@@ -24,6 +24,8 @@ public slots:
     void newFile();
     void exit();
 
+    void about();
+
 protected:
     // virtual void changeEvent(QEvent *e);
     // virtual void closeEvent(QCloseEvent *event);
@@ -35,13 +37,16 @@ private:
     QWidget *centralWidget;
 
     QMenu *fileMenu;
+    QMenu *helpMenu;
+    
     QAction *m_newAction;
     QAction *m_exitAction;
 
-    QMenu *helpMenu;
-    QAction *m_aboutAction;
 
-    QStatusBar *m_statusBar;
+    QAction *m_aboutAction;
+    QAction *m_aboutQtAction;
+
+
     GLWidget *glWidget;
     Plot *plot;
 };
