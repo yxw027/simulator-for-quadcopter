@@ -1,13 +1,18 @@
 #include "serialsamplingthread.h"
+#include "sensordata.h"
 
 #include <qextserialport.h>
 #include <qextserialenumerator.h>
+
+#include <qwt_math.h>
+#include <math.h>
+
 #include <QList>
 #include <QDebug>
 
 
 SerialSamplingThread::SerialSamplingThread(QObject *parent/*, QString &portName*/) :
-    QwtSamplingThread(parent)
+    QwtSamplingThread(parent), m_frequency(5.0), m_amplitude(1.0)
 {/*
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     foreach(QextPortInfo portInfo, ports) {
@@ -37,6 +42,26 @@ SerialSamplingThread::~SerialSamplingThread()
     qDebug() << port->portName() << "Disconnected";
 }
 
+double SerialSamplingThread::frequency() const
+{
+    return m_frequency;
+}
+
+double SerialSamplingThread::amplitude() const
+{
+    return m_amplitude;
+}
+
+void SerialSamplingThread::setFrequency(double frequency)
+{
+    m_frequency = frequency;
+}
+
+void SerialSamplingThread::setAmplitude(double amplitude)
+{
+    m_amplitude = amplitude;
+}
+
 void SerialSamplingThread::read()
 {
     // Check the buffer
@@ -48,4 +73,11 @@ void SerialSamplingThread::read()
 
 void SerialSamplingThread::sample(double elapsed)
 {
+    if (m_frequency > 0.0) {
+        const double period = 1.0 / m_frequency;
+        const double x = ::fmod(elapsed, period);
+        const double y = m_amplitude * qFastSin(x / period * 2 *M_PI);
+        const QPointF point(elapsed, y);
+        SensorData::instance().append(point);
+    }
 }

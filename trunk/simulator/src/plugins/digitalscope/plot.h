@@ -2,10 +2,10 @@
 #define PLOT_H
 
 #include <qwt_plot.h>
+#include <qwt_system_clock.h>
 
 class QwtPlotGrid;
 class QwtPlotCurve;
-class QwtSystemClock;
 class QwtPlotDirectPainter;
 
 
@@ -16,6 +16,8 @@ class Plot : public QwtPlot
 public:
     Plot(QWidget *parent = 0);
     virtual ~Plot();
+
+    virtual bool eventFilter(QObject *object, QEvent *event);
 
 public slots:
     virtual void replot();
@@ -31,9 +33,13 @@ private:
     QwtPlotGrid *m_grid;
     QwtPlotCurve *m_curve;
     QwtSystemClock m_clock;
+
     QwtPlotDirectPainter *m_directPainter;
-    
+
     int m_timerId;
+    int m_paintedPoints;
+
+    void updateCurve();
 };
 
 #endif // PLOT_H

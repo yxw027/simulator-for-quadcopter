@@ -9,12 +9,12 @@ SerialPacket::~SerialPacket()
 {
 }
 
-void SerialPacket::setPacketDescriptor(QString &packetDescriptor)
+void SerialPacket::setPacketDescriptor(const QString &packetDescriptor)
 {
     m_packetDescriptor = packetDescriptor;
 }
 
-QString SerialPacket::getPacketDescriptor()
+QString SerialPacket::getPacketDescriptor() const
 {
     return m_packetDescriptor;
 }

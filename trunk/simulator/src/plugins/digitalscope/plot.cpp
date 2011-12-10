@@ -1,65 +1,108 @@
 #include "plot.h"
 #include "curvedata.h"
+#include "sensordata.h"
 
 #include <qwt_plot_grid.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_canvas.h>
 #include <qwt_legend.h>
 #include <qwt_system_clock.h>
 #include <qwt_plot_directpainter.h>
 
+#include <QTimerEvent>
+#include <QDebug>
 
 Plot::Plot(QWidget *parent) : QwtPlot(parent)
 {
     // Set title
-    this->setTitle(tr("Sensor Data Window"));
+    setTitle(tr("Sensor Data Window"));
 
-    // Set Background
-    this->setCanvasBackground(Qt::white);
+    // Set background
+    setCanvasBackground(Qt::white);
 
     // Set axis
-    this->setAxisTitle(QwtPlot::xBottom, tr("Time(s)"));
-    this->setAxisScale(QwtPlot::xBottom, 0, 10.0);
+    setAxisTitle(QwtPlot::xBottom, tr("Time(s)"));
+    setAxisScale(QwtPlot::xBottom, 0, 10.0);
 
-    this->setAxisTitle(QwtPlot::yLeft, tr("Sensor Value(v)"));
-    this->setAxisScale(QwtPlot::yLeft, 0, 50.0);
+    setAxisTitle(QwtPlot::yLeft, tr("Sensor Value(v)"));
+    setAxisScale(QwtPlot::yLeft, 0, 50.0);
 
     // Legend
     QwtLegend *legend = new QwtLegend;
     legend->setItemMode(QwtLegend::CheckableItem);
     insertLegend(legend, QwtPlot::RightLegend);
 
-    // Insert Grid
+    // Insert grid
     m_grid = new QwtPlotGrid;
-    m_grid->setPen(QPen(Qt::gray, 0.0, Qt::DotLine));
     m_grid->enableXMin(true);
-    m_grid->enableYMin(true);
+    m_grid->enableYMin(true);    
+    m_grid->setMajPen(QPen(Qt::gray, 0.0, Qt::DotLine));
+    m_grid->setMinPen(QPen(Qt::gray, 0.0, Qt::DotLine));
     m_grid->attach(this);
 
     // Insert markers
     QwtPlotMarker *mY = new QwtPlotMarker();
-    mY->setLabel(QString::fromLatin1("y = 25.0"));
+    mY->setLabel(QString::fromLatin1("y = 0.0"));
     mY->setLabelAlignment(Qt::AlignRight | Qt::AlignTop);
     mY->setLineStyle(QwtPlotMarker::HLine);
     mY->setYValue(25.0);
     mY->attach(this);
 
-    // Insert curve
-    curve = new QwtPlotCurve(tr("Accl_X"));
-    curve->setPen(QPen(Qt::black));
-    curve->setStyle(QwtPlotCurve::Lines);
-    curve->setData(new CurveData());
-    curve->attach(this);
+    // Insert curves
+    m_curve = new QwtPlotCurve(tr("Accelerometer_X"));
+    m_curve->setPen(QPen(Qt::red));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
 
-    //curve->setRawSamples();
+    m_curve = new QwtPlotCurve(tr("Accelerometer_Y"));
+    m_curve->setPen(QPen(Qt::green));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
 
-    this->setAutoFillBackground(true);
+    m_curve = new QwtPlotCurve(tr("Accelerometer_Z"));
+    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
+
+    m_curve = new QwtPlotCurve(tr("Gyroscope_X"));
+    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
+
+    m_curve = new QwtPlotCurve(tr("Gyroscope_Y"));
+    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
+
+    m_curve = new QwtPlotCurve(tr("Gyroscope_Z"));
+    m_curve->setPen(QPen(Qt::blue));
+    m_curve->setStyle(QwtPlotCurve::Lines);
+    m_curve->setData(new CurveData());
+    m_curve->attach(this);
+
+    setAutoFillBackground(true);
+    setAutoReplot(false);
 
     m_directPainter = new QwtPlotDirectPainter(this);
+    start();
 }
 
 Plot::~Plot()
 {
+}
+
+bool Plot::eventFilter(QObject *object, QEvent *event)
+{
+    if (!canvas())
+        return false;
+
+    return QwtPlot::eventFilter(object, event);
 }
 
 void Plot::replot()
@@ -70,7 +113,7 @@ void Plot::replot()
 void Plot::start()
 {
     m_clock.start();
-    m_timerId = startTimer(100);
+    m_timerId = startTimer(10);   // 0.01-second timer
 }
 
 void Plot::pause()
@@ -81,9 +124,29 @@ void Plot::stop()
 {
 }
 
-void Plot::timerEvent(QTimerEvent *event)
+void Plot::updateCurve()
 {
-    if (m_timerId == event->timerId) {
+    CurveData *data = (CurveData *)m_curve->data();
+
+    data->values().lock();
+
+    const int numPoints = data->size();
+    if (numPoints > m_paintedPoints) {
+        const bool doClip = !canvas()->testAttribute(Qt::WA_PaintOnScreen);
+        if (doClip) {
+
+        }
+        m_directPainter->drawSeries(m_curve, m_paintedPoints - 1, m_paintedPoints);
+        m_paintedPoints += 1;
     }
-    QwtPlot::timerEvent(event);
+
+    data->values().unlock();
+}
+
+void Plot::timerEvent(QTimerEvent *te)
+{
+    if (m_timerId == te->timerId()) {
+        updateCurve();
+    }
+    QwtPlot::timerEvent(te);
 }

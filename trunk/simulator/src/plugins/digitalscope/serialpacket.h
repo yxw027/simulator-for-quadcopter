@@ -9,8 +9,8 @@ public:
     SerialPacket();
     ~SerialPacket();
     
-    void setPacketDescriptor(QString &packetDescriptor);
-    QString getPacketDescriptor();
+    void setPacketDescriptor(const QString &packetDescriptor);
+    QString getPacketDescriptor() const;
 
     int checksum();
     int packetSize();
@@ -19,7 +19,7 @@ private:
     QString m_packetDescriptor;
     int m_checksum;
 
-    void computeChecksum();    
+    void computeChecksum();
 };
 
 #endif // _SERIALPACKET_H
