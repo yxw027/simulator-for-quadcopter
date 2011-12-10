@@ -10,7 +10,10 @@ class QAction;
 class QStatusBar;
 class GLWidget;
 class Plot;
+class QwtPlotPicker;
+class QwtPlotPanner;
 QT_END_NAMESPACE
+
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +26,8 @@ public:
 public slots:
     void newFile();
     void exit();
+
+    void pickerMoved(const QPoint &);
 
     void about();
 
@@ -49,6 +54,8 @@ private:
 
     GLWidget *glWidget;
     Plot *plot;
+    QwtPlotPicker *m_picker;
+    QwtPlotPanner *m_panner;
 };
 
 #endif // MAINWINDOW_H

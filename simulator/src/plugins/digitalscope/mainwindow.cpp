@@ -6,20 +6,36 @@
 #include <QAction>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QMessageBox>
+#include <QApplication>
+
+#include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
+#include <qwt_plot_panner.h>
 
 MainWindow::MainWindow()
 {
     setWindowTitle(tr("Simulator for Quadcopter"));
-
+    plot = new Plot(this);
     centralWidget = new QWidget(this);
-    setCentralWidget(centralWidget);
+    setCentralWidget(plot);
+/*
+    m_picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+                QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
+                plot->canvas());
+    m_picker->setStateMachine(new QwtPickerDragPointMachine());
+    m_picker->setRubberBandPen(QColor(Qt::green));
+    m_picker->setTrackerPen(QColor(Qt::white));
+    connect(m_picker, SIGNAL(moved(const QPoint &)), SLOT(pickerMoved(const QPoint &)));
+*/
+    m_panner = new QwtPlotPanner(plot->canvas());
+    m_panner->setMouseButton(Qt::LeftButton);
+    //glWidget = new GLWidget(centralWidget);
 
-    glWidget = new GLWidget(centralWidget);
-    //plot = new Plot(this);
     createMenu();
     createToolBar();
 
-
+    statusBar();
 }
 
 MainWindow::~MainWindow()
@@ -33,6 +49,14 @@ void MainWindow::newFile()
 void MainWindow::exit()
 {
 
+}
+
+void MainWindow::pickerMoved(const QPoint &pos)
+{
+    QString info;
+    
+    info.sprintf("x=%d, y=%d", pos.x(), pos.y());
+    statusBar()->showMessage(info, 200);
 }
 
 void MainWindow::about()
@@ -59,7 +83,7 @@ void MainWindow::createMenu()
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     m_aboutAction = new QAction(tr("&About"), this);
-    m_aboutAction->showStatusTip(tr("Show the application about infomation"));
+    m_aboutAction->setStatusTip(tr("Show the application about infomation"));
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
     helpMenu->addAction(m_aboutAction);
 
