@@ -19,6 +19,12 @@ public:
 
     virtual bool eventFilter(QObject *object, QEvent *event);
 
+signals:
+    void running(bool);
+    void started();
+    void paused();
+    void stopped();
+
 public slots:
     virtual void replot();
 
@@ -28,6 +34,8 @@ public slots:
 
 protected:
     virtual void timerEvent(QTimerEvent *);
+    virtual void widgetMouseMoveEvent(QMouseEvent *);
+    virtual void paintEvent(QPaintEvent *);
 
 private:
     QwtPlotGrid *m_grid;

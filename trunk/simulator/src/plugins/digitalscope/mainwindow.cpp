@@ -12,6 +12,8 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 #include <qwt_plot_panner.h>
+#include <qwt_plot_zoomer.h>
+
 
 MainWindow::MainWindow()
 {
@@ -32,8 +34,19 @@ MainWindow::MainWindow()
     m_panner->setMouseButton(Qt::LeftButton);
     //glWidget = new GLWidget(centralWidget);
 
+    m_zoomer = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft, plot->canvas());
+    m_zoomer->setTrackerMode(QwtPlotZoomer::ActiveOnly);
+    m_zoomer->setTrackerPen(QColor(Qt::white));
+    m_zoomer->setRubberBand(QwtPlotZoomer::RectRubberBand);
+    m_zoomer->setRubberBandPen(QColor(Qt::green));
     createMenu();
+//    createActions();
     createToolBar();
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
+    mainLayout->addWidget(plot);
+    mainLayout->addWidget(m_serialConnection);
+    centralWidget->setLayout(mainLayout);
 
     statusBar();
 }
@@ -66,6 +79,31 @@ void MainWindow::about()
            "<p>Copyright &copy; 2011 Open Robotics."
            "<p>Simulator is a cross-platform tools for building quadcopter."));
 }
+/*
+void enableZoomMode(bool on)
+{
+    m_zoomer[0]->setEnable(on);
+    m_zoomer[0]->zoom(0);
+}
+*/
+void MainWindow::zoomIn()
+{
+    m_zoomFactor += 1;
+    m_zoomer->zoom(m_zoomFactor);
+}
+
+void MainWindow::zoomOut()
+{
+    m_zoomFactor -= 1;
+    m_zoomer->zoom(m_zoomFactor);
+}
+
+void MainWindow::createActions()
+{
+    m_zoomAction = viewMenu->addAction(tr("Zoom"));
+    m_zoomAction->setStatusTip(tr(""));
+    connect(m_zoomAction, SIGNAL(toggled(bool)), m_zoomer, setEnabled(bool));
+}
 
 void MainWindow::createMenu()
 {
@@ -95,4 +133,5 @@ void MainWindow::createMenu()
 
 void MainWindow::createToolBar()
 {
+    viewMenu->addAction(dock->toggleViewAction());
 }
