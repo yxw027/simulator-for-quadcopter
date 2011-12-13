@@ -12,6 +12,7 @@ class GLWidget;
 class Plot;
 class QwtPlotPicker;
 class QwtPlotPanner;
+class QwtPlotZoomer;
 QT_END_NAMESPACE
 
 
@@ -30,11 +31,13 @@ public slots:
     void pickerMoved(const QPoint &);
 
     void about();
-
+//    void enableZoomMode(bool);
+    void zoomIn();
+    void zoomOut();
 protected:
     // virtual void changeEvent(QEvent *e);
     // virtual void closeEvent(QCloseEvent *event);
-
+    // virtual void contextMenuEvent(QContextMenuEvent *event);
 private:
     void createMenu();
     void createToolBar();
@@ -56,6 +59,7 @@ private:
     Plot *plot;
     QwtPlotPicker *m_picker;
     QwtPlotPanner *m_panner;
+    QwtPlotZoomer *m_zoomer;
 };
 
 #endif // MAINWINDOW_H

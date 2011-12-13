@@ -102,7 +102,27 @@ bool Plot::eventFilter(QObject *object, QEvent *event)
     if (!canvas())
         return false;
 
+    switch (event->type()) {
+    case QEvent::MouseMove:
+        widgetMouseMoveEvent((QMouseEvent *)event);
+        break;
+    default:
+        break;
+    }
+
     return QwtPlot::eventFilter(object, event);
+}
+
+void Plot::widgetMouseMoveEvent(QMouseEvent *mouseEvent)
+{
+    QPoint pos = mouseEvent->pos();
+    
+    replot();
+}
+
+virtual void paintEvent(QPaintEvent *paintEvent)
+{
+    Qwt::paintEvent(paintEvent);
 }
 
 void Plot::replot()
@@ -114,14 +134,21 @@ void Plot::start()
 {
     m_clock.start();
     m_timerId = startTimer(10);   // 0.01-second timer
+
+    emit started();
 }
 
 void Plot::pause()
 {
+    emit paused();
 }
 
 void Plot::stop()
 {
+    stopTimer();
+    m_clock.stop();
+
+    emit stopped();
 }
 
 void Plot::updateCurve()
