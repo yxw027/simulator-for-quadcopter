@@ -48,15 +48,5 @@ double ax, ay, az;
 
 double mx, my, mz;
 
-static ext_kalman_init(ext_kalman_t *self);
-static ext_kalman_predict(ext_kalman_t *self);
-static ext_kalman_correct(ext_kalman_t *self);
 
-/**
- * Assemble A matrix
- */
-static void make_A()
-{
-    A[0][0] = 1.0;
-    A[][]
-}
+
