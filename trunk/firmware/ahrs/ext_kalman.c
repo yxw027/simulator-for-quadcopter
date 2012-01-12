@@ -39,15 +39,16 @@ double P[7][7] = {
     { 0.1, 0.0, 0.0, 0.0 },
 };
 
-double Q[7][7] = { 0 };
-
 /* kalman gian */
 double K[7][3];
 
 /* process noise matrix */
 double W[7][7];
 
-/* measurement noise matrix */
+/* process noise covariance matrix */
+double Q[7][7] = { 0 };
+
+/* measurement noise covariance matrix */
 double R[3][3];
 
 /* angle error */
@@ -174,18 +175,14 @@ void propagate_state(double gx, double gy, double gz, double dt)
     pqr[0] = gx - x[4];
     pqr[1] = gy - x[5];
     pqr[2] = gz - x[6];
-    /* new quaternion estimate */     
+    /* new quaternion estimate */
     x[0] += (-q[1] * pqr[0] - q[2] * pqr[1] - q[3] * pqr[2]) * dt / 2;
-    x[1] += (q[0] * pqr[0] - q[3] * pqr[1] - q[2] * pqr[2]) * dt / 2;
+    x[1] += (q[0] * pqr[0] - q[3] * pqr[1] + q[2] * pqr[2]) * dt / 2;
     x[2] += (q[3] * pqr[0] + q[0] * pqr[1] - q[1] * pqr[2]) * dt / 2;
     x[3] += (q[2] * pqr[0] + q[1] * pqr[1] + q[0] * pqr[2]) * dt / 2;
 
     /* normalize */
-    for (i = 0; i < 4; i++)
-        mag += x[i] * x[i];
-    mag = sqrt(mag);
-    for (i = 0; i < 4; i++)
-        x[i] /= mag;
+    normalize(x, 4);
 
     /* bias estimate */
     x[4]
@@ -198,6 +195,7 @@ void propagate_state(double gx, double gy, double gz, double dt)
  */
 void propagate_covariance()
 {
+    make_A();
    double tA[49];
    double AP[49];
    double APtA[49];
