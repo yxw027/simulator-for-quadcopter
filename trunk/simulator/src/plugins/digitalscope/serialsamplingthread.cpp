@@ -1,4 +1,4 @@
-#include "serialsamplingthread.h"
+     #include "serialsamplingthread.h"
 #include "sensordata.h"
 
 #include <qextserialport.h>
@@ -12,7 +12,7 @@
 
 
 SerialSamplingThread::SerialSamplingThread(QObject *parent/*, QString &portName*/) :
-    QwtSamplingThread(parent), m_frequency(5.0), m_amplitude(1.0)
+    QwtSamplingThread(parent), m_frequency(5.0), m_amplitude(5.0)
 {/*
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     foreach(QextPortInfo portInfo, ports) {
@@ -23,11 +23,11 @@ SerialSamplingThread::SerialSamplingThread(QObject *parent/*, QString &portName*
             settings.Parity = PAR_NONE;
             settings.StopBits = STOP_1;
             settings.FlowControl = FLOW_OFF;
-        #ifdef Q_OS_WIN
+#ifdQ_OS_WIN
             port = new QextSerialPort(portInfo.portName, &settings, QextSerialPort::EventDriven);
-        #else
+#else
             port = new QextSerialPort(portInfo.physName, &settings, QextSerialPort::EventDriven);
-        #endif
+#endif
         }
     }
     m_isOpen = port->isOpen();
@@ -62,17 +62,26 @@ void SerialSamplingThread::setAmplitude(double amplitude)
     m_amplitude = amplitude;
 }
 
+QList<QextPortInfo> SerialSamplingThread::availableports()
+{
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+
+    return ports;
+}
+
 void SerialSamplingThread::read()
 {
     // Check the buffer
-    if (port->bytesAvailable() == 6)
-    QByteArray temp = port->readAll();
-    //qDebug() << "read:" << temp;
-    //emit sensorDataReady;
+    if (port->bytesAvailable() > 0) {
+        QByteArray temp = port->readAll();
+        //qDebug() << "read:" << temp;
+        //emit sensorDataReady;
+    }
 }
 
 void SerialSamplingThread::sample(double elapsed)
 {
+//  qDebug() << elapsed;
     if (m_frequency > 0.0) {
         const double period = 1.0 / m_frequency;
         const double x = ::fmod(elapsed, period);

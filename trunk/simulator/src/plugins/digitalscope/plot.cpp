@@ -6,11 +6,14 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_plot_layout.h>
+#include <qwt_scale_widget.h>
 #include <qwt_legend.h>
 #include <qwt_system_clock.h>
 #include <qwt_plot_directpainter.h>
 
 #include <QTimerEvent>
+#include <QMouseEvent>
 #include <QDebug>
 
 Plot::Plot(QWidget *parent) : QwtPlot(parent)
@@ -90,7 +93,8 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
     setAutoReplot(false);
 
     m_directPainter = new QwtPlotDirectPainter(this);
-    start();
+    m_serialSamplingThread.start();
+    this->installEventFilter(this);
 }
 
 Plot::~Plot()
@@ -106,6 +110,7 @@ bool Plot::eventFilter(QObject *object, QEvent *event)
     case QEvent::MouseMove:
         widgetMouseMoveEvent((QMouseEvent *)event);
         break;
+
     default:
         break;
     }
@@ -116,28 +121,45 @@ bool Plot::eventFilter(QObject *object, QEvent *event)
 void Plot::widgetMouseMoveEvent(QMouseEvent *mouseEvent)
 {
     QPoint pos = mouseEvent->pos();
-    
-    replot();
+    qDebug() << "widgetMouseMoveEvent" << pos;
+    //  rescale
+    /*for (int i; i < QwtPlot::axisCnt; i++) {
+        QwtScaleWidget *scaleWidget = axisWidget(i);
+        if (scaleWidget)
+            scaleWidget->setMargin(0);
+
+        QwtScaleDraw *scaleDraw = axisScaleDraw(i);
+        if (scaleDraw)
+            scaleDraw->enableComponent(QwtAbstractScaleDraw::Backbone, false);
+    }
+    plotLayout()->setAlignCanvasToScales(true);*/
+    //replot();
 }
 
-virtual void paintEvent(QPaintEvent *paintEvent)
+void Plot::paintEvent(QPaintEvent *paintEvent)
 {
-    Qwt::paintEvent(paintEvent);
+    QwtPlot::paintEvent(paintEvent);
 }
 
 void Plot::replot()
 {
     QwtPlot::replot();
 }
-
+/*
 void Plot::start()
 {
+    //m_serialSamplingThread.start();
     m_clock.start();
     m_timerId = startTimer(10);   // 0.01-second timer
 
     emit started();
 }
-
+*/
+/*
+void Plot::running(bool on)
+{
+}
+*/
 void Plot::pause()
 {
     emit paused();
@@ -145,8 +167,7 @@ void Plot::pause()
 
 void Plot::stop()
 {
-    stopTimer();
-    m_clock.stop();
+    //m_clock
 
     emit stopped();
 }
