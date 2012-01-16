@@ -131,9 +131,9 @@ void GLWidget::paintGL()
     glVertex3f(  1.0, -1.0, -1.0 );
     glEnd();
 
-    //glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
-    //glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
-    //glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
+//    glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
+//    glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
+//    glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
 
      /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
      glLoadIdentity();

@@ -17,6 +17,8 @@ SOURCES = \
     mainwindow.cpp \
     glwidget.cpp
 
+RESOURCES += digitalscope.qrc
+
 include(../../libs/3rdparty/qextserialport/qextserialport.pri)
 include(../../libs/3rdparty/qwt/qwt.pri)
 

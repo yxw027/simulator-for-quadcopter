@@ -1,6 +1,8 @@
 #ifndef PLOT_H
 #define PLOT_H
 
+#include "serialsamplingthread.h"
+
 #include <qwt_plot.h>
 #include <qwt_system_clock.h>
 
@@ -28,7 +30,7 @@ signals:
 public slots:
     virtual void replot();
 
-    void start();
+    //void running(bool);
     void pause();
     void stop();
 
@@ -46,7 +48,7 @@ private:
 
     int m_timerId;
     int m_paintedPoints;
-
+    SerialSamplingThread m_serialSamplingThread;
     void updateCurve();
 };
 

@@ -31,8 +31,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     MainWindow mainWindow;
-    SerialSamplingThread Serialthread;
-    Serialthread.start();
+
     mainWindow.setMinimumSize(640, 480);
     mainWindow.resize(800, 400);
     qDebug() << "stating...";

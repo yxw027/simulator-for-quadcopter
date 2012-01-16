@@ -1,10 +1,13 @@
 #ifndef SERIALSAMPLINGTHREAD_H
 #define SERIALSAMPLINGTHREAD_H
 
+#include <QList>
+
 #include <qwt_sampling_thread.h>
 
 QT_BEGIN_NAMESPACE
 class QextSerialPort;
+class QextPortInfo;
 QT_END_NAMESPACE
 
 class SerialSamplingThread : public QwtSamplingThread
@@ -17,6 +20,8 @@ public:
 
     double frequency() const;
     double amplitude() const;
+
+    QList<QextPortInfo> availableports();
 
 public slots:
     void setFrequency(double);
