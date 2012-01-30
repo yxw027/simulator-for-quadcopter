@@ -1,8 +1,16 @@
 #include "ahrs.h"
 
-AHRS_EKF::AhrsEKF()
+AHRS_EKF::AHRS_EKF()
 {
     setDim(7, 3, 3, 3, 3);
+    // initial state estimate
+    x(1) = 1.0;
+    x(2) = 0;
+    x(3) = 0;
+    x(4) = 0;
+    x(5) = 0;
+    x(6) = 0;
+    x(7) = 0;
 }
 
 void AHRS_EKF::makeA()
@@ -46,7 +54,7 @@ void AHRS_EKF::makeA()
     A(4, 7) = -quat[0] * dt / 2;
 }
 
-void makeH()
+void AHRS_EKF::makeH()
 {
     H(1, 1) = 1.0;
     H(1, 2) = 0;
@@ -81,11 +89,11 @@ void makeH()
     H(4, 7) = 0;
 }
 
-void makeV()
+void AHRS_EKF::makeV()
 {
 }
 
-void makeR()
+void AHRS_EKF::makeR()
 {
     R(1, 1) = measurement_noise_covariance;
     R(1, 2) = 0;
@@ -100,7 +108,7 @@ void makeR()
     R(3, 3) = measurement_noise_covariance;
 }
 
-void makeW()
+void AHRS_EKF::makeW()
 {
     W(1, 1) = 1.0;
     W(1, 2) = 0;
@@ -159,7 +167,7 @@ void makeW()
     W(7, 7) = 1.0; // TODO
 }
 
-void makeQ()
+void AHRS_EKF::makeQ()
 {
 }
 
@@ -184,6 +192,10 @@ void AHRS_EKF::makeProcess()
     x(2) = x(2) + state(2);
     x(3) = x(3) + state(3);
     x(4) = x(4) + state(4);
+    // gyro bias tracking not touched
+    x(5) = 0;
+    x(6) = 0;
+    x(7) = 0;
 }
 
 void AHRS_EKF::makeMeasure()
@@ -194,4 +206,24 @@ void AHRS_EKF::makeMeasure()
     z(4) = x(4);
 }
 
+void AHRS_EKF::predict()
+{
+    propagate_state();
+    propagate_covariance();
+}
 
+void AHRS_EKF::correct()
+{
+}
+
+void AHRS_EKF::step()
+{
+}
+
+void AHRS_EKF::propagate_state()
+{
+}
+
+void AHRS_EKF::propagate_covariance()
+{
+}
