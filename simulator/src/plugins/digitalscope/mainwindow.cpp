@@ -20,6 +20,7 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
 
+#include <qextserialport.h>
 
 MainWindow::MainWindow()
 {
@@ -67,6 +68,7 @@ MainWindow::MainWindow()
     mainLayout->addLayout(serialLayout);
     centralWidget->setLayout(mainLayout);
     //m_serialSamplingThread.start();
+
 }
 
 MainWindow::~MainWindow()
@@ -122,12 +124,12 @@ void MainWindow::serialConnection()
         m_connected = false;
         m_serialConnection->setText(tr("Connect"));
         m_combobox->setEnabled(true);
-//        emit closeSerialPort(m_combobox->currentText());
+        closeSerialPort(m_combobox->currentText());
     } else {
         m_connected = true;
         m_serialConnection->setText(tr("Disconnect"));
         m_combobox->setEnabled(false);
-//        emit openSerialPort(m_combobox->currentText());
+        openSerialPort(m_combobox->currentText());
     }
 }
 
@@ -190,4 +192,39 @@ void MainWindow::createToolBar()
     m_leftDockWidget->setWidget(glWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
     viewMenu->addAction(m_leftDockWidget->toggleViewAction());
+}
+
+void MainWindow::openSerialPort(const QString& name)
+{
+    port = new QextSerialPort(name, QextSerialPort::EventDriven);
+    port->setBaudRate(BAUD115200);
+    port->setFlowControl(FLOW_OFF);
+    port->setParity(PAR_NONE);
+    port->setDataBits(DATA_8);
+    port->setStopBits(STOP_1);
+
+    if (port->open(QIODevice::ReadOnly) == true) {
+        connect(port, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+        qDebug() << port->portName() << "Connected";
+    } else {
+        qDebug() << port->portName() << "failed to open:" << port->errorString();
+    }
+}
+
+void MainWindow::closeSerialPort(const QString& name)
+{
+
+}
+
+void MainWindow::onReadyRead()
+{
+    QByteArray bytes;
+    int a = port->bytesAvailable();
+    if (a > 32) {
+        bytes.resize(a);
+        port->read(bytes.data(), bytes.size());
+    //qDebug() << "bytes read:" << bytes.size();
+    //qDebug() << "bytes:" << bytes;
+        qDebug() << bytes;
+    }
 }

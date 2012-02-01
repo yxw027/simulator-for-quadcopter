@@ -16,6 +16,7 @@ class Plot;
 class QwtPlotPicker;
 class QwtPlotPanner;
 class QwtPlotZoomer;
+class QextSerialPort;
 QT_END_NAMESPACE
 
 
@@ -42,6 +43,7 @@ public slots:
     void zoomOut();
 
     void serialConnection();
+    void onReadyRead();
 protected:
     // virtual void changeEvent(QEvent *e);
     // virtual void closeEvent(QCloseEvent *event);
@@ -50,6 +52,9 @@ private:
     void createActions();
     void createMenu();
     void createToolBar();
+
+    void openSerialPort(const QString& name);
+    void closeSerialPort(const QString& name);
 
     QWidget *centralWidget;
 
@@ -77,6 +82,7 @@ private:
     QwtPlotPanner *m_panner;
     QwtPlotZoomer *m_zoomer;
 
+    QextSerialPort *port;
     bool m_connected;
 };
 
