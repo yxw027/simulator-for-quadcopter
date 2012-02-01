@@ -1,3 +1,3 @@
 INCLUDEPATH *= $$PWD
-LIBS *= -l$$qtLibraryName(ExtKalmanFilter)
+LIBS *= -l$$qtLibraryName(KalmanFilter)
 
