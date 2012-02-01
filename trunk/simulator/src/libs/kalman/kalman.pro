@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = ExtKalmanFilter
+TARGET = KalmanFilter
 
 DEFINES += EKF_LIBRARY
 include(../../simulatorlibrary.pri)
@@ -15,5 +15,5 @@ HEADERS += \
     ekfilter.hpp \
     ekfilter_impl.hpp
 
-win32:CONFIG(debug, debug|release):RC_FILE = qextserialportd_resource.rc
-else RC_FILE = qextserialport_resource.rc
+win32:CONFIG(debug, debug|release):RC_FILE = kalmanfilterd_resource.rc
+else RC_FILE = kalmanfilter_resource.rc
