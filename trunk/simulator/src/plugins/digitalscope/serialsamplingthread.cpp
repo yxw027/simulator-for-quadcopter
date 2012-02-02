@@ -79,6 +79,14 @@ void SerialSamplingThread::read()
     }
 }
 
+bool SerialSamplingThread::connect(QString portName)
+{
+}
+
+void SerialSamplingThread::disconnect()
+{
+}
+
 void SerialSamplingThread::sample(double elapsed)
 {
 //  qDebug() << elapsed;

@@ -42,6 +42,13 @@ static void qNormalizeAngle(int &angle)
         angle -= 360 * 16;
 }
 
+void GLWidget::setRPY(int roll, int pitch, int yaw)
+{
+    setYRotation(roll);
+    setXRotation(pitch);
+    setZRotation(yaw);
+}
+
 void GLWidget::setXRotation(int angle)
 {
     qNormalizeAngle(angle);
