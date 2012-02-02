@@ -219,12 +219,43 @@ void MainWindow::closeSerialPort(const QString& name)
 void MainWindow::onReadyRead()
 {
     QByteArray bytes;
-    int a = port->bytesAvailable();
-    if (a > 32) {
-        bytes.resize(a);
-        port->read(bytes.data(), bytes.size());
+    int available = port->bytesAvailable();
+    bytes.resize(available);
+    port->read(bytes.data(), bytes.size());
     //qDebug() << "bytes read:" << bytes.size();
     //qDebug() << "bytes:" << bytes;
-        qDebug() << bytes;
+    qDebug() << bytes;
+    // lock()
+    m_buffer += bytes;
+    // unlock()
+    if (m_buffer.size() > 7) {
+        emit packetAvailable();
+    }
+}
+
+void MainWindow::packetParser()
+{
+    while (!m_buffer.isEmpty() && m_buffer.size() > 7) {
+        if (m_buffer.contains("UFO")) {
+            index = m_buffer.indexOf("UFO");
+            QByteArrary type = m_buffer.mid(index + TYPE_OFFSET, TYPE_LEN);
+            QByteArrary size = m_buffer.mid(index + SIZE_OFFSET, SIZE_LEN);
+            QByteArrary data = m_buffer.mid(index + DATA_OFFSET, size);
+            packetHandler(type, size, data);
+            int packetLength = PACKET_LEN + size;
+            m_buffer.remove(0, packetLength);
+        }
+    }
+}
+
+void packetHandler(QByteArrary type, QByteArray size, QByteArray data)
+{
+    switch (type) {
+    case PKT_TYPE_SENSOR_ACCEL:
+    break;
+    case PKT_TYPE_SENSOR_GYRO:
+    break;
+    default:
+    break;
     }
 }

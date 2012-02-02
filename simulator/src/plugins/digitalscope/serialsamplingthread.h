@@ -28,6 +28,8 @@ public slots:
     void setAmplitude(double);
 
     void read();
+    bool connect(QString);
+    void disconnect();
 
 protected:
     virtual void sample(double elapsed);

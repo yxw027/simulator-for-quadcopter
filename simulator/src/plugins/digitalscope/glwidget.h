@@ -15,9 +15,7 @@ public:
     QSize sizeHint() const;
 
 public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-    void setZRotation(int angle);
+    void setRPY(int roll, int pitch, int yaw);
 
 signals:
     void xRotationChanged(int angle);
@@ -38,6 +36,9 @@ private:
     //QPoint lastPos;
     //QColor qtGreen;
     //QColor qtPurple;
+    void setXRotation(int angle);
+    void setYRotation(int angle);
+    void setZRotation(int angle);
 };
 
 #endif // GLWIDGET_H
