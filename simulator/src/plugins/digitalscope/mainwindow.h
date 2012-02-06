@@ -53,6 +53,7 @@ private:
     void createMenu();
     void createToolBar();
 
+    QStringList getPorts();
     void openSerialPort(const QString& name);
     void closeSerialPort(const QString& name);
 
