@@ -52,6 +52,11 @@ MainWindow::MainWindow()
 
     QHBoxLayout *serialLayout = new QHBoxLayout();
     m_combobox = new QComboBox();
+    if (m_combobox) {
+        QStringListModel *model = new QStringListModel();
+        model->setStringList(getPorts());
+        m_combobox->setMode(model);
+    }
     m_combobox->addItem(tr("COM1"));
     m_combobox->addItem(tr("COM2"));
     m_serialConnection = new QPushButton(tr("Connect"), this);
@@ -192,6 +197,22 @@ void MainWindow::createToolBar()
     m_leftDockWidget->setWidget(glWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
     viewMenu->addAction(m_leftDockWidget->toggleViewAction());
+}
+
+QStringList MainWindow::getPorts()
+{
+    QStringList list;
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+//    qSort(ports.begin(), ports.end(), sortPorts);
+    foreach(QextPortInfo port, ports) {
+#ifdef Q_OS_WIN
+        list.append(port.portName);
+#else
+        list.append(port.physName);
+#endif
+    }
+
+    return list;
 }
 
 void MainWindow::openSerialPort(const QString& name)
