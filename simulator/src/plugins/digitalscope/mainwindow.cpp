@@ -247,29 +247,38 @@ void MainWindow::onReadyRead()
     //qDebug() << "bytes:" << bytes;
     qDebug() << bytes;
     // lock()
-    m_buffer += bytes;
+    m_packetBuffer += bytes;
     // unlock()
-    if (m_buffer.size() > 7) {
+    if (m_packetBuffer.size() > 7) {
         emit packetAvailable();
     }
 }
 
+#define TYPE_OFFSET     3
+#define TYPE_LEN        1
+#define SIZE_OFFSET     4
+#define SIZE_LEN        1
+#define DATA_OFFSET     5
+#define CKECKSUM_LEN    2
+#define OFFSET_MAX      6
+
 void MainWindow::packetParser()
 {
-    while (!m_buffer.isEmpty() && m_buffer.size() > 7) {
-        if (m_buffer.contains("UFO")) {
-            index = m_buffer.indexOf("UFO");
-            QByteArrary type = m_buffer.mid(index + TYPE_OFFSET, TYPE_LEN);
-            QByteArrary size = m_buffer.mid(index + SIZE_OFFSET, SIZE_LEN);
-            QByteArrary data = m_buffer.mid(index + DATA_OFFSET, size);
-            packetHandler(type, size, data);
-            int packetLength = PACKET_LEN + size;
-            m_buffer.remove(0, packetLength);
+    while (!m_packetBuffer.isEmpty() && m_packetBuffer.size() > 7) {
+        if (m_packetBuffer.contains("UFO")) {
+            index = m_packetBuffer.indexOf("UFO");
+            QByteArrary type = m_packetBuffer.mid(index + TYPE_OFFSET, TYPE_LEN);
+            QByteArrary dataSize = m_packetBuffer.mid(index + SIZE_OFFSET, SIZE_LEN);
+            QByteArrary data = m_packetBuffer.mid(index + DATA_OFFSET, dataSize);
+            QByteArrary checksum = m_packetBuffer.mid(index + OFFSET_MAX + dataSize);
+            packetHandler(type, dataSize, data);
+            int packetLength = OFFSET_MAX + dataSize;
+            m_packetBuffer.remove(0, packetLength);
         }
     }
 }
 
-void packetHandler(QByteArrary type, QByteArray size, QByteArray data)
+void packetHandler(QByteArrary &type, QByteArray &size, QByteArray &data)
 {
     switch (type) {
     case PKT_TYPE_SENSOR_ACCEL:
