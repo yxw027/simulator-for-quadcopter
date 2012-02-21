@@ -3,8 +3,8 @@
 
 class AHRS_EKF : public Kalman::EKFilter<double, 7> {
 public:
-    AhrsEKF();
-    ~AhrsEKF();
+    AHRS_EKF();
+    ~AHRS_EKF();
 
 protected:
     virtual void makeA();
@@ -16,16 +16,9 @@ protected:
     virtual void makeProcess();
     virtual void makeMeasure();
 
-    virtual void predict();
-    virtual void correct();
-    virtual void step();
-
 private:
     Vector gyro(3);
     double measurement_noise_covariance;
-
-    void propagate_state();
-    void propagate_covariance();
 };
 
 typedef AHRS_EKF::Vector Vector;
