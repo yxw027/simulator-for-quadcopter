@@ -15,43 +15,46 @@ AHRS_EKF::AHRS_EKF()
 
 void AHRS_EKF::makeA()
 {
-    double p, q, r;
+    double q0 = x(1);
+    double q1 = x(2);
+    double q2 = x(3);
+    double q3 = x(4);
 
-    p = gyro(1) - x(5);
-    q = gyro(2) - x(6);
-    r = gyro(3) - x(7);
+    double p = gyro(1) - x(5);
+    double q = gyro(2) - x(6);
+    double r = gyro(3) - x(7);
 
     A(1, 1) = 1.0;
     A(1, 2) = -p * dt / 2;
     A(1, 3) = -q * dt / 2;
     A(1, 4) = -r * dt / 2;
-    A(1, 5) = quat[1]  * dt / 2;
-    A(1, 6) = quat[2]  * dt / 2;
-    A(1, 7) = quat[3] * dt / 2;
+    A(1, 5) = q1 * dt / 2;
+    A(1, 6) = q2 * dt / 2;
+    A(1, 7) = q3 * dt / 2;
 
     A(2, 1) = p * dt / 2;
     A(2, 2) = 1.0;
     A(2, 3) = r * dt / 2;
     A(2, 4) = -q * dt / 2;
-    A(2, 5) = -quat[0] * dt / 2;
-    A(2, 6) = quat[3] * dt / 2;
-    A(2, 7) = -quat[2] * dt / 2;
+    A(2, 5) = -q0 * dt / 2;
+    A(2, 6) = q3 * dt / 2;
+    A(2, 7) = -q2 * dt / 2;
 
     A(3, 1) = q * dt / 2;
     A(3, 2) = -r * dt / 2;
     A(3, 3) = 1.0;
     A(3, 4) = p * dt / 2;
-    A(3, 5) = -quat[3] * dt / 2;
-    A(3, 6) = -quat[0] * dt / 2;
-    A(3, 7) = quat[1] * dt / 2;
+    A(3, 5) = -q3 * dt / 2;
+    A(3, 6) = -q0 * dt / 2;
+    A(3, 7) = q1 * dt / 2;
 
     A(4, 1) = r * dt / 2;
     A(4, 2) = q * dt / 2;
     A(4, 3) = -p * dt / 2;
     A(4, 4) = 1.0;
-    A(4, 5) = quat[2] * dt / 2;
-    A(4, 6) = -quat[1] * dt / 2;
-    A(4, 7) = -quat[0] * dt / 2;
+    A(4, 5) = q2 * dt / 2;
+    A(4, 6) = -q1 * dt / 2;
+    A(4, 7) = -q0 * dt / 2;
 }
 
 void AHRS_EKF::makeH()
@@ -173,17 +176,21 @@ void AHRS_EKF::makeQ()
 
 void AHRS_EKF::makeProcess()
 {
-    double p, q, r;
     Vector state(x.size());
 
-    p = gyro(1) - x(5);
-    q = gyro(2) - x(6);
-    r = gyro(3) - x(7);
+    double p = u(1) - x(5);
+    double q = u(2) - x(6);
+    double r = u(3) - x(7);
 
-    state(1) = (-p * x[1] - q * x[2] - r * x[3]) * dt / 2;
-    state(2) = (p * x[0] - q * x[3] + r * x[2]) * dt / 2;
-    state(3) = (p * q[3] + q * x[0] - r * x[1]) * dt / 2;
-    state(4) = (-p * x[2] + q * x[1] + r * x[0]) * dt / 2;
+    double q0 = x(1);
+    double q1 = x(2);
+    double q2 = x(3);
+    double q3 = x(4);
+
+    state(1) = (-p * q1 - q * q2 - r * q3) * dt / 2;
+    state(2) = (p * q0 - q * q3 + r * q2) * dt / 2;
+    state(3) = (p * q3 + q * q0 - r * q1) * dt / 2;
+    state(4) = (-p * q2 + q * q1 + r * q0) * dt / 2;
     state(5) = 0;
     state(6) = 0;
     state(7) = 0;
@@ -192,10 +199,9 @@ void AHRS_EKF::makeProcess()
     x(2) = x(2) + state(2);
     x(3) = x(3) + state(3);
     x(4) = x(4) + state(4);
-    // gyro bias tracking not touched
-    x(5) = 0;
-    x(6) = 0;
-    x(7) = 0;
+    x(5) = x(5) + state(5);
+    x(6) = x(6) + state(6);
+    x(7) = x(7) + state(7);
 }
 
 void AHRS_EKF::makeMeasure()
@@ -204,26 +210,4 @@ void AHRS_EKF::makeMeasure()
     z(2) = x(2);
     z(3) = x(3);
     z(4) = x(4);
-}
-
-void AHRS_EKF::predict()
-{
-    propagate_state();
-    propagate_covariance();
-}
-
-void AHRS_EKF::correct()
-{
-}
-
-void AHRS_EKF::step()
-{
-}
-
-void AHRS_EKF::propagate_state()
-{
-}
-
-void AHRS_EKF::propagate_covariance()
-{
 }
