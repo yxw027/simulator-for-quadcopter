@@ -56,40 +56,37 @@ void AHRS_EKF::makeA()
     A(4, 6) = -q1 * dt / 2;
     A(4, 7) = -q0 * dt / 2;
 }
-
+// FIXME: wrong order
 void AHRS_EKF::makeH()
 {
-    H(1, 1) = 1.0;
-    H(1, 2) = 0;
-    H(1, 3) = 0;
-    H(1, 4) = 0;
+    double q0 = x(1);
+    double q1 = x(2);
+    double q2 = x(3);
+    double q3 = x(4);
+
+    H(1, 1) = (2 * DCM[2][2] * q1) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
+    H(1, 2) = 2 * (DCM[2][2] * q0 + 2 * DCM[1][2] * q1) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
+    H(1, 3) = 2 * (DCM[2][2] * q3 + 2 * DCM[1][2] * q2) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
+    H(1, 4) = (2 * DCM[2][2] * q2) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
     H(1, 5) = 0;
     H(1, 6) = 0;
     H(1, 7) = 0;
 
-    H(2, 1) = 0;
-    H(2, 2) = 1.0;
-    H(2, 3) = 0;
-    H(2, 4) = 0;
+    H(2, 1) = 2 * q2 / sqrt(1 - DCM[0][2] * DCM[0][2]);
+    H(2, 2) = -2 * q3 / sqrt(1 - DCM[0][2] * DCM[0][2]);
+    H(2, 3) = 2 * q0 / sqrt(1 - 2 * DCM[0][2] * DCM[0][2]);
+    H(2, 4) = -2 * q1 / sqrt(1 - DCM[0][2] * DCM[0][2]);
     H(2, 5) = 0;
     H(2, 6) = 0;
     H(2, 7) = 0;
 
-    H(3, 1) = 0;
-    H(3, 2) = 0;
-    H(3, 3) = 1.0;
-    H(3, 4) = 0;
+    H(3, 1) = 2 * DCM[0][0] * q3 / (DCM[0][0] * DCM[0][0] + DCM[0][1] * DCM[0][1]);
+    H(3, 2) = 2 * DCM[0][0] * q2 / (DCM[0][0] * DCM[0][0] + DCM[0][1] * DCM[0][1]);
+    H(3, 3) = 2 * (DCM[0][0] * q1 + 2 * DCM[0][1] * q2) / (DCM[0][0] * DCM[0][0] + DCM[0][1] * DCM[0][1]);
+    H(3, 4) = 2 * (DCM[0][0] * q0 + 2 * DCM[0][1] * q3) / (DCM[0][0] * DCM[0][0] + DCM[0][1] * DCM[0][1]);
     H(3, 5) = 0;
     H(3, 6) = 0;
     H(3, 7) = 0;
-
-    H(4, 1) = 0;
-    H(4, 2) = 0;
-    H(4, 3) = 0;
-    H(4, 4) = 1.0;
-    H(4, 5)  = 0;
-    H(4, 6)  = 0;
-    H(4, 7) = 0;
 }
 
 void AHRS_EKF::makeV()
@@ -206,8 +203,30 @@ void AHRS_EKF::makeProcess()
 
 void AHRS_EKF::makeMeasure()
 {
-    z(1) = x(1);
-    z(2) = x(2);
-    z(3) = x(3);
-    z(4) = x(4);
+    double q0 = x(1);
+    double q1 = x(2);
+    double q2 = x(3);
+    double q3 = x(4);
+
+    z(1) = atan2(2 * (q2 * q3 + q0 * q1), 1 - 2 * (q1 * q1 + q2 * q2));
+    z(2) = -asin(2 * (q1 * q3 - q0 * q2));
+    z(3) = atan2(2 * (q1 * q2 + q0 * q3), 1 - 2 * (q2 * q2 + q3 * q3));
+}
+
+void AHRS_EKF::makeDCM()
+{
+    double q0 = x(1);
+    double q1 = x(2);
+    double q2 = x(3);
+    double q3 = x(4);
+
+    DCM(0, 0) = 1 - 2 * (q2 * q2 + q3 * q3);
+    DCM(0, 1) = 2 * (q1 * q2 + q0 * q3);
+    DCM(0, 2) = 2 * (q1 * q3 - q0 * q2);
+    DCM(1, 0) = 2 * (q1 * q2 - q0 * q3);
+    DCM(1, 1) = 1 - 2 * (q1 * q1 + q3 * q3);
+    DCM(1, 2) = 2 * (q2 * q3 + q0 * q1);
+    DCM(2, 0) = 2 * (q1 * q3 + q0 * q2);
+    DCM(2, 1) = 2 * (q2 * q3 - q0 * q1);
+    DCM(2, 2) 1 - 2 * (q1 * q1 + q2 * q2);
 }
