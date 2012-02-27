@@ -56,13 +56,15 @@ void AHRS_EKF::makeA()
     A(4, 6) = -q1 * dt / 2;
     A(4, 7) = -q0 * dt / 2;
 }
-// FIXME: wrong order
+
 void AHRS_EKF::makeH()
 {
     double q0 = x(1);
     double q1 = x(2);
     double q2 = x(3);
     double q3 = x(4);
+
+    makeDCM();
 
     H(1, 1) = (2 * DCM[2][2] * q1) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
     H(1, 2) = 2 * (DCM[2][2] * q0 + 2 * DCM[1][2] * q1) / (DCM[2][2] * DCM[2][2] + DCM[1][2] * DCM[1][2]);
@@ -228,5 +230,5 @@ void AHRS_EKF::makeDCM()
     DCM(1, 2) = 2 * (q2 * q3 + q0 * q1);
     DCM(2, 0) = 2 * (q1 * q3 + q0 * q2);
     DCM(2, 1) = 2 * (q2 * q3 - q0 * q1);
-    DCM(2, 2) 1 - 2 * (q1 * q1 + q2 * q2);
+    DCM(2, 2) = 1 - 2 * (q1 * q1 + q2 * q2);
 }
