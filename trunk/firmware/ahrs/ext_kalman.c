@@ -1,12 +1,26 @@
 #include "ext_kalman.h"
 
-/* state vector */
-double x[7];
+/**
+ * @var x The state vector
+ * @brief \f x \f = \left[ q0 q1 q2 q3 bp bq br \right] \n
+ * where \n
+ * \f [ q0 q1 q2 q3]\hat:quaternion attitude representation \n
+ * \f[ bp bq br \f]:bias of rotation rate measurements \n
+ */
+static double x[7];
 
+/**
+ * @var z The measurement vector
+ * \f z \f = \f[ q0 q1 q2 q3 \f]
+ */
 double z[4] = { 0 };
 
-double u[3][3] = {
-    { 0.0, 0.0, 0.0 },  /* p q r */
+/**
+ * @var u The input vector
+ * \f u \f = \f[ p q r \f]
+ */
+double u[3] = {
+    0.0, 0.0, 0.0
 };
 
 /* transition matrix */
@@ -48,11 +62,14 @@ double W[7][7];
 /* process noise covariance matrix */
 double Q[7][7] = { 0 };
 
+/* measurement noise */
+double v[3];
+
 /* measurement noise covariance matrix */
 double R[3][3];
 
 /* angle error */
-double angle_err[3][1];
+double err[3][1];
 
 void ext_kalman_initial(ext_kalman_t *this)
 {
@@ -68,12 +85,24 @@ void ext_kalman_initial(ext_kalman_t *this)
         x[6] = ;
     }
     P[77];
+
+    R[0][0] = 0.01;
+    R[1][1] = 0.01;
+    R[2][2] = 0.01;
+
+    W[0][0] = process_quaternion_convariance;
+    W[1][1] = process_quaternion_convariance;
+    W[2][2] = process_quaternion_convariance;
+    W[3][3] = process_quaternion_convariance;
+    W[4][4] = process_bias_convariance;
+    W[5][5] = process_bias_convariance;
+    W[6][6] = process_bias_convariance;
 }
 
 void ext_kalman_predict(ext_kalman_t *this)
 {
     /* Project the state ahead */
-    propagate_state();
+    propagate_state(gyro, dt);
     /* Project the error covariance ahead */
     propagate_covariance();
 }
@@ -105,11 +134,16 @@ void ext_kalman_correct(ext_kalman_t *this)
     
 }
 
-void make_A(double dt)
+void make_A(double gyros[3], double dt)
 {
     double pdot[4];
+    double p, q, r;
 
     memset(A, 0, sizeof(A));
+
+    p = gyros[0];
+    q = gyros[1];
+    r = gyros[2];
 
     pdot[0] = x[0] * dt / 2;
     pdot[1] = x[1] * dt / 2;
@@ -117,28 +151,44 @@ void make_A(double dt)
     pdot[3] = x[3] * dt / 2;
 
     A[0][0] = 1.0;
-    A[0][4] = pdot[1];
-    A[0][5] = pdot[2];
-    A[0][6] = pdot[3];
+    A[0][1] = -p;
+    A[0][2] = -q;
+    A[0][3] = -r;
+    A[0][4] = q1 * dt / 2;
+    A[0][5] = q2 * dt / 2;
+    A[0][6] = q3 * dt / 2;
 
+    A[1][0] = p;
     A[1][1] = 1.0;
-    A[1][4] = -pdot[0];
-    A[1][5] = pdot[1]; //???
-    A[1][6] = -pdot[2];
+    A[1][2] = r;
+    A[1][3] = -q;
+    A[1][4] = -q0 * dt / 2;
+    A[1][5] = q3 * dt / 2;
+    A[1][6] = -q2 * dt / 2;
 
+    A[2][0] = q;
+    A[2][1] = -r;
     A[2][2] = 1.0;
-    A[2][4] = -pdot[3];
-    A[2][5] = -pdot[0];
-    A[2][6] = pdot[1];
+    A[2][3] = p;
+    A[2][4] = -q3 * dt / 2;
+    A[2][5] = -q0 * dt / 2;
+    A[2][6] = q1 * dt / 2;
 
+    A[3][0] = r;
+    A[3][1] = q;
+    A[3][2] = -p;
     A[3][3] = 1.0;
-    A[3][4] = pdot[2];
-    A[3][5] = -pdot[1];
-    A[3][6] = -pdot[0];
+    A[3][4] = q2 * dt / 2;
+    A[3][5] = -q1 * dt / 2;
+    A[3][6] = -q0 * dt / 2;
 
     A[4][4] = 1.0;
     A[5][5] = 1.0;
     A[6][6] = 1.0;
+#ifdef AHRS_DEBUG
+    matrix_t matrix = matrix_get(A);
+    matrix_print(matrix);
+#endif
 }
 
 void make_H()
@@ -149,6 +199,10 @@ void make_H()
     H[3][3] = 1.0;
 }
 
+void make_DCM()
+{
+}
+
 /**
  * @brief Propagate quaternion
  * @param gx x-axis gyro data, including bias
@@ -157,7 +211,7 @@ void make_H()
  * @param dt Delta between updates
  * @return None
  */
-void propagate_state(double gx, double gy, double gz, double dt)
+void propagate_state(double u[3], double dt)
 {
     int i;
     double mag = 0.0;
@@ -172,9 +226,9 @@ void propagate_state(double gx, double gy, double gz, double dt)
     x[2] = A[2][0] * q[0] + A[2][1] * q[1] + A[2][2] * q[2] + A[2][3] * q[3];
     x[3] = A[3][0] * q[0] + A[3][1] * q[1] + A[3][2] * q[2] + A[3][3] * q[3];
 */
-    pqr[0] = gx - x[4];
-    pqr[1] = gy - x[5];
-    pqr[2] = gz - x[6];
+    pqr[0] = u[0] - x[4];
+    pqr[1] = u[1] - x[5];
+    pqr[2] = u[2] - x[6];
     /* new quaternion estimate */
     x[0] += (-q[1] * pqr[0] - q[2] * pqr[1] - q[3] * pqr[2]) * dt / 2;
     x[1] += (q[0] * pqr[0] - q[3] * pqr[1] + q[2] * pqr[2]) * dt / 2;
@@ -182,7 +236,7 @@ void propagate_state(double gx, double gy, double gz, double dt)
     x[3] += (q[2] * pqr[0] + q[1] * pqr[1] + q[0] * pqr[2]) * dt / 2;
 
     /* normalize */
-    normalize(x, 4);
+    //normalize(x, 4);
 
     /* bias estimate */
     x[4]
@@ -201,5 +255,5 @@ void propagate_covariance()
    double APtA[49];
    // TODO
 //   P	= A*P*(A.transpose()) + W;
-
+    for ()
 }

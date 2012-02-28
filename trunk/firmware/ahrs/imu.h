@@ -20,6 +20,10 @@
 #include "bsp/gyro.h"
 #include "bsp/mag.h"
 
+#define AXIS_X      0
+#define AXIS_Y      1
+#define AXIS_Z      2
+#define AXIS_MAX    3
 
 /**
  * Convert euler to quaternion, for details see page \ref euler
