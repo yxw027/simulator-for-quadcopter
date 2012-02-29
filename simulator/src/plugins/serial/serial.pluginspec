@@ -1,1 +1,0 @@
-<plugin name="Serial" version="0.0.1" compatVersion="2.2.1">    <vendor>Open RL</vendor>    <copyright>(C) 2011 Open RL</copyright>    <license>GPLv2</license>    <description>A plugin that handle serial.</description>    <url>http://www.devbean.info</url>    <dependencyList>        <dependency name="Core" version="2.2.1"/>    </dependencyList></plugin>

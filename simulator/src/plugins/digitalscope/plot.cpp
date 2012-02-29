@@ -53,48 +53,48 @@ Plot::Plot(QWidget *parent) : QwtPlot(parent)
     mY->attach(this);
 
     // Insert curves
-    m_curve = new QwtPlotCurve(tr("Accelerometer_X"));
-    m_curve->setPen(QPen(Qt::red));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_ACCL_X] = new QwtPlotCurve(tr("Accelerometer_X"));
+    m_curve[SENSOR_ACCL_X]->setPen(QPen(Qt::red));
+    m_curve[SENSOR_ACCL_X]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_ACCL_X]->setData(new CurveData());
+    m_curve[SENSOR_ACCL_X]->attach(this);
 
-    m_curve = new QwtPlotCurve(tr("Accelerometer_Y"));
-    m_curve->setPen(QPen(Qt::green));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_ACCL_Y] = new QwtPlotCurve(tr("Accelerometer_Y"));
+    m_curve[SENSOR_ACCL_Y]->setPen(QPen(Qt::green));
+    m_curve[SENSOR_ACCL_Y]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_ACCL_Y]->setData(new CurveData());
+    m_curve[SENSOR_ACCL_Y]->attach(this);
 
-    m_curve = new QwtPlotCurve(tr("Accelerometer_Z"));
-    m_curve->setPen(QPen(Qt::blue));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_ACCL_Z] = new QwtPlotCurve(tr("Accelerometer_Z"));
+    m_curve[SENSOR_ACCL_Z]->setPen(QPen(Qt::blue));
+    m_curve[SENSOR_ACCL_Z]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_ACCL_Z]->setData(new CurveData());
+    m_curve[SENSOR_ACCL_Z]->attach(this);
 
-    m_curve = new QwtPlotCurve(tr("Gyroscope_X"));
-    m_curve->setPen(QPen(Qt::blue));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_GYRO_X] = new QwtPlotCurve(tr("Gyroscope_X"));
+    m_curve[SENSOR_GYRO_X]->setPen(QPen(Qt::blue));
+    m_curve[SENSOR_GYRO_X]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_GYRO_X]->setData(new CurveData());
+    m_curve[SENSOR_GYRO_X]->attach(this);
 
-    m_curve = new QwtPlotCurve(tr("Gyroscope_Y"));
-    m_curve->setPen(QPen(Qt::blue));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_GYRO_Y] = new QwtPlotCurve(tr("Gyroscope_Y"));
+    m_curve[SENSOR_GYRO_Y]->setPen(QPen(Qt::blue));
+    m_curve[SENSOR_GYRO_Y]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_GYRO_Y]->setData(new CurveData());
+    m_curve[SENSOR_GYRO_Y]->attach(this);
 
-    m_curve = new QwtPlotCurve(tr("Gyroscope_Z"));
-    m_curve->setPen(QPen(Qt::blue));
-    m_curve->setStyle(QwtPlotCurve::Lines);
-    m_curve->setData(new CurveData());
-    m_curve->attach(this);
+    m_curve[SENSOR_GYRO_Z] = new QwtPlotCurve(tr("Gyroscope_Z"));
+    m_curve[SENSOR_GYRO_Z]->setPen(QPen(Qt::blue));
+    m_curve[SENSOR_GYRO_Z]->setStyle(QwtPlotCurve::Lines);
+    m_curve[SENSOR_GYRO_Z]->setData(new CurveData());
+    m_curve[SENSOR_GYRO_Z]->attach(this);
 
     setAutoFillBackground(true);
     setAutoReplot(false);
 
     m_directPainter = new QwtPlotDirectPainter(this);
     m_serialSamplingThread.start();
-    this->installEventFilter(this);
+    installEventFilter(this);
 }
 
 Plot::~Plot()
@@ -172,9 +172,9 @@ void Plot::stop()
     emit stopped();
 }
 
-void Plot::updateCurve()
+void Plot::updateCurve(int index)
 {
-    CurveData *data = (CurveData *)m_curve->data();
+    CurveData *data = (CurveData *)m_curve[index]->data();
 
     data->values().lock();
 
@@ -184,7 +184,7 @@ void Plot::updateCurve()
         if (doClip) {
 
         }
-        m_directPainter->drawSeries(m_curve, m_paintedPoints - 1, m_paintedPoints);
+        m_directPainter->drawSeries(m_curve[index], m_paintedPoints - 1, m_paintedPoints);
         m_paintedPoints += 1;
     }
 
@@ -193,8 +193,22 @@ void Plot::updateCurve()
 
 void Plot::timerEvent(QTimerEvent *te)
 {
+    // update curve
     if (m_timerId == te->timerId()) {
-        updateCurve();
+        CurveData *data = (CurveData *)m_curve[SENSOR_GYRO_Z]->data();
+
+        data->values().lock();
+        const int numPoints = data->size();
+        if (numPoints > m_paintedPoints) {
+            const bool doClip = !canvas()->testAttribute(Qt::WA_PaintOnScreen);
+            if (doClip) {
+
+            }
+            m_directPainter->drawSeries(m_curve, m_paintedPoints - 1, m_paintedPoints);
+            m_paintedPoints += 1;
+        }
+
+        data->values().unlock();
     }
     QwtPlot::timerEvent(te);
 }
