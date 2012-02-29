@@ -29,9 +29,9 @@ public:
     }
 
     QReadWriteLock lock;
-    QMutex mutex;    
+    QMutex mutex;
     QVector<QPointF> values;
-    QVector<QPointF> pendingValues;    
+    QVector<QPointF> pendingValues;
     QRectF boundingRect;
 };
 
