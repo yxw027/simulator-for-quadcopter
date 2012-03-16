@@ -59,8 +59,15 @@ double u[3];
  * A is an \a n by \a n jacobian matrix of partial derivatives,
  * defined as follow :
  * \f[
- * A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} =
+ * A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = 1/2 *
  * \left [ \begin{array}{ccccccc}
+ * 0 & -p & -q & -r & q1 & q2 & q3 \\ \\
+ * p & 0 & r & -q & -q0 & q3 & -q2 \\ \\
+ * q & -r & 0 & p & -q3 & -q0 & q1 \\ \\
+ * r & q & -p & 0 & q2 & -q1 & -q0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 
  * \end{array} \right ]
  * \f]
  */
@@ -87,6 +94,20 @@ double Q[7][7];
 /* measurement noise covariance matrix */
 double R[3][3];
 double V[3][3];
+
+/**
+ * New quaternion estimate
+ *
+ * \f[ \left [ \begin{arrary}{c} x_0 x_1 x_2 x_3 x_4 x_5 x_6 \end{array} \right ] = 1/2 *
+ * \left [ \begin{array}{c}
+ * -p * x_1 -q * x_2 - r * x_3 \\ \\
+ * 
+ * \end{array} \right ]
+ * \f]
+ */
+static void make_process()
+{
+}
 
 void ahrs_init()
 {
