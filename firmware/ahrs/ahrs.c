@@ -70,6 +70,29 @@ double u[3];
  * \end{array} \right ] \f]
  */
 double A[7][7];
+static void make_A(double u[3])
+{
+    double q0 = x[0];
+    double q1 = x[1];
+    double q2 = x[2];
+    double q3 = x[3];
+
+    double p = u[0] - x[4];
+    double q = u[1] - x[5];
+    double r = u[2] - x[6];
+
+    double arrary[7][7] = {
+        { 0, -p, -q, -r,  q1,  q2,  q3 },
+        { p,  0,  r, -q, -q0,  q3, -q2 },
+        { q, -r,  0,  p, -q3, -q0,  q1 },
+        { r,  q, -p,  0,  q2, -q1, -q0 },
+        { 0,  0,  0,  0,   0,   0,  0  },
+        { 0,  0,  0,  0,   0,   0,  0  },
+        { 0,  0,  0,  0,   0,   0,  0  },
+    };
+
+    memcpy(A, array, sizeof(arrary));
+}
 
 /**
  * H is an \a m by \a n jacobian matrix of partial derivatives,
@@ -81,7 +104,26 @@ double A[7][7];
  * \f]
  */
 double H[3][7];
+double DCM[3][3];
+static void make_DCM()
+{
+    double q0 = x[0];
+    double q1 = x[1];
+    double q2 = x[2];
+    double q3 = x[3];
 
+    DCM[0][0] = 1 - 2 * (q2 * q2 + q3 * q3);
+    DCM[0][1] = 2 * (q1 * q2 + q0 * q3);
+    DCM[0][2] = 2 * (q1 * q3 - q0 * q2);
+    DCM[1][0] = 2 * (q1 * q2 - q0 * q3);
+    DCM[1][1] = 1 - 2 * (q1 * q1 + q3 * q3);
+    DCM[1][2] = 2 * (q2 * q3 + q0 * q1);
+    DCM[2][0] = 2 * (q1 * q3 + q0 * q2);
+    DCM[2][1] = 2 * (q2 * q3 - q0 * q1);
+    DCM[2][2] = 1 - 2 * (q1 * q1 + q2 * q2);
+}
+
+static void make_H();
 double P[7][7];
 /* kalman gian */
 double K[7][3];
@@ -106,7 +148,6 @@ double V[3][3];
  * 0 \\ \\
  * 0
  * \end{array} \right ] \f]
- *
  */
 static void make_process(double u[3], double dt)
 {
@@ -149,6 +190,17 @@ void ahrs_init()
 {
     init_IMU();
     ext_kalman_initial();
+}
+
+void ahrs_predict(double u[3], double dt)
+{
+    make_process(u, dt);
+    make_A(u);
+    make_P();
+}
+
+void ahrs_correct(double z[3])
+{
 }
 
 void ahrs_update()
