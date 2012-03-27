@@ -58,8 +58,7 @@ double u[3];
 /**
  * A is an \a n by \a n jacobian matrix of partial derivatives,
  * defined as follow :
- * \f[
- * A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = 1/2 *
+ * \f[ A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = 1/2 *
  * \left [ \begin{array}{ccccccc}
  * 0 & -p & -q & -r & q1 & q2 & q3 \\ \\
  * p & 0 & r & -q & -q0 & q3 & -q2 \\ \\
@@ -68,8 +67,7 @@ double u[3];
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 
- * \end{array} \right ]
- * \f]
+ * \end{array} \right ] \f]
  */
 double A[7][7];
 
@@ -100,13 +98,51 @@ double V[3][3];
  *
  * \f[ \left [ \begin{arrary}{c} x_0 x_1 x_2 x_3 x_4 x_5 x_6 \end{array} \right ] = 1/2 *
  * \left [ \begin{array}{c}
- * -p * x_1 -q * x_2 - r * x_3 \\ \\
- * 
- * \end{array} \right ]
- * \f]
+ * -p * x_1 - q * x_2 - r * x_3 \\ \\
+ * p * x_0 + r * x_2 - q * x_3 \\ \\
+ * q * x_0 - r * x_1 + p * x_3 \\ \\
+ * r * x_0 + q * x_1 - p * x_2 \\ \\
+ * 0 \\ \\
+ * 0 \\ \\
+ * 0
+ * \end{array} \right ] \f]
+ *
  */
-static void make_process()
+static void make_process(double u[3], double dt)
 {
+    double xdot[7];
+
+    double p = u[0] - x[4];
+    double q = u[1] - x[5];
+    double r = u[2] - x[6];
+
+    double q0 = x[0];
+    double q1 = x[1];
+    double q2 = x[2];
+    double q3 = x[3];
+
+    xdot[0] = (-p * q1 - q * q2 - r * q3) * dt / 2;
+    xdot[1] = (p * q0 - q * q3 + r * q2) * dt / 2;
+    xdot[2] = (p * q3 + q * q0 - r * q1) * dt / 2;
+    xdot[3] = (-p * q2 + q * q1 + r * q0) * dt / 2;
+    xdot[4] = 0;
+    xdot[5] = 0;
+    xdot[6] = 0;
+
+#ifdef AHRS_DEBUG
+#endif
+}
+
+static void make_measure()
+{
+    double q0 = x[0];
+    double q1 = x[1];
+    double q2 = x[2];
+    double q3 = x[3];
+
+    z[0] = atan2(2 * (q2 * q3 + q0 * q1), 1 - 2 * (q1 * q1 + q2 * q2));
+    z[1] = -asin(2 * (q1 * q3 - q0 * q2));
+    z[2] = atan2(2 * (q1 * q2 + q0 * q3), 1 - 2 * (q2 * q2 + q3 * q3));
 }
 
 void ahrs_init()
