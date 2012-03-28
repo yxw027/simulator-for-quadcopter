@@ -38,20 +38,20 @@ typedef struct gyro_sensor_t {
 } gyro_sensor_t;
 
 /**
- * Initialize gyroscope
+ * @brief Initialize gyroscope
  *
  * @return none
  */
 void gyro_hw_init();
 
 /**
- * Get gyro raw data
+ * @brief Update gyro sensor data
  *
- * @param pointer to gyro event
+ * @param val Where to store the sensor data
  *
  * @return 0 success, negative otherwise
  */
-int gyro_get_value(struct gyro_event_t *event);
+int gyro_update_value(uint16_t val[3]);
 
 /** @} */
 

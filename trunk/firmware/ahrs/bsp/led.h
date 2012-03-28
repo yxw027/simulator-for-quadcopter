@@ -6,6 +6,8 @@
 #ifndef _LED_H
 #define _LED_H
 
+#include "led_hw.h"
+
 /**
  * @addtogroup ORL
  * @{
@@ -45,13 +47,9 @@ void led_init(int led, enum led_state state);
  */
 void led_set(int led, enum led_state state);
 
-/**
- * portings
- */
-extern led_hw_init(led);
-extern led_hw_on(led);
-extern led_hw_off(led);
-extern led_hw_toggled(led);
+#define LED_ON(n)   led_hw_on(n)
+#define LED_OFF(n)  led_hw_off(n)
+#define LED_TOOGLE(n)   led_hw_toogle(n)
 
 /** @} */
 

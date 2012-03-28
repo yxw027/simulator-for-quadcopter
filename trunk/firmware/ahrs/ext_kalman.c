@@ -249,11 +249,17 @@ void propagate_state(double u[3], double dt)
  */
 void propagate_covariance()
 {
-    make_A();
-   double tA[49];
-   double AP[49];
-   double APtA[49];
-   // TODO
-//   P	= A*P*(A.transpose()) + W;
-    for ()
+    double AT[49];
+    double AP[49];
+
+    matrix_t a = matrix_get(A);
+    matrix_t at = matrix_get(AT);
+    matrix_t ap = matrix_get(AP);
+    matrix p = matrix_get(P);
+
+    matrix_transpose(at, a);
+
+    matrix_mult(ap, a, p);
+    matrix_mult(p, ap, at);
+    matrix_add(p, p, w);
 }

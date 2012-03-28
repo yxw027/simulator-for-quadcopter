@@ -1,3 +1,8 @@
+/**
+ * @file ekf.h
+ * @brief The Extended Kalman Filter interface
+ */
+
 #ifndef _EKF_H
 #define _EKF_H
 
@@ -6,13 +11,13 @@ struct ekf {
     double *P;  /**< state covariance matrix */
     double *Q;  /**< process covariance noise */
     double *R;  /**< measurement convariance noise */
-    double *F;  /**< jacobian of Xdot wrt X */
+    double *A;  /**< jacobian of Xdot wrt X */
     double *H;  /**< jacobian of measure wrt X */
     double *E;  /**< error matrix */
     double *K;  /**< kalman gain */
     void (*make_A)(void);
     void (*make_H)(void);
-    void (*make_process)(double *, double *, double *);
+    void (*make_process)(double *u, double *, double dt);
     void (*make_measure)(double *, double *, double *);
 };
 
@@ -43,11 +48,12 @@ void ekf_predict(struct ekf *filter, double u[], double dt);
  * measurement function
  *
  * @param filter
- * @param euler The attitude measurement
+ * @param measure The measurement
  *
  * @return None
  */
-void ekf_correct(struct ekf *filter, double euler[3]);
+void ekf_correct(struct ekf *filter, double measure[3]);
 
+void ekf_get_state(struct ekf *filter, double X[]);
 
 #endif /* _EKF_H */
