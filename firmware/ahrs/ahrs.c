@@ -3,6 +3,28 @@
  * @brief The AHRS implementation
  */
 
+#include "ahrs.h"
+
+/**
+ * N is the number of element in state vector
+ */
+#define N   7
+
+/**
+ * M is the number of measure
+ */
+#define M   3
+
+/**
+ * NW is the number of process noise random varibles
+ */
+#define NW  
+
+/**
+ * NV is the number of measure noise random variables
+ */
+#define NV
+
 /**
  * @a x is the state vector, and defined as follows:\n
  * \f[ x = \left [ \begin{array}{c}
@@ -31,7 +53,7 @@
  * \end{array} \right ] \f]
  * is the gyroscope bais.
  */
-double x[7];
+double x[N];
 
 /**
  * @a z is the measure vector \n
@@ -43,7 +65,7 @@ double x[7];
  * \f$ \theta \f$ is pitch angle \n
  * \f$ \psi \f$ is yaw angle
  */
-double z[3];
+double z[M];
 
 /**
  * input vector
@@ -69,7 +91,7 @@ double u[3];
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 
  * \end{array} \right ] \f]
  */
-double A[7][7];
+double A[N][N];
 static void make_A(double u[3])
 {
     double q0 = x[0];
@@ -81,17 +103,61 @@ static void make_A(double u[3])
     double q = u[1] - x[5];
     double r = u[2] - x[6];
 
-    double arrary[7][7] = {
-        { 0, -p, -q, -r,  q1,  q2,  q3 },
-        { p,  0,  r, -q, -q0,  q3, -q2 },
-        { q, -r,  0,  p, -q3, -q0,  q1 },
-        { r,  q, -p,  0,  q2, -q1, -q0 },
-        { 0,  0,  0,  0,   0,   0,  0  },
-        { 0,  0,  0,  0,   0,   0,  0  },
-        { 0,  0,  0,  0,   0,   0,  0  },
-    };
+    A[0][0] = 0;
+    A[0][1] = -p / 2;
+    A[0][2] = -q / 2;
+    A[0][3] = -r / 2;
+    A[0][4] = q1 / 2;
+    A[0][5] = q2 / 2;
+    A[0][6] = q3 / 2;
 
-    memcpy(A, array, sizeof(arrary));
+    A[1][0] = p / 2;
+    A[1][1] = 0;
+    A[1][2] = r / 2;
+    A[1][3] = -q / 2;
+    A[1][4] = -q0 / 2;
+    A[1][5] = q3 / 2;
+    A[1][6] = -q2 / 2;
+
+    A[2][0] = q / 2;
+    A[2][1] = -r / 2;
+    A[2][2] = 0;
+    A[2][3] = p / 2;
+    A[2][4] = -q3 / 2;
+    A[2][5] = -q0 / 2;
+    A[2][6] = q1 / 2;
+
+    A[3][0] = r / 2;
+    A[3][1] = q / 2;
+    A[3][2] = -p / 2;
+    A[3][3] = 0;
+    A[3][4] = q2 / 2;
+    A[3][5] = -q1 / 2;
+    A[3][6] = -q0 / 2;
+
+    A[4][0] = 0;
+    A[4][1] = 0;
+    A[4][2] = 0;
+    A[4][3] = 0;
+    A[4][4] = 0;
+    A[4][5] = 0;
+    A[4][6] = 0;
+
+    A[5][0] = 0;
+    A[5][1] = 0;
+    A[5][2] = 0;
+    A[5][3] = 0;
+    A[5][4] = 0;
+    A[5][5] = 0;
+    A[5][6] = 0;
+
+    A[6][0] = 0;
+    A[6][1] = 0;
+    A[6][2] = 0;
+    A[6][3] = 0;
+    A[6][4] = 0;
+    A[6][5] = 0;
+    A[6][6] = 0;
 }
 
 /**
@@ -192,11 +258,32 @@ void ahrs_init()
     ext_kalman_initial();
 }
 
+static void calculate_P()
+{
+    int i, j, k;
+    double AT[49];
+    double AP[49];
+    for (i = 0; i < N; i++) {
+        for (j = i; j < N; j++) {
+        }
+    }
+    matrix_t a = matrix_get(A);
+    matrix_t at = matrix_get(AT);
+    matrix_t ap = matrix_get(AP);
+    matrix p = matrix_get(P);
+
+    matrix_transpose(at, a);
+
+    matrix_mult(ap, a, p);
+    matrix_mult(p, ap, at);
+    matrix_add(p, p, w);
+}
+
 void ahrs_predict(double u[3], double dt)
 {
     make_process(u, dt);
     make_A(u);
-    make_P();
+    calculate_P();
 }
 
 void ahrs_correct(double z[3])
