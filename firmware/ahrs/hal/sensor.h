@@ -1,38 +1,44 @@
-struct sensor_t {
-	int id;
-	char *name;
-	/* ops */
-	int (*init)(struct sensor_t *sensor, void *arg);
-	int (*read)(char *buf, int len);
-	int (*write)(char *buf, int len);
-	int (*ioctl)(int cmd, void *arg);
+/**
+ * @file sensor.h
+ * @brief sensor IO interface
+ */
 
-	void *priv_data;
+/**
+ * sensor id
+ */ 
+#define SENSOR_ID_MIN       0
+#define SENSOR_ID_ACCEL     1
+#define SENSOR_ID_GYRO      2
+#define SENSOR_ID_MAG       3
+#define SENSOR_ID_MAX       4
+
+/**
+ * ioctl commands
+ */
+#define IOC_READ            0
+#define IOC_WRITE           1
+
+struct sensor_t {
+    int id;
+    char *name;
+    /* ops */
+    int (*init)(struct sensor_t *sensor, void *arg);
+    int (*read)(char *buf, int len);
+    int (*write)(char *buf, int len);
+    int (*ioctl)(int cmd, void *arg);
+
+    void *priv_data;
 };
 
-inline void *get_drv_data(struct sensor_t *sensor)
-{
-	return sensor->priv_data;
-}
+typedef struct sensor_event_t {
+    union {
+        x, y, z
+    } val;
+} sensor_event;
 
-inline void set_drv_data(struct sensor_t *sensor, void *data)
-{
-	sensor.priv_data = data;
-}
+int sensor_read(int id, char *buf, int len);
 
-#define SENSOR_INIT(sensor)	\
-	do {					\
-		int num = sizeof(sensor) / sizeof(sensor[0]);
-		int i;
-		for (i = 0; i < num; i++) {
-			sensor->init(sensor, sensor->priv_data);
-		}
-	} while(0)
-	
-	
-sensor_read(int id, char *buf, int len)
-{
-	if (id > SENSOR_ID_MAX)
-		return -E;
-	
-}
+int sensor_write(int id, char *buf, int len);
+
+int sensor_ioctl(int id, int cmd, void *arg);
+
