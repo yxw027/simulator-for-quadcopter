@@ -36,6 +36,17 @@
 #define M_PI  3.14
 // #define LIMIT(a, b)   
 
+/**
+ * Quaternion
+ */
+void quaternion2euler(double euler[3], double q[4]);
+void quaternion_normalize(double q[4]);
+
+/**
+ * Euler
+ */
+void euler2quaternion(double q[4], double euler[3]);
+
 /** @} */
 
 /** @} */
