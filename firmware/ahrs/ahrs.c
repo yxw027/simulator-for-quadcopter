@@ -35,30 +35,40 @@
  * bp \\ \\
  * bq \\ \\
  * br
- * \end{array} \right ] =
+ * \end{array} \right ] = \frac{1}{2} \Omega \cdot q = \frac{1}{2}
+ * \left [ \begin{array}{ccccccc}
+ * 0 & -p & -q & -r & 0 & 0 & 0 \\ \\
+ * p & 0 & r & -q & 0 & 0 & 0 \\ \\
+ * q & -r & 0 & p & 0 & 0 & 0 \\ \\
+ * r & q & -p & 0 & 0 & 0 & 0 
+ * \end{array} \right ]
  * \left [ \begin{array}{c}
- * x_{k-1} + TODO
+ * q0 \\ \\ q1 \\ \\ q2 \\ \\ q3 \\ \\ 0 \\ \\ 0 \\ \\ 0
+ * \end{array} \right ] = \frac{1}{2} \cdot
+ * \left [ \begin{array}{c}
+ * -p \cdot q1 - q \cdot q2 - r \cdot q3 \\ \\
+ * p  \cdot q0 + r  \cdot q2 - q  \cdot q3 \\ \\
+ * q \cdot q0 - r \cdot q1 + p \cdot q3 \\ \\
+ * r \cdot q0 + q \cdot q1 - p \cdot q2 \\ \\
+ * 0 \\ \\
+ * 0 \\ \\
+ * 0 
  * \end{array} \right ] \f]
- * where \f[ \left [ \begin{array}{c}
- * q0 \\ \\
- * q1 \\ \\
- * q2 \\ \\
- * q3
- * \end{array} \right ] \f]
+ * where \f[ {\left [ \begin{array}{cccc}
+ * q0 & q1 & q2 & q3
+ * \end{array} \right ]}^T \f]
  * is the quaternion and
- * \f[ \left [ \begin{array}{c}
- * bp \\ \\
- * bq \\ \\
- * br
- * \end{array} \right ] \f]
+ * \f[ {\left [ \begin{array}{ccc}
+ * bp & bq & br
+ * \end{array} \right ]}^T \f]
  * is the gyroscope bais.
  */
 double x[N];
 
 /**
- * @a z is the measure vector \n
+ * @a z is the measure vector
  * \f[ z = \left [ \begin{array}{c} \phi \\ \\ \theta \\ \\ \psi \end{array} \right ] =
- * left [ \begin{array}{c}
+ * \left [ \begin{array}{c}
  * atan(\frac{2(q2q3+q0q1)}{1-2(q1^2+q2^2)}) \\ \\ -asin(2(q1q3-q0q2)) \\ \\ atan(\frac{2(q1q2+q0q3)}{1-2(q2^2+q3^2)})
  * \end{array} \right ] \f]
  * where \f$ \phi \f$ is roll angle  \n
@@ -201,20 +211,6 @@ double Q[7][7];
 double R[3][3];
 double V[3][3];
 
-/**
- * New quaternion estimate
- *
- * \f[ \left [ \begin{arrary}{c} x_0 x_1 x_2 x_3 x_4 x_5 x_6 \end{array} \right ] = 1/2 *
- * \left [ \begin{array}{c}
- * -p * x_1 - q * x_2 - r * x_3 \\ \\
- * p * x_0 + r * x_2 - q * x_3 \\ \\
- * q * x_0 - r * x_1 + p * x_3 \\ \\
- * r * x_0 + q * x_1 - p * x_2 \\ \\
- * 0 \\ \\
- * 0 \\ \\
- * 0
- * \end{array} \right ] \f]
- */
 static void make_process(double u[3], double dt)
 {
     double xdot[7];
