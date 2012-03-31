@@ -20,16 +20,18 @@ struct event {
     int id;
     int axis;
     union {
-        double x, y, z;
-    } val;
-    union double x;
-    union double y;
-    union double z;
+        double x;
+        double y;
+        double z;
+        double val[3];
+        double gps[16];
+    };
 };
 
-#define ID_ACCEL    0
-#define ID_GYRO     1
-#define ID_MAG      2
+#define SENSOR_ID_ACCEL     0
+#define SENSOR_ID_GYRO      1
+#define SENSOR_ID_MAG       2
+#define SENSOR_ID_GPS       4
 
 #define AXIS_X      0
 #define AXIS_Y      1
