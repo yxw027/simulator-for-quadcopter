@@ -1,10 +1,10 @@
 /**
- * @file sys.h
+ * @file arch.h
  * @brief cpu core interface
  */
 
-#ifndef _SYS_H
-#define _SYS_H
+#ifndef _ARCH_H
+#define _ARCH_H
 
 /**
  * @addtogroup UFO
@@ -23,9 +23,10 @@
  * @param None
  * @return None
  */
-void SYS_Init();
+void ARCH_Init();
 
 /** @} */
 
 /** @} */
-#endif /* _SYS_H */
+
+#endif /* _ARCH_H */
