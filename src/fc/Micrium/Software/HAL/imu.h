@@ -44,7 +44,7 @@ struct event {
  * @param event The pointer to structrue
  * @return 0 success, otherwise negative error
  */
-int imu_update(struct event *event);
+int IMU_Update(struct event *event);
 
 /** @} */
 
