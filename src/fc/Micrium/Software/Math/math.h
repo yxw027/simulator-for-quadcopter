@@ -51,6 +51,7 @@
  * @return None
  */
 void quaternion2euler(double euler[3], double q[4]);
+void quaternion2matrix(double m[3][3], double q[4]);
 void quaternion_normalize(double q[4]);
 
 /**
