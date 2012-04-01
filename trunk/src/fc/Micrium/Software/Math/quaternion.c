@@ -35,6 +35,24 @@ void quaternion2euler(double euler[3], double q[4])
     euler[2] = psi;
 }
 
+void quaternion2matrix(double m[3][3], double q[4])
+{
+    double q0 = q[0];
+    double q1 = q[1];
+    double q2 = q[2];
+    double q3 = q[3];
+
+    m[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
+    m[0][1] = 2 * (q1 * q2 - q0 * q3);
+    m[0][2] = 2 * (q1 * q3 + q0 * q2);
+    m[1][0] = 2 * (q1 * q2 + q0 * q3);
+    m[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
+    m[1][2] = 2 * (q2 * q3 - q0 * q1);
+    m[2][0] = 2 * (q1 * q3 + q0 * q2);
+    m[2][1] = 2 * (q2 * q3 + q0 * q1);
+    m[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+}
+
 void quaternion_normalize(double q[4])
 {
     double norm;
