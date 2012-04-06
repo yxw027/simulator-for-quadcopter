@@ -1,0 +1,10 @@
+hardware:
+  MCU: STM32F103RET6
+  3-axis gyroscope: L3G4200D
+  3-axis accelerometer: ADXL345
+  3D magnetometer: HMC5883L
+  barometer: BMP085
+  GPS: optional
+
+feature:
+  TODO: need sch to fill this section
