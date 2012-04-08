@@ -16,26 +16,39 @@
  * @{
  */
 
-enum led_state {
-    LED_ON,         /**< turn led on */
-    LED_OFF,        /**< turn led off */
-    LED_TOGGLED     /**< toggled led */
-};
 
 /**
- * Initialize led
+ * @brief Initialize LEDs
  *
- * @param led The led gpio pin
- * @param state The led status
+ * @param None
  * @return None
  */
 void led_init(void);
 
-void led_on(ledno);
+/**
+ * @brief Turn on LED
+ *
+ * @param led The LED number
+ * @return None
+ */
+void led_on(led);
 
-void led_off(ledno);
+/**
+ * @brief Turn off LED
+ *
+ * @param led The LED number
+ * @return None
+ */
+void led_off(led);
 
-void led_toggle(ledno);
+/**
+ * @brief Toogle LED
+ *
+ * @param led The LED number
+ * @return None
+ */ 
+void led_toggle(led);
+
 
 /** @} */
 
