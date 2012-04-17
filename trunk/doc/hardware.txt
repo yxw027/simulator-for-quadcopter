@@ -1,5 +1,5 @@
 hardware:
-  MCU: STM32F103RET6
+  MCU: STM32F103CBT6
   3-axis gyroscope: L3G4200D
   3-axis accelerometer: ADXL345
   3D magnetometer: HMC5883L
@@ -7,4 +7,22 @@ hardware:
   GPS: optional
 
 feature:
+  9 Degrees of Fredom on a single board
+    L3G4200D - 3-axis gyroscope
+    ADXL345 - 3-axis accelerometer
+    HMC5883L - 3-axis magnetometer
+  3 status LEDs(R G B)
+  mini USB port
   TODO: need sch to fill this section
+
+modules:
+  power supply(power monitor)
+  gyroscope
+  accelerometer
+  magnetometer
+  remote control
+  servo
+  uart1/uart3
+  led
+  JTAG
+  miniUSB
