@@ -25,32 +25,8 @@
 #define AXIS_Z      2
 #define AXIS_MAX    3
 
-/**
- * Convert euler to quaternion, for details see page \ref euler
- *
- */
-/**
- * @brief Convert euler angle to quaternion
- * @param phi Roll angle in radians
- * @param theta Pitch angle in radians
- * @param psi Yaw angle in radians
- * @param quat quaternion vector
- * @return None
- */
-void euler2quat(double phi, double theta, double psi, double quat[]);
-/**
- * @brief Convert quaternion angle to euler
- * @param quat quaternion vector 
- * @param phi Roll angle in radians
- * @param theta Pitch angle in radians
- * @param psi Yaw angle in radians
- * @return None
- */
-void quat2euler(double quat[4], double euler[3]);
+int imu_update(struct sensor_event *event);
 
-int imu_get_accels(double value[]);
-int imu_get_gyros(double value[]);
-int imu_get_mags(double value[]);
 /**
  * @brief Calculate roll from acceleration
  * \f arctan(ay/ax) \f

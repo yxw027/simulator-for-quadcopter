@@ -15,7 +15,7 @@
  * @{
  */
 
-void quaternion2euler(double q[4], double euler[3])
+void quaternion2euler(double euler[3], double q[4])
 {
     double q0 = q[0];
     double q1 = q[1];
@@ -48,7 +48,7 @@ void quaternion_normalize(double q[4])
     q[0] = q0 / norm;
     q[1] = q1 / norm;
     q[2] = q2 / norm;
-    q[3] = q3 / norm; 
+    q[3] = q3 / norm;
 }
 
 /** @} */

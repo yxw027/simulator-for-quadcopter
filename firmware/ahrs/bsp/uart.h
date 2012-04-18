@@ -1,1 +1,40 @@
-/** * @file uart.h * @brief UART interface */#ifndef _UART_H#define _UART_H/** * @addtogroup ORL * @} *//** * @addtogroup HAL * @{ *//**  * @enum packet_type * packet type definitions  */enum packet_type {    GET_GYRO_DATA,  /**< Get gyroscope data */     GET_ACCL_DATA,  /**< Get accelerometor data */    PACKET_TYPE_MAX /** Max packet type */};/** * @def MAX_PACKET_LEN Max packet length */#define MAX_PACKET_LEN  28typedef struct uart_packet_t {    uint8_t type;                       /**< packet type */    uint8_t length;                     /**< packet length */    uint8_t buf[MAX_PACKET_LEN];        /**< buffer of the packet */} uart_packet_t;void uart_hw_init();/** * Send a packet to PC via uart * * @param packet The packet sent to uart * @return Return 0 if success, negetive otherwise * @note The packet length should not be greater than MAX_PACKET_LEN */int uart_packet_tx(struct uart_packet_t *packet);/** * Send a gyro packet to PC via uart * * @return Return 0 if success, negetive otherwise */int gyro_packet_tx();/** * stdio interface */putchar();printf(char *fmt, arg...);/** @} *//** @} */#endif /* _UART_H */
+/**
+ * @file uart.h
+ * @brief UART interface
+ */
+#ifndef _UART_H
+#define _UART_H
+
+/**
+ * @addtogroup kite
+ * @}
+ */
+
+/**
+ * @addtogroup BSP
+ * @{
+ */
+
+
+/**
+ * @brief Initialize UART ports
+ *
+ * @param None
+ * @return None
+ */
+void uart_init(void);
+
+#ifdef __GNUC__
+/* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
+
+
+/** @} */
+
+/** @} */
+
+#endif /* _UART_H */

@@ -36,8 +36,6 @@ void led_init(void)
 void led_on(int led)
 {
     int i = led;
-    if ((i < LED_NUM_BASE) || (i > LED_NUM_MAX))
-        return;
 
     switch (i) {
     case LED_NUM_1:
@@ -58,8 +56,6 @@ void led_on(int led)
 void led_off(int led)
 {
     int i = led;
-    if ((i < LED_NUM_BASE) || (i > LED_NUM_MAX))
-        return;
 
     switch (i) {
     case LED_NUM_1:
@@ -74,14 +70,12 @@ void led_off(int led)
         break;
     }
 
-    return;        
+    return;
 }
 
 void led_toogle(int led)
 {
     int i = led;
-    if ((i < LED_NUM_BASE) || (i > LED_NUM_MAX))
-        return;
 
     switch (i) {
     case LED_NUM_1:
@@ -90,7 +84,7 @@ void led_toogle(int led)
         break;
     case LED_NUM_2:
         uint8_t val = GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_5);
-        GPIO_WriteBit(GPIOA, GPIO_Pin_5, (1 - val));    
+        GPIO_WriteBit(GPIOA, GPIO_Pin_5, (1 - val));
         break;
     case LED_NUM_3:
         break;
