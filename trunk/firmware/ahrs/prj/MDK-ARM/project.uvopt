@@ -25,7 +25,7 @@
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
-      <CLKADS>25000000</CLKADS>
+      <CLKADS>8000000</CLKADS>
       <OPTTT>
         <gFlags>1</gFlags>
         <BeepAtEnd>1</BeepAtEnd>
@@ -79,11 +79,6 @@
       <Books>
         <Book>
           <Number>0</Number>
-          <Title>7</Title>
-          <Path>DATASHTS\ST\STM32F105</Path>
-        </Book>
-        <Book>
-          <Number>1</Number>
           <Title>Reference Manual</Title>
           <Path>DATASHTS\ST\STM32F10xxx.PDF</Path>
         </Book>
@@ -92,11 +87,11 @@
         <SimDllName>SARMCM3.DLL</SimDllName>
         <SimDllArguments></SimDllArguments>
         <SimDlgDllName>DARMSTM.DLL</SimDlgDllName>
-        <SimDlgDllArguments>-pSTM32F107VC</SimDlgDllArguments>
+        <SimDlgDllArguments>-pSTM32F103CB</SimDlgDllArguments>
         <TargetDllName>SARMCM3.DLL</TargetDllName>
         <TargetDllArguments></TargetDllArguments>
         <TargetDlgDllName>TARMSTM.DLL</TargetDlgDllName>
-        <TargetDlgDllArguments>-pSTM32F107VC</TargetDlgDllArguments>
+        <TargetDlgDllArguments>-pSTM32F103CB</TargetDlgDllArguments>
       </DllOpt>
       <DebugOpt>
         <uSim>0</uSim>
@@ -149,12 +144,12 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
-          <Name>-U68000019 -O14 -S0 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -N00("ARM CoreSight JTAG-DP") -D00(3BA00477) -L00(4) -N01("Unknown JTAG device") -D01(06418041) -L01(5) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F10x_CL -FS08000000 -FL040000</Name>
+          <Name>-U68000019 -O14 -S0 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -N00("ARM CoreSight JTAG-DP") -D00(3BA00477) -L00(4) -N01("Unknown JTAG device") -D01(06418041) -L01(5) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
-          <Name>-O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_CL -FS08000000 -FL040000)</Name>
+          <Name>-O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <DebugFlag>
@@ -218,8 +213,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\bsp\stm32f10x\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_cl.s</PathWithFileName>
-      <FilenameWithoutPath>startup_stm32f10x_cl.s</FilenameWithoutPath>
+      <PathWithFileName>..\..\bsp\stm32f10x\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_md.s</PathWithFileName>
+      <FilenameWithoutPath>startup_stm32f10x_md.s</FilenameWithoutPath>
     </File>
   </Group>
 
@@ -584,10 +579,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>9</ColumnNumber>
+      <ColumnNumber>46</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>5</CurrentLine>
+      <CurrentLine>15</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -598,7 +593,7 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>24</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
@@ -631,9 +626,9 @@
       <Documents>
         <Doc>
           <Name>..\main.c</Name>
-          <ColumnNumber>9</ColumnNumber>
+          <ColumnNumber>46</ColumnNumber>
           <TopLine>1</TopLine>
-          <CurrentLine>5</CurrentLine>
+          <CurrentLine>15</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>
