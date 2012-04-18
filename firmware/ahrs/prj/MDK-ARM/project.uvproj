@@ -384,19 +384,61 @@
       <Groups>
         <Group>
           <GroupName>bsp</GroupName>
+          <Files>
+            <File>
+              <FileName>led.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\bsp\led.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>bsp/stm32f10x</GroupName>
+          <Files>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\led.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>math</GroupName>
           <Files>
             <File>
-              <FileName>quaternion.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\math\quaternion.c</FilePath>
-            </File>
-            <File>
               <FileName>euler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\math\euler.c</FilePath>
+              <FilePath>..\..\math\euler.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>prj</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\stm32f10x_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32f10x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\system_stm32f10x.c</FilePath>
             </File>
           </Files>
         </Group>
