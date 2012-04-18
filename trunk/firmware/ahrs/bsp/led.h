@@ -6,50 +6,49 @@
 #ifndef _LED_H
 #define _LED_H
 
-#include "led_hw.h"
-
 /**
- * @addtogroup ORL
+ * @addtogroup kite
  * @{
  */
 
 /**
- * @addtogroup HAL
+ * @addtogroup BSP
  * @{
  */
 
-enum led_index {
-    LED_GREEN,
-    LED_RED
-};
-
-enum led_state {
-    LED_ON,         /**< turn led on */
-    LED_OFF,        /**< turn led off */
-    LED_TOGGLED     /**< toggled led */
-};
 
 /**
- * Initialize led hardware
+ * @brief Initialize LEDs
  *
- * @param led The led index
- * @param state The led status
+ * @param None
  * @return None
  */
-void led_init(int led, enum led_state state);
+void led_init(void);
 
 /**
- * Set led status
+ * @brief Turn on LED
  *
- * @param The led index
- * @param status The led status
+ * @param led The LED number
  * @return None
  */
-void led_set(int led, enum led_state state);
+void led_on(led);
 
-#define LED_ON(n)   led_hw_on(n)
-#define LED_OFF(n)  led_hw_off(n)
-#define LED_TOOGLE(n)   led_hw_toogle(n)
+/**
+ * @brief Turn off LED
+ *
+ * @param led The LED number
+ * @return None
+ */
+void led_off(led);
+
+/**
+ * @brief Toogle LED
+ *
+ * @param led The LED number
+ * @return None
+ */ 
+void led_toggle(led);
+
 
 /** @} */
 
