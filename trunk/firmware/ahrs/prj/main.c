@@ -41,5 +41,6 @@ int main()
             ext_kalman_predict();
             ext_kalman_correct();
             spi_write(buf, len);
+       }
     }
 }
