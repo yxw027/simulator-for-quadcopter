@@ -7,6 +7,8 @@
 #define _EKF_H
 
 struct ekf {
+    int n;      /**< state dimension */
+    int m;      /** measure dimension */
     double *X;  /**< state vector */
     double *P;  /**< state covariance matrix */
     double *Q;  /**< process covariance noise */
@@ -21,17 +23,17 @@ struct ekf {
     void (*make_measure)(double *, double *, double *);
 };
 
-struct ekf *ekf_new()
-#define DECLARE_EKF(name)  \
-    struct ekf name;
-    name.X = X;
-    name.P = P;
-    name.Q = Q;
-    name.R = R;
-    name.F = F;
-    name.H = H;
-    name.E = E;
-    name.K = K;
+/**
+ * @brief Initialize extended kalman filter
+ *
+ * @param filter The ekf to be initialized
+ * @param n The number of element in state vector
+ * @param m The number of element in measure vector
+ * @param Q The initial Q
+ * @param R The inital R
+ * @return None
+ */
+void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R);
 
 /**
  * time update function
@@ -48,7 +50,7 @@ void ekf_predict(struct ekf *filter, double u[], double dt);
  * measurement function
  *
  * @param filter
- * @param measure The measurement
+ * @param measure The measure vector
  *
  * @return None
  */

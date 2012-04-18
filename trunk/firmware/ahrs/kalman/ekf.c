@@ -1,5 +1,32 @@
 #include "ekf.h"
 
+
+void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R)
+{
+    /* X(nx1) */
+    filter->X = malloc(n * sizeof(double));
+    /* P(nxn) */
+    filter->P = malloc( n * n * sizeof(double));
+    /* Q(nxn) */
+    filter->Q = malloc(n * n *sizeof(double));
+    memcpy(filter->Q, Q, n * n * sizeof(double));
+    /* R(mxm) */
+    filter->R = malloc(m * m * sizeof(double));
+    memcpy(filter->R, R, m * m * sizeof(double));
+    /* A(nxn) */
+    filter->A = malloc(n * n * sizeof(double));
+    /* H(nxm) */
+    filter->H = malloc(n * m * sizeof(double));
+    /* K(nx1 */
+    filter->K = malloc(n * sizeof(double));
+
+    filter->n = n;
+    filter->m = m;
+
+    filter->make_process = make_process;
+    filter->make_measure = make_measure;
+}
+
 void ekf_predict(struct ekf *filter, double u[], double dt)
 {
     double Pdot[7];
@@ -14,7 +41,7 @@ void ekf_predict(struct ekf *filter, double u[], double dt)
     P[6] += Pdot[6] * dt;
 }
 
-void ekf_correct(struct ekf *filter, double angle[3])
+void ekf_correct(struct ekf *filter, double z[])
 {
     double euler[3];
 

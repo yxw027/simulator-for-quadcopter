@@ -36,6 +36,13 @@ typedef struct sensor_event_t {
     } val;
 } sensor_event;
 
+/**
+ * @brief Read from a buffer
+ *
+ * @param buf Where the data read from
+ * @param len
+ * @retval The bytes size read, negetive if error occurs
+ */
 int sensor_read(int id, char *buf, int len);
 
 int sensor_write(int id, char *buf, int len);

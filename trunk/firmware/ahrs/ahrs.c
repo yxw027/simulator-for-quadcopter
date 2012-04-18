@@ -284,6 +284,14 @@ void ahrs_predict(double u[3], double dt)
 
 void ahrs_correct(double z[3])
 {
+    int i;
+    double dz[3][1];
+    matrix mk = matrix_get(K);
+    matrix mdz = matrix_get(dz);
+    matrix mxdot = matrix_get(Xdot);
+
+    matrix_mult(mxdot, mk, mdz);
+    matrix_add(mx, mx, mxdot);
 }
 
 void ahrs_update()
