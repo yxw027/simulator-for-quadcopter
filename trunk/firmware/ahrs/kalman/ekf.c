@@ -1,13 +1,14 @@
 #include "ekf.h"
 
-
-void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R)
+struct ekf *ekf_new(int n, int m)
 {
+    struct ekf *ekf = malloc(sizeof(struct ekf));
+
     /* X(nx1) */
     filter->X = malloc(n * sizeof(double));
     /* P(nxn) */
     filter->P = malloc( n * n * sizeof(double));
-    /* Q(nxn) */
+    /* Q(nxn) ???*/
     filter->Q = malloc(n * n *sizeof(double));
     memcpy(filter->Q, Q, n * n * sizeof(double));
     /* R(mxm) */
@@ -15,14 +16,19 @@ void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R)
     memcpy(filter->R, R, m * m * sizeof(double));
     /* A(nxn) */
     filter->A = malloc(n * n * sizeof(double));
-    /* H(nxm) */
+    /* H(mxn) */
     filter->H = malloc(n * m * sizeof(double));
-    /* K(nx1 */
+    /* K(nxm) */
     filter->K = malloc(n * sizeof(double));
 
-    filter->n = n;
-    filter->m = m;
+    ekf->n = n;
+    ekf->m = m;
 
+    return ekf;
+}
+
+void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R)
+{
     filter->make_process = make_process;
     filter->make_measure = make_measure;
 }
