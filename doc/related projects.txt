@@ -1,0 +1,13 @@
+paparazzi
+    http://paparazzi.enac.fr/wiki/Main_Page
+    https://github.com/paparazzi/paparazzi
+
+OpenPilot
+    http://www.openpilot.org/
+
+openAHRS
+    https://github.com/cbecker/openahrs
+    
+Vicacopter
+    http://vicacopter.com/   
+    
