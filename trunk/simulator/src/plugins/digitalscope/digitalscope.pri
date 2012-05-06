@@ -5,7 +5,9 @@ HEADERS = \
     curvedata.h \
     sensordata.h \
     serialsamplingthread.h \
+    seriesdata.h \
     plot.h \
+    serialdialog.h \
     mainwindow.h \
     glwidget.h
 
@@ -13,7 +15,9 @@ SOURCES = \
     curvedata.cpp \
     sensordata.cpp \
     serialsamplingthread.cpp \
+    seriesdata.cpp \
     plot.cpp \
+    serialdialog.cpp \
     mainwindow.cpp \
     glwidget.cpp
 

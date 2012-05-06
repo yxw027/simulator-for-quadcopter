@@ -12,7 +12,7 @@
 
 
 SerialSamplingThread::SerialSamplingThread(QObject *parent/*, QString &portName*/) :
-    QwtSamplingThread(parent), m_frequency(5.0), m_amplitude(5.0)
+    QwtSamplingThread(parent), m_frequency(0.01), m_amplitude(5.0*2.0)
 {/*
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     foreach(QextPortInfo portInfo, ports) {
@@ -93,7 +93,7 @@ void SerialSamplingThread::sample(double elapsed)
     if (m_frequency > 0.0) {
         const double period = 1.0 / m_frequency;
         const double x = ::fmod(elapsed, period);
-        const double y = m_amplitude * qFastSin(x / period * 2 *M_PI);
+        const double y = 2.0 * qFastSin(x / period * 2 *M_PI);
         const QPointF point(elapsed, y);
         SensorData::instance().append(point);
     }
