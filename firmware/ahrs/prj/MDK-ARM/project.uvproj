@@ -346,7 +346,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\bsp\stm32f10x\Libraries\CMSIS\CM3\CoreSupport;..\..\bsp\stm32f10x\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\math;..\..\prj</IncludePath>
+              <IncludePath>..\..\bsp\stm32f10x\Libraries\CMSIS\CM3\CoreSupport;..\..\bsp\stm32f10x\Libraries\STM32F10x_StdPeriph_Driver\inc;..\..\math;..\..\prj;..\..\bsp</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -520,6 +520,13 @@
         </Group>
         <Group>
           <GroupName>bsp</GroupName>
+          <Files>
+            <File>
+              <FileName>sensors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\sensors.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>bsp/stm32f10x</GroupName>

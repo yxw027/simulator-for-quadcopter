@@ -1,4 +1,4 @@
-#include "sensor.h"
+#include "sensors.h"
 
 sensor_t *sensors[SENSOR_ID_MAX];
 
