@@ -11,24 +11,22 @@
 #define SENSOR_ID_MAG       2
 #define SENSOR_ID_MAX       3
 
-typedef struct sensor_event_t {
-    union {
-        float val[3];
-        struct {
-            float x, y, z;
-        };
+typedef union sensor_event {
+    float val[3];
+    struct {
+        float x, y, z;
     };
 } sensor_event_t;
 
-typedef struct sensor_t {
+typedef struct sensor {
     int id;
     char *name;
     /* ops */
-    int (*init)(sensor_t *sensor);
-    int (*read)(sensor_t *sensor, char *buf, int len);
-    int (*write)(sensor_t *sensor, char *buf, int len);
-    int (*ioctl)(sensor_t *sensor, int cmd, void *arg);
-    int (*poll)(sensor_t *sensor, sensor_event_t *event);
+    int (*init)(struct sensor *sensor);
+    int (*read)(struct sensor *sensor, char *buf, int len);
+    int (*write)(struct sensor *sensor, char *buf, int len);
+    int (*ioctl)(struct sensor *sensor, int cmd, void *arg);
+    int (*poll)(struct sensor *sensor, sensor_event_t *event);
 
     void *driv_data;
 } sensor_t;
