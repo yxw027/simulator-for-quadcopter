@@ -1,5 +1,5 @@
 #include "sensors.h"
-
+#define   EINVAL  1 
 sensor_t *sensors[SENSOR_ID_MAX];
 
 int sensor_read(int id, char *buf, int len)
