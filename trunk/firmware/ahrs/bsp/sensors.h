@@ -1,24 +1,51 @@
-#include "bsp/accel.h"
-#include "bsp/gyro.h"
-#include "bsp/mag.h"
+/**
+ * @file sensor.h
+ * @brief sensor IO interface
+ */
 
-#define SENSOR_TYPE_ACCEL
-#define SENSOR_TYPE_GYRO
-#define SENSOR_TYPE_MAG
-#define SENSOR_TYPE_GPS
+/**
+ * sensor ID definition
+ */
+#define SENSOR_ID_MIN       0
+#define SENSOR_ID_ACCEL     1
+#define SENSOR_ID_GYRO      2
+#define SENSOR_ID_MAG       3
+#define SENSOR_ID_MAX       4
 
-typedef struct sensor_event_t
-    int type;
-    uint32_t x;
-    uint32_t y;
-    uint32_t z;
+typedef struct sensor_event_t {
+    union {
+        float val[3];
+        struct {
+            float x, y, z;
+        };
+    };
 } sensor_event_t;
 
 typedef struct sensor_t {
-    int type;
+    int id;
     char *name;
-    int value[ACCEL_MAX];
-    uint32_t accel[ACCEL_MAX];
-    uint32_t gyro[GYRO_MAX];
-    uint32_t mag[MAG_MAX];
+    /* ops */
+    int (*init)(sensor_t *sensor);
+    int (*read)(sensor_t *sensor, char *buf, int len);
+    int (*write)(sensor_t *sensor, char *buf, int len);
+    int (*ioctl)(sensor_t *sensor, int cmd, void *arg);
+    int (*poll)(sensor_t *sensor, sensor_event_t *event);
+
+    void *driv_data;
 } sensor_t;
+
+
+/**
+ * @brief Read from a buffer
+ *
+ * @param buf Where the data read from
+ * @param len
+ * @retval The bytes size read, negetive if error occurs
+ */
+int sensor_read(int id, char *buf, int len);
+
+int sensor_write(int id, char *buf, int len);
+
+int sensor_ioctl(int id, int cmd, void *arg);
+
+int sensor_poll(int id, sensor_event_t *event);
