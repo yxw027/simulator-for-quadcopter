@@ -6,11 +6,10 @@
 /**
  * sensor ID definition
  */
-#define SENSOR_ID_MIN       0
-#define SENSOR_ID_ACCEL     1
-#define SENSOR_ID_GYRO      2
-#define SENSOR_ID_MAG       3
-#define SENSOR_ID_MAX       4
+#define SENSOR_ID_ACCEL     0
+#define SENSOR_ID_GYRO      1
+#define SENSOR_ID_MAG       2
+#define SENSOR_ID_MAX       3
 
 typedef struct sensor_event_t {
     union {
