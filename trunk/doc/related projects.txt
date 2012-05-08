@@ -9,5 +9,16 @@ openAHRS
     https://github.com/cbecker/openahrs
     
 Vicacopter
-    http://vicacopter.com/   
-    
+    http://vicacopter.com/
+
+German MK
+    http://www.mikrokopter.de/ucwiki/
+
+KK
+    www.kkmulticopter.com
+
+UAVP-NG
+    http://ng.uavp.ch/moin/FrontPage
+
+Autopilot
+    http://autopilot.sourceforge.net/
