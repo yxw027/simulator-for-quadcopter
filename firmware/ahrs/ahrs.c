@@ -228,30 +228,33 @@ static void stateEq(float u[3], float x[4], float xdot[4])
     xdot[3] = (-p * q2 + q * q1 + r * q0) / 2;
 }
 
-static void rk4(float u[3][3], float x[4], float xdot[4])
+static void rk4(float u[3][3], float x[4], float xdot[4], float h)
 {
     int i;
     float k1[4], k2[4], k3[4], k4[4];
-    float y0[4], y1[4], y2[4], y3[4], y4[4];
+    float y0[4], y1[4], y2[4], y3[4];
+    float y[4];
 
     for (i = 0; i < 4; i++)
-        y1[i] = x[i];
-    stateEq(u[0][0], y1, k1);
+        y0[i] = x[i];
+    stateEq(u[0][0], y0, k1);
 
     for (i = 0; i < 4; i++)
-        y2[i] = y1[i] + 1 / 2 * k1[i];
-    sateEq(u[1][0], y2, k2);
+        y1[i] = y0[i] + 1 / 2 * h * k1[i];
+    sateEq(u[1][0], y1, k2);
 
     for (i = 0; i < 4; i++)
-        y3[i] = y1[i] + 0.5 * k2[i];
-    stateEq(u[1][0], y3, k3);
+        y2[i] = y0[i] + 1 / 2 * h * k2[i];
+    stateEq(u[1][0], y2, k3);
 
     for (i = 0; i < 4; i++)
-        y4[i] = y1[i] + k3[i];
-    stateEq(u[2][0], y4, k4);
+        y3[i] = y0[i] + h * k3[i];
+    stateEq(u[2][0], y3, k4);
 
-    for ( i = 0; i < 4; i++)
-        xdot[i] = x[i] + 1 / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    for (i = 0; i < 4; i++) {
+        y[i] = y0[i] + 1 / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]) * h;
+        xdot[i] = y[i];
+    }
 }
 
 static void make_process(double u[3], double dt)
