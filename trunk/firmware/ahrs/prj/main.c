@@ -4,7 +4,7 @@
  */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-
+#include "uart.h"
 
 /**
   * @brief  Main program.
@@ -13,5 +13,10 @@
   */
 int main()
 {
-  while(1);
+  SystemInit();
+  uart_init();
+
+  while(1)
+  {
+  }
 }
