@@ -128,7 +128,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
+            <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -530,6 +530,13 @@
         </Group>
         <Group>
           <GroupName>bsp/stm32f10x</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f10x\stm32f10x_uart.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>math</GroupName>
