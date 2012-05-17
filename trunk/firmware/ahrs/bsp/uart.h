@@ -32,7 +32,6 @@ void uart_init(void);
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
-
 /** @} */
 
 /** @} */

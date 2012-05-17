@@ -13,7 +13,7 @@ uint8_t TxBuffer1[TxBufferSize1];
   * @param  None
   * @retval None
   */
-void USART1_Configuration(void)
+void USART1_Configuration(uint32_t BaudRate)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
@@ -33,7 +33,7 @@ void USART1_Configuration(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure);
   
   /*  USART1 configuration */
-  USART_InitStructure.USART_BaudRate = USART1_BaudRate;
+  USART_InitStructure.USART_BaudRate = BaudRate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -85,13 +85,18 @@ static void DMA_Configuration(void)
 void uart_init(void)
 {   
   /* Configraue USART1 */
-	USART1_Configuration();
+	USART1_Configuration(USART1_BaudRate);
   /* Configure USART1 TX DMA */        
 	DMA_Configuration();
   /* Enable USART1 DMA TX Channel */
   DMA_Cmd(DMA1_Channel4, ENABLE);    
 }
 
+/**
+  * @brief  uart send.
+  * @param  ch: data to be send
+  * @retval data send
+  */
 int uart_send(int ch)
 {
     DMA_Cmd(DMA1_Channel4, DISABLE);
@@ -105,3 +110,13 @@ int uart_send(int ch)
 
 }
 
+/**
+  * @brief  redefine the function putchar in stdio.h.
+  * @param  ch: data to be send
+  * @retval data send
+  */
+PUTCHAR_PROTOTYPE
+{
+  uart_send(ch);
+  return ch;
+}
