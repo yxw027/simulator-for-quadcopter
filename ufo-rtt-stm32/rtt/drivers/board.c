@@ -17,6 +17,7 @@
 
 #include "stm32f10x.h"
 #include "board.h"
+#include "led.h"
 
 /**
  * @addtogroup STM32
@@ -92,6 +93,8 @@ void rt_hw_board_init()
 #ifdef RT_USING_CONSOLE
 	rt_console_set_device(CONSOLE_DEVICE);
 #endif
+
+    led_init();
 }
 
 /*@}*/
