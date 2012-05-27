@@ -56,7 +56,7 @@ static void hw_led_off(int led)
     }
 }
 
-static void hw_led_toogle(int led)
+static void hw_led_toggle(int led)
 {
     switch (led) {
     case 0:
@@ -79,9 +79,9 @@ void led_off(int led)
     hw_led_off(led);
 }
 
-void led_toogle(int led)
+void led_toggle(int led)
 {
-    hw_led_toogle(led);
+    hw_led_toggle(led);
 }
 
 void leds_on(int leds)

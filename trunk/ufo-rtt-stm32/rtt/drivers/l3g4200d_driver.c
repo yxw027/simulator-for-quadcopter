@@ -7,8 +7,8 @@
 * Description        : L3G4200D driver file
 *                      
 * HISTORY:
-* Date               |	Modification                    |	Author
-* 22/03/2011         |	Initial Revision                |	Andrea Labombarda
+* Date               |    Modification                    |    Author
+* 22/03/2011         |    Initial Revision                |    Andrea Labombarda
 
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
@@ -31,12 +31,12 @@
 /* Private function prototypes -----------------------------------------------*/
 
 /*******************************************************************************
-* Function Name		: ReadReg
-* Description		: Generic Reading function. It must be fullfilled with either
-*					: I2C or SPI reading functions					
-* Input				: Register Address
-* Output			: Data REad
-* Return			: None
+* Function Name     : ReadReg
+* Description       : Generic Reading function. It must be fullfilled with either
+*                   : I2C or SPI reading functions
+* Input             : Register Address
+* Output            : Data REad
+* Return            : None
 *******************************************************************************/
 u8_t ReadReg(u8_t Reg, u8_t* Data) {
   
@@ -47,12 +47,12 @@ u8_t ReadReg(u8_t Reg, u8_t* Data) {
 }
 
 /*******************************************************************************
-* Function Name		: WriteReg
-* Description		: Generic Writing function. It must be fullfilled with either
-*					: I2C or SPI writing function
-* Input				: Register Address, Data to be written
-* Output			: None
-* Return			: None
+* Function Name     : WriteReg
+* Description       : Generic Writing function. It must be fullfilled with either
+*                   : I2C or SPI writing function
+* Input             : Register Address, Data to be written
+* Output            : None
+* Return            : None
 *******************************************************************************/
 u8_t WriteReg(u8_t Reg, u8_t Data) {
     
@@ -102,19 +102,19 @@ status_t SetMode(Mode_t md) {
                   
   switch(md) {
   
-  case POWER_DOWN:		
+  case POWER_DOWN:
     value &= 0xF7;
-    value |= (RESET<<PD);
+    value |= (MEMS_RESET<<PD);
     break;
           
   case NORMAL:
     value &= 0xF7;
-    value |= (SET<<PD);
+    value |= (MEMS_SET<<PD);
     break;
           
-  case SLEEP:		
+  case SLEEP:
     value &= 0xF0;
-    value |= ( (SET<<PD) | (RESET<<ZEN) | (RESET<<YEN) | (RESET<<XEN) );
+    value |= ( (MEMS_SET<<PD) | (MEMS_RESET<<ZEN) | (MEMS_RESET<<YEN) | (MEMS_RESET<<XEN) );
     break;
           
   default:
@@ -164,7 +164,7 @@ status_t SetFullScale(Fullscale_t fs) {
   if( !ReadReg(CTRL_REG4, &value) )
     return MEMS_ERROR;
                   
-  value &= 0xCF;	
+  value &= 0xCF;
   value |= (fs<<FS);
   
   if( !WriteReg(CTRL_REG4, value) )
@@ -210,7 +210,7 @@ status_t SetBLE(Endianess_t ble) {
   if( !ReadReg(CTRL_REG4, &value) )
     return MEMS_ERROR;
                   
-  value &= 0xBF;	
+  value &= 0xBF;
   value |= (ble<<BLE);
   
   if( !WriteReg(CTRL_REG4, value) )
