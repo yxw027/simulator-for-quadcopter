@@ -59,7 +59,8 @@
 /* SECTION: Device System */
 /* Using Device System */
 #define RT_USING_DEVICE
-#define RT_USING_UART1
+#define RT_USING_UART1	 
+#define RT_USING_USBVCP
 //#define RT_USING_UART5
 
 /* SECTION: Console options */
@@ -69,6 +70,7 @@
 
 /* SECTION: finsh, a C-Express shell */
 #define RT_USING_FINSH
+#define RT_FINSH_DEVICE  "usbvcp"
 /* Using symbol table */
 #define FINSH_USING_SYMTAB
 #define FINSH_USING_DESCRIPTION

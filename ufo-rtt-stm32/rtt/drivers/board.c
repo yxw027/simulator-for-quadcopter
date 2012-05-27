@@ -89,6 +89,9 @@ void rt_hw_board_init()
 
 	/* Configure the SysTick */
 	SysTick_Configuration();
+#ifdef RT_USING_USBVCP	
+	rt_hw_vcp_init();
+#endif
 
 	rt_hw_usart_init();
 #ifdef RT_USING_CONSOLE
