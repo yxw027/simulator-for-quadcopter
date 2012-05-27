@@ -18,6 +18,7 @@
 #include "stm32f10x.h"
 #include "board.h"
 #include "led.h"
+#include "gyroscope.h"
 
 /**
  * @addtogroup STM32
