@@ -6,4 +6,5 @@
   #warning "No gyroscope defined"  
 #endif
 
-extern void gyro_init();
+extern void gyro_init(void);
+

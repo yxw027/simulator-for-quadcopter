@@ -83,7 +83,7 @@ void rt_init_thread_entry(void* parameter)
 int rt_application_init()
 {
 	rt_thread_t tid;
-extern void led_thread_init(void);
+    extern void led_thread_init(void);
 	tid = rt_thread_create("init",
 								rt_init_thread_entry, RT_NULL,
 								2048, RT_THREAD_PRIORITY_MAX/3, 20);
@@ -91,7 +91,7 @@ extern void led_thread_init(void);
 	if (tid != RT_NULL)
 		rt_thread_startup(tid);
 
-  led_thread_init();
+    //led_thread_init();
 
 	return 0;
 }
