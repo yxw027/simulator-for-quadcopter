@@ -20,6 +20,8 @@
 #define LED_NUM_2       (1 << 1)
 #define LED_NUM_3       (1 << 2)
 
+#define LED_NUM_MAX     4
+
 #define LED_STATE_ON        0
 #define LED_STATE_OFF       1
 #define LED_STATE_TOOGLE    2
