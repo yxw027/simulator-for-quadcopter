@@ -191,12 +191,10 @@ void USART3_IRQHandler(void)
 
 void TIM1_UP_IRQHandler(void)
 {
-extern void led_toggle(int led);
-
-        //TIM_ClearFlag(TIM1,TIM_FLAG_Update);//   led_toggle(0);
-/*        GPIO_ResetBits(GPIOD,LED2);
-        GPIO_SetBits(GPIOD,LED1);        
-*/        
+    if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
+        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+        /* TODO: get gyro data */
+    }
 }
 
 /**
