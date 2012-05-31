@@ -36,7 +36,7 @@ static void TIM1_Config(void)
     /* TIM1 clock enable */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-    /* Enable the TIM1 global Interrupt */
+    /* Enable the TIM1 Update Interrupt */
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -48,7 +48,10 @@ static void TIM1_Config(void)
     TIM_TimeBaseStructure.TIM_Prescaler = (SystemCoreClock / 1000000) - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+
+    TIM_ClearFlag(TIM1, TIM_FLAG_Update);
 
     /* TIM1 IT enable */
     TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
@@ -63,5 +66,5 @@ void gyro_init()
     l3g4200d_init();
 #endif
 
-    TIM1_Config();    
+    TIM1_Config();
 }
