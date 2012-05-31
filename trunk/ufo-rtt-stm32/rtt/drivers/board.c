@@ -99,6 +99,7 @@ void rt_hw_board_init()
 #endif
 
     led_init();
+    gyro_init();
 }
 
 /*@}*/
