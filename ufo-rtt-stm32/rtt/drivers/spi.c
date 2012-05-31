@@ -1,5 +1,3 @@
-#include <stm32f10x.h>
-
 #include "spi.h"
 
 /**
@@ -56,4 +54,22 @@ void spi_init(void)
 
     /* Enable SPI_MASTER */
     SPI_Cmd(SPI_MASTER, ENABLE);    
+}
+
+u8 SPI_WriteByte(SPI_TypeDef *SPIx, u8 data)
+{
+    u8 Data = 0;
+
+    /* Wait until the transmit buffer is empty */
+    while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_TXE) == RESET);
+    /* Send the byte */
+    SPI_I2S_SendData(SPIx, data);
+
+    /* Wait until a data is received */
+    while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_RXNE) == RESET);
+    /* Get the received data */
+    Data = SPI_I2S_ReceiveData(SPIx);
+
+    /* Return the shifted data */
+    return Data;
 }
