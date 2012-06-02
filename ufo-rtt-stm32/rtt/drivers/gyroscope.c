@@ -6,6 +6,9 @@
   #include "l3g4200D_driver.h"
 #endif
 
+#define L3G4200D_Enable()   GPIO_ResetBits(GPIOA, GPIO_Pin_15)
+#define L3G4300D_Disable()  GPIO_SetBits(GPIOA, GPIO_Pin_15)
+
 #if SENSOR_GYROSCOPE == L3G4200D
 void l3g4200d_init()
 {
