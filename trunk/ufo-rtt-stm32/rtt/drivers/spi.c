@@ -22,14 +22,14 @@ static void GPIO_Configuration(void)
 
     /* Configure NSS, SCK and MOSI pins as Alternate Function Push Pull */
     GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_NSS | SPI_MASTER_PIN_SCK | SPI_MASTER_PIN_MOSI;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;    
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
 
     /* Configure MISO pin as Input Floating */
-    GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_MISO;    
+    GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_MISO;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);    
+    GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
 }
 
 void spi_init(void)
@@ -44,16 +44,16 @@ void spi_init(void)
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
     SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-    SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-    SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-    SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
+    SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+    SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+    SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
     SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
     SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;
     SPI_InitStructure.SPI_CRCPolynomial = 7;
     SPI_Init(SPI_MASTER, &SPI_InitStructure);
 
     /* Enable SPI_MASTER */
-    SPI_Cmd(SPI_MASTER, ENABLE);    
+    SPI_Cmd(SPI_MASTER, ENABLE);
 }
 
 u8 SPI_WriteByte(SPI_TypeDef *SPIx, u8 data)

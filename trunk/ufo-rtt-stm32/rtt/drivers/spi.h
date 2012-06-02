@@ -11,8 +11,8 @@
 #define SPI_MASTER_PIN_SCK          GPIO_Pin_5
 #define SPI_MASTER_PIN_MISO         GPIO_Pin_6
 #define SPI_MASTER_PIN_MOSI         GPIO_Pin_7
-  
-  
+
+
 #define SPI_ReadByte(SPIx)  SPI_WriteByte(SPIx, 0)
 
 u8 SPI_WriteByte(SPI_TypeDef *SPIx, u8 data);
