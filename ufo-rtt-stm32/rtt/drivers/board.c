@@ -18,6 +18,7 @@
 #include "stm32f10x.h"
 #include "board.h"
 #include "led.h"
+#include "spi.h"
 #include "gyroscope.h"
 
 /**
@@ -99,6 +100,7 @@ void rt_hw_board_init()
 #endif
 
     led_init();
+    spi_init();
     gyro_init();
 }
 
