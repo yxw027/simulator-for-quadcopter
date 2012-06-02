@@ -47,8 +47,8 @@ static void TIM1_Config(void)
     NVIC_Init(&NVIC_InitStructure);
 
     /* Configure TIM1 to generate interrupt each 2.5ms(400HZ) */
-    TIM_TimeBaseStructure.TIM_Period = 2500;
-    TIM_TimeBaseStructure.TIM_Prescaler = (SystemCoreClock / 1000000) - 1;
+    TIM_TimeBaseStructure.TIM_Period = 9999;//2500;
+    TIM_TimeBaseStructure.TIM_Prescaler = 7199;//(SystemCoreClock / 1000000) - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
@@ -70,4 +70,12 @@ void gyro_init()
 #endif
 
     TIM1_Config();
+}
+
+void read_id(void){
+u8 id;
+L3G4200D_Enable();
+id = SPI_WriteByte(SPI1, 0x0F);
+L3G4300D_Disable();
+rt_kprintf("%x\n", id);
 }

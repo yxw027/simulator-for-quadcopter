@@ -20,8 +20,11 @@ static void GPIO_Configuration(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
+    /* Disable the JTAG Port JTAG-DP & Enable SWJ-DP Port SWJ-DP */
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+
     /* Configure NSS, SCK and MOSI pins as Alternate Function Push Pull */
-    GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_NSS | SPI_MASTER_PIN_SCK | SPI_MASTER_PIN_MOSI;
+    GPIO_InitStructure.GPIO_Pin = /* SPI_MASTER_PIN_NSS | */SPI_MASTER_PIN_SCK | SPI_MASTER_PIN_MOSI;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
@@ -29,6 +32,10 @@ static void GPIO_Configuration(void)
     /* Configure MISO pin as Input Floating */
     GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_MISO;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
+    
+        GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_CS;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
 }
 
@@ -48,7 +55,7 @@ void spi_init(void)
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
     SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
     SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
-    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;
+    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_InitStructure.SPI_CRCPolynomial = 7;
     SPI_Init(SPI_MASTER, &SPI_InitStructure);
 
