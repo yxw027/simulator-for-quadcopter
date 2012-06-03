@@ -1,6 +1,8 @@
 #include <stm32f10x.h>
+#include <rtthread.h>
 
 #include "gyroscope.h"
+#include "spi.h"
 
 #if SENSOR_GYROSCOPE == L3G4200D
   #include "l3g4200D_driver.h"
@@ -47,8 +49,8 @@ static void TIM1_Config(void)
     NVIC_Init(&NVIC_InitStructure);
 
     /* Configure TIM1 to generate interrupt each 2.5ms(400HZ) */
-    TIM_TimeBaseStructure.TIM_Period = 9999;//2500;
-    TIM_TimeBaseStructure.TIM_Prescaler = 7199;//(SystemCoreClock / 1000000) - 1;
+    TIM_TimeBaseStructure.TIM_Period = 2000;//5;
+    TIM_TimeBaseStructure.TIM_Prescaler = 36000 - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
@@ -76,6 +78,7 @@ void read_id(void){
 u8 id;
 L3G4200D_Enable();
 id = SPI_WriteByte(SPI1, 0x0F);
+//id = SPI_WriteByte(SPI1,0x26);
 L3G4300D_Disable();
 rt_kprintf("%x\n", id);
 }
