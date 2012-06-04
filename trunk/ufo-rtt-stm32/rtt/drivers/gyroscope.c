@@ -74,11 +74,25 @@ void gyro_init()
     TIM1_Config();
 }
 
-void read_id(void){
-u8 id;
-L3G4200D_Enable();
-id = SPI_WriteByte(SPI1, 0x0F);
-//id = SPI_WriteByte(SPI1,0x26);
-L3G4300D_Disable();
-rt_kprintf("%x\n", id);
+u8 l3g4200d_read(u8 reg, u8 *data)
+{
+    u8 val;
+
+    L3G4200D_Enable();
+    SPI_WriteByte(SPI_MASTER, (1 << 7) | (1 << 6) | reg);
+    val = SPI_ReadByte(SPI_MASTER);
+    L3G4300D_Disable();
+
+    *data = val;
+    return 0;
+}
+
+u8 l3g4200d_write(u8 reg, u8 data)
+{
+    L3G4200D_Enable();
+    SPI_WriteByte(SPI_MASTER, (1 << 7) | (1 << 6) | reg);
+    SPI_WriteByte(data);
+    L3G4300D_Disable();
+
+    return 0;
 }

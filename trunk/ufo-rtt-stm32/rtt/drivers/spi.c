@@ -11,8 +11,7 @@ static void RCC_Configuration(void)
     RCC_PCLK2Config(RCC_HCLK_Div2);
 
     /* Enable SPI_SPI_MASTER clock and GPIO clock */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-    RCC_APB2PeriphClockCmd(SPI_MASTER_GPIO_CLK | SPI_MASTER_CLK/* | RCC_APB2Periph_AFIO*/, ENABLE);
+    RCC_APB2PeriphClockCmd(SPI_MASTER_GPIO_CLK | SPI_MASTER_CLK | RCC_APB2Periph_AFIO, ENABLE);
 }
 
 /**
@@ -26,7 +25,7 @@ static void GPIO_Configuration(void)
 
     /* Disable the JTAG Port JTAG-DP & Enable SWJ-DP Port SWJ-DP */
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-    // GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST, ENABLE);
+
     /* Enable SPI1 Pins Software Remapping */
     GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE);
 
@@ -56,7 +55,7 @@ void spi_init(void)
     RCC_Configuration();
 
     GPIO_Configuration();
-    // SPI_Cmd(SPI1,DISABLE);
+
     /* SPI_MASTER configuration */
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
