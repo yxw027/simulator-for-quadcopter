@@ -285,13 +285,13 @@ typedef enum {
 //STATUS REGISTER
 #define STATUS_REG                              0x27
 #define STATUS_REG_ZYXOR                        0x07    // 1    :    new data set has over written the previous one
-                            // 0    :    no overrun has occurred (default)
+                                                        // 0    :    no overrun has occurred (default)
 #define STATUS_REG_ZOR                          0x06    // 0    :    no overrun has occurred (default)
-                            // 1    :    new Z-axis data has over written the previous one
+                                                        // 1    :    new Z-axis data has over written the previous one
 #define STATUS_REG_YOR                          0x05    // 0    :    no overrun has occurred (default)
-                            // 1    :    new Y-axis data has over written the previous one
+                                                        // 1    :    new Y-axis data has over written the previous one
 #define STATUS_REG_XOR                          0x04    // 0    :    no overrun has occurred (default)
-                            // 1    :    new X-axis data has over written the previous one
+                                                        // 1    :    new X-axis data has over written the previous one
 #define STATUS_REG_ZYXDA                        0x03    // 0    :    a new set of data is not yet avvious one
                                                         // 1    :    a new set of data is available
 #define STATUS_REG_ZDA                          0x02    // 0    :    a new data for the Z-Axis is not availvious one

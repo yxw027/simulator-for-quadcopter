@@ -26,6 +26,8 @@
 #include <board.h>
 #include <rtthread.h>
 
+#include "l3g4200D_driver.h"
+
 /** @addtogroup Template_Project
   * @{
   */
@@ -191,12 +193,19 @@ void USART3_IRQHandler(void)
 
 void TIM1_UP_IRQHandler(void)
 {extern void led_toggle(int);
-extern void read_id(void);
+    uint8_t status = 0;
+    AngRateRaw_t buff;
     if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-        /* TODO: get gyro data */
         led_toggle(0);
-read_id();
+        //Polling data reading
+        //check if there is some data available
+        GetSatusReg(&status);
+        if (ValBit(status, DATAREADY_BIT)) {
+            //get x, y, z angular rate raw data
+            //the sensitivity is not applied yet
+            GetAngRateRaw(&buff);
+        }
     }
 }
 
