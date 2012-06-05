@@ -27,6 +27,8 @@
 #include <rtthread.h>
 
 #include "l3g4200D_driver.h"
+#include "gyroscope.h"
+#include "sensor.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -191,20 +193,28 @@ void USART3_IRQHandler(void)
 #endif
 }
 
+extern int gyro_isr(struct sensor_event *event);
 void TIM1_UP_IRQHandler(void)
-{extern void led_toggle(int);
+{
     uint8_t status = 0;
     AngRateRaw_t buff;
+
     if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-        led_toggle(0);
+
         //Polling data reading
         //check if there is some data available
         GetSatusReg(&status);
         if (ValBit(status, DATAREADY_BIT)) {
+            struct sensor_event event;
+
             //get x, y, z angular rate raw data
             //the sensitivity is not applied yet
             GetAngRateRaw(&buff);
+            event.vec.x = buff.x;
+            event.vec.y = -buff.y;
+            event.vec.z = -buff.z;
+            gyro_isr(&event);
         }
     }
 }
