@@ -39,10 +39,10 @@
 * Return            : None
 *******************************************************************************/
 u8_t ReadReg(u8_t Reg, u8_t* Data) {
-  
+  extern u8 l3g4200d_read(u8 reg, u8 *data);
   //To be completed with either I2c or SPI reading function
   //i.e.: *Data = SPI_Mems_Read_Reg( Reg );
-  
+  l3g4200d_read(Reg, Data);
   return 1;
 }
 
@@ -55,10 +55,10 @@ u8_t ReadReg(u8_t Reg, u8_t* Data) {
 * Return            : None
 *******************************************************************************/
 u8_t WriteReg(u8_t Reg, u8_t Data) {
-    
+  extern u8 l3g4200d_write(u8 reg, u8 data);
   //To be completed with either I2c or SPI writing function
   //i.e.: //SPI_Mems_Write_Reg(Reg, Data);
-  
+  l3g4200d_write(Reg, Data);
   return 1;
 }
 /* Private functions ---------------------------------------------------------*/

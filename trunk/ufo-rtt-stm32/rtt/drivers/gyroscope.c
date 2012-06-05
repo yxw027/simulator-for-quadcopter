@@ -15,16 +15,27 @@
 void l3g4200d_init()
 {
     //set the ODR and Bandwith
-    SetODR(ODR_100Hz_BW_12_5);
-
-    //enable all axis  
+    SetODR(ODR_400Hz_BW_110);
+    //enable all axis
     SetAxis(X_ENABLE | Y_ENABLE | Z_ENABLE);
-
     //set the fullscale
     SetFullScale(FULLSCALE_250);
-
     //set sensor mode
     SetMode(NORMAL);
+
+    //FIFO configuration
+    //set the fifo mode
+    FIFOModeEnable(FIFO_MODE);
+
+    //Check chip ID
+    {
+        u8 id;
+        l3g4200d_read(WHO_AM_I, &id);
+        if (id != I_AM_L3G4200D) {
+            rt_kprintf("Unkown Chip ID:%x\n", id);
+            return;
+        }
+    }
 }
 #endif
 
@@ -79,7 +90,7 @@ u8 l3g4200d_read(u8 reg, u8 *data)
     u8 val;
 
     L3G4200D_Enable();
-    SPI_WriteByte(SPI_MASTER, (1 << 7) | (1 << 6) | reg);
+    SPI_WriteByte(SPI_MASTER, SPI_READ | SPI_S | reg);
     val = SPI_ReadByte(SPI_MASTER);
     L3G4300D_Disable();
 
@@ -90,7 +101,7 @@ u8 l3g4200d_read(u8 reg, u8 *data)
 u8 l3g4200d_write(u8 reg, u8 data)
 {
     L3G4200D_Enable();
-    SPI_WriteByte(SPI_MASTER, (1 << 7) | (1 << 6) | reg);
+    SPI_WriteByte(SPI_MASTER, SPI_WRITE | SPI_S | reg);
     SPI_WriteByte(data);
     L3G4300D_Disable();
 
