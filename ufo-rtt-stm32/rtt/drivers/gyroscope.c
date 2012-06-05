@@ -102,7 +102,7 @@ u8 l3g4200d_write(u8 reg, u8 data)
 {
     L3G4200D_Enable();
     SPI_WriteByte(SPI_MASTER, SPI_WRITE | SPI_S | reg);
-    SPI_WriteByte(data);
+    SPI_WriteByte(SPI_MASTER, data);
     L3G4300D_Disable();
 
     return 0;
