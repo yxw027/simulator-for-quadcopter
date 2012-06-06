@@ -21,7 +21,7 @@ extern void gyro_init(void);
  *
  * @param reg The register read from
  * @param data The pointer to the data
- * @return 1 success, 0 error
+ * @return 0 success, negative error
  */
 u8 l3g4200d_read(u8 reg, u8 *data);
 
@@ -30,6 +30,6 @@ u8 l3g4200d_read(u8 reg, u8 *data);
  *
  * @param reg The register write to
  * @param data The data to be written
- * @return 1 success, 0 error
+ * @return 0 success, negative error
  */
 u8 l3g4200d_write(u8 reg, u8 data);
