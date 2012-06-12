@@ -52,15 +52,20 @@ static void ahrs_thread_entry(void *parameter)
 #define THREAD_TIMESLICE    30
 void ahrs_thread_init(void)
 {
-    rt_thread_t tid = RT_NULL;
+    static struct rt_thread tid; 
+    ALIGN(8) static unsigned char stack[THREAD_STACK_SIZE];
 
     /* Initialize mq */
     rt_mq_init(&mq_gyro, "mq_gyro", &msg_pool[0], sizeof(struct sensor_event), sizeof(msg_pool), RT_IPC_FLAG_FIFO);
 
     /* Create thread */
-    tid = rt_thread_create("ahrs", ahrs_thread_entry, RT_NULL, THREAD_STACK_SIZE, THREAD_PRIORITY, THREAD_TIMESLICE);
-    if (tid != RT_NULL)
-        rt_thread_startup(tid);
+    if(rt_thread_init(&tid, 
+						"ahrs", 
+						ahrs_thread_entry, 
+						RT_NULL,
+						&stack,THREAD_STACK_SIZE, 
+						THREAD_PRIORITY, THREAD_TIMESLICE) == RT_EOK)
+		rt_thread_startup(&tid);
 }
 
 int gyro_isr(struct sensor_event *event)
