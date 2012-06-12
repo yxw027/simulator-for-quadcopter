@@ -7,6 +7,8 @@
 
 #include <math.h>
 
+#include "quaternion.h"
+
 /**
  * @addtogroup ufo
  * @{

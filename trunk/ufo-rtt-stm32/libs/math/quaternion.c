@@ -83,6 +83,24 @@ void quat_mult(quat_t *l, quat_t *r, quat_t *out)
     out[3] = l[0] * r[3] + l[3] * r[0] + l[1] * r[2] - l[2] * r[1];
 }
 
+void quat2dcm(float q[4], float dcm[3][3])
+{
+    float q0 = q[0];
+    float q1 = q[1];
+    float q2 = q[2];
+    float q3 = q[3];
+
+    dcm[0][0] = q0 * q0 + q1 * q1 - q3 * q3 - q4 * q4;
+    dcm[0][1] = 2 * (q1 * q2 + q0 * q3);
+    dcm[0][2] = 2 * (q1 * q3 - q0 * q2);
+    dcm[1][0] = 2 * (q1 * q2 - q0 * q3);
+    dcm[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
+    dcm[1][2] = 2 * (q2 * q3 + q0 * q1);
+    dcm[2][0] = 2 * (q1 * q3 + q0 * q2);
+    dcm[2][1] = 2 * (q2 * q3 - q0 * q1);
+    dcm[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+}
+
 /** @} */
 
 /** @} */
