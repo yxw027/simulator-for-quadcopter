@@ -214,7 +214,8 @@ void TIM1_UP_IRQHandler(void)
             event.vec.x = buff.x;
             event.vec.y = -buff.y;
             event.vec.z = -buff.z;
-            gyro_isr(&event);
+            rt_kprintf("%x %x %x\n", buff.x, buff.y, buff.z);
+            //gyro_isr(&event);
         }
     }
 }

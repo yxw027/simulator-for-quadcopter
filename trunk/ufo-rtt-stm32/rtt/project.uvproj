@@ -345,7 +345,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD, USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.;Libraries\CMSIS\CM3\CoreSupport;Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;Libraries\STM32F10x_StdPeriph_Driver\inc;applications;drivers;rt-thread\components\finsh;rt-thread\include;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;.\drivers\usbvcp;.\Libraries\STM32_USB-FS-Device_Driver\inc</IncludePath>
+              <IncludePath>.;Libraries\CMSIS\CM3\CoreSupport;Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;Libraries\STM32F10x_StdPeriph_Driver\inc;applications;drivers;rt-thread\components\finsh;rt-thread\include;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;.\drivers\usbvcp;.\Libraries\STM32_USB-FS-Device_Driver\inc;..\libs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -399,6 +399,11 @@
               <FileName>thread_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\applications\thread_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>thread_ahrs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\thread_ahrs.c</FilePath>
             </File>
           </Files>
         </Group>
