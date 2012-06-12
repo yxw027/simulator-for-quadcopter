@@ -81,6 +81,17 @@ void quaternion_from_euler(struct euler_t *euler, struct quaternion_t *quad);
  */
 void quaternion_norm(struct quaternion_t *quaternion);
 
+/**
+ * @brief Convert the quaternion to a directional cosine matrix
+ *
+ * @param q The quaternion vector
+ * @param dcm The dcm matrix
+ * @return None
+ * @note The quaternion must be normlized
+ */
+void quat2dcm(float q[4], float dcm[3][3]);
+
+
 /** @} */
 
 /** @} */
