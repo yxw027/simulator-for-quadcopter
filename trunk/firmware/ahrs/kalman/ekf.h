@@ -1,42 +1,54 @@
 /**
  * @file ekf.h
  * @brief The Extended Kalman Filter interface
+ * @author gouqingsong@gmail.com
+ * @version v0.0.1
+ * @date 2011 - 2012
+ * @copyright GNU Public License Version 3
  */
 
 #ifndef _EKF_H
 #define _EKF_H
 
+#include "matrix.h"
+
 /**
- * @addtogroup kalman
+ * @defgroup kalman
  * @{
  */
 
 struct ekf {
-    double *X;  /**< Corrected state vector */
-    double *P;  /**< state covariance matrix */
-    double *A;  /**< A jacobian matrix */
-    double *H;  /**< A jacobian matrix */
-    double *V;  /**< A jacobian matrix */
-    double *R;  /**< Measurement noise convariance matrix */
-    double *W;  /**< A jacobian matrix */
-    double *Q;  /**< Process noise covariance matrix */
-    double *E;  /**< error matrix */
-    double *K;  /**< kalman gain */
+    matrix_t *X;  /**< Corrected state vector */
+    matrix_t *P;  /**< State covariance matrix */
+    matrix_t *A;  /**< A jacobian matrix */
+    matrix_t *H;  /**< A jacobian matrix */
+    matrix_t *V;  /**< Measurement noise matrix */
+    matrix_t *R;  /**< Measurement noise convariance matrix */
+    matrix_t *W;  /**< Process noise matrix */
+    matrix_t *Q;  /**< Process noise covariance matrix */
+
+    matrix_t *E;  /**< error matrix */
+    matrix_t *K;  /**< kalman gain */
+
+    matrix_t *Tnxm; /**< The nxm tmp matrix */
+    matrix_t *Tnxn; /**< The nxn tmp matrix */
+    matrix_t *Tmxm; /**< The mxm tmp matrix */
 
     int n;      /**< Size of the state vector */
-    int m;      /** Size of the measurement vector */
-    int nw;     /**< process noise random variables */
+    int m;      /**< Size of the measurement vector */
+    int nw;     /**< Size of the process noise vector */
     int nv;     /**< Size of the measurement noise vector */
-    
-    void (*make_A)(void);
-    void (*make_H)(void);
-    void (*make_V)();
-    void (*make_R)();
-    void (*make_W)();
-    void (*make_Q)();
-    void (*make_process)(double *u, double *, double dt);
-    void (*make_measure)(double *, double *, double *);
-    void (*callback)(struct ekf *ekf);
+
+    void (*make_A)(struct ekf *ekf);    /**< Assemble A matrix callback */
+    void (*make_H)(struct ekf *ekf);    /**< Assemble H matrix callback */
+    void (*make_V)(struct ekf *ekf);    /**< Assemble V matrix callback */
+    void (*make_R)(struct ekf *ekf);    /**< Assemble R matrix callback */
+    void (*make_W)(struct ekf *ekf);    /**< Assemble W matrix callback */
+    void (*make_Q)(struct ekf *ekf);    /**< Assemble Q matrix callback */
+    void (*make_P)(struct ekf *ekf);    /**< Assemble P matrix callback */
+    void (*make_process)(struct ekf *ekf);      /**< state predict callback */
+    void (*make_measure)(struct ekf *ekf);      /**< measure callback */
+    void (*callback)(struct ekf *ekf);          /**< user callback */
 
     void *data; /**< user data */
 };
@@ -46,9 +58,9 @@ struct ekf {
  *
  * @param n The number of element in state vector
  * @param m The number of measure
- * @return The pointer to the EKF
+ * @return The pointer to the EKF if success, NULL out of memory
  */
-struct ekf *ekf_new(int n, int m);
+struct ekf *ekf_new(int n, int m, int nw, int nv);
 
 /**
  * @brief Initialize extended kalman filter
@@ -60,17 +72,17 @@ struct ekf *ekf_new(int n, int m);
  * @param R The inital R
  * @return None
  */
-void ekf_init(struct ekf *filter, double *Q, double *R);
+void ekf_init(struct ekf *filter, matrix_t *Q, matrix_t *R);
 
 /**
  * @brief time update function
  *
- * @param filter The pointer 
+ * @param filter The pointer
  * @param u The input vector
  * @param dt The timeval between prediction
  *
  * @return None
- */ 
+ */
 void ekf_predict(struct ekf *filter, double u[], double dt);
 
 /**
