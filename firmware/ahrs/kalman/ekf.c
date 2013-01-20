@@ -77,40 +77,11 @@ void ekf_init(struct ekf *ekf, matrix_t *Q, matrix_t *R)
     if (R != NULL)
         ekf->R = R;
 }
-#if 0
-static void make_P(struct ekf *ekf/*, double dt*/)
-{
-    /*  
-     * continuous update
-     * Pdot = A * P + P * A' + Q 
-     */
-#ifdef EKF_UPDATE_CONTINUOUS
-    matrix_mult(ekf->Tnxn, ekf->A, ekf->P);
-    matrix_transpose(ekf->T1nxn, ekf->A);
-    matrix_mult(ekf->tnxn, ekf->P, ekf->T1nxn);
-    matrix_add(ekf->Pdot, ekf->Tnxn);
-    matrix_add(ekf->Pdot, ekf->tnxn);
-    matrix_add(ekf->Pdot, ekf->Q);
-#endif
-    /*  
-     * discrete update
-     * Pdot = A * P * A' + Q 
-     */
-#ifdef EKF_UPDATE_DISCRETE
-    matrix_transpose(ekf->Tnxn, ekf->A);
-    matrix_mult(ekf->T1nxn, ekf->A, ekf->P);
-    matrix_mult(ekf->tnxn, ekf->T1nxn, ekf->Tnxn);
-    matrix_add(ekf->Pdot, ekf->tnxn, ekf->Q);
-#endif
-    /* P = P + Pdot * dt */
-    matrix_smult(ekf->Pdot, dt);
-    matrix_add(ekf->P, ekf->P, ekf->Pdot);
-}
-#endif
+
 void ekf_predict(struct ekf *ekf, double u[], double dt)
 {
     ekf->make_A(ekf);
-    ekf->make_process(ekf/*, u, , dt*/);
+    ekf->make_process(ekf);
     ekf->make_P(ekf);
 }
 

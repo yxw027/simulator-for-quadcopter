@@ -46,16 +46,15 @@ struct ekf {
     void (*make_W)(struct ekf *ekf);    /**< Assemble W matrix callback */
     void (*make_Q)(struct ekf *ekf);    /**< Assemble Q matrix callback */
     void (*make_P)(struct ekf *ekf);    /**< Assemble P matrix callback */
-    void (*make_process)(struct ekf *ekf);      /**< state predict callback */
-    void (*make_measure)(struct ekf *ekf);      /**< measure callback */
-    void (*callback)(struct ekf *ekf);          /**< user callback */
+    void (*make_process)(struct ekf *ekf);  /**< state predict callback */
+    void (*make_measure)(struct ekf *ekf);  /**< measure callback */
+    void (*callback)(struct ekf *ekf);      /**< user callback */
 
     void *data; /**< user data */
 };
 
 /**
  * @brief EKF Constructor
- *
  * @param n The number of element in state vector
  * @param m The number of measure
  * @return The pointer to the EKF if success, NULL out of memory
@@ -64,7 +63,6 @@ struct ekf *ekf_new(int n, int m, int nw, int nv);
 
 /**
  * @brief Initialize extended kalman filter
- *
  * @param filter The ekf to be initialized
  * @param n The number of element in state vector
  * @param m The number of element in measure vector
@@ -76,27 +74,25 @@ void ekf_init(struct ekf *filter, matrix_t *Q, matrix_t *R);
 
 /**
  * @brief time update function
- *
  * @param filter The pointer
  * @param u The input vector
  * @param dt The timeval between prediction
- *
  * @return None
  */
 void ekf_predict(struct ekf *filter, double u[], double dt);
 
 /**
  * @brief measurement function
- *
  * @param filter
  * @param measure The measure vector
- *
  * @return None
  */
 void ekf_correct(struct ekf *filter, double measure[3]);
 
 void ekf_get_state(struct ekf *filter, double state[]);
+
 void *ekf_get_data(struct ekf *filter);
+
 void ekf_set_data(struct ekf *filter, void *data);
 
 /** @} */

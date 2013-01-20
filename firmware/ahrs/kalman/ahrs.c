@@ -7,7 +7,7 @@
 struct kalman_data {
 	double u[3];
 	double dt;
-	int unused; /* place holder */
+	double unused[3]; /* place holder */
 };
 
 static void make_A(struct ekf *ekf)
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 	struct kalman_data kdata;
 
 	ahrs_init(ekf, &kdata);
-//	ekf_predict();
-//	ekf_correct();
+    ekf_predict(ekf, kdata.u, kdata.dt);
+    ekf_correct(ekf, kdata.unused);
 	return 0;
 }
