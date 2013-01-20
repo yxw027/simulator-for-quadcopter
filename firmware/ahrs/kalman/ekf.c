@@ -1,61 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ekf.h"
 
-struct ekf *ekf_new(int n, int m)
+/**
+ * @addtogroup kalman
+ * @{
+ */
+
+struct ekf *ekf_new(int n, int m, int nw, int nv)
 {
     struct ekf *ekf = malloc(sizeof(struct ekf));
+    if (ekf) {
+        /* X(nx1) */
+        ekf->X = matrix_new(n, 1);
+        /* P(nxn) */
+        ekf->P = matrix_new(n, n);
+        /* A(nxn) */
+        ekf->A = matrix_new(n, n);
+        /* H(mxn) */
+        ekf->H = matrix_new(n, m);
+        /* V(nxnw) */
+        ekf->V = matrix_new(m, nv);
+        /* R(mxm) */
+        ekf->R = matrix_new(m, m);
+        /* W(nxnw) */
+        ekf->W = matrix_new(n, nw);
+        /* Q(nxn) */
+        ekf->Q = matrix_new(n, n);
+        /* E(?x?) */
+        /* K(nxm) */
+        ekf->K = matrix_new(n, m);
 
-    /* X(nx1) */
-    filter->X = malloc(n * sizeof(double));
-    /* P(nxn) */
-    filter->P = malloc( n * n * sizeof(double));
-    /* Q(nxn) ???*/
-    filter->Q = malloc(n * n *sizeof(double));
-    memcpy(filter->Q, Q, n * n * sizeof(double));
-    /* R(mxm) */
-    filter->R = malloc(m * m * sizeof(double));
-    memcpy(filter->R, R, m * m * sizeof(double));
-    /* A(nxn) */
-    filter->A = malloc(n * n * sizeof(double));
-    /* H(mxn) */
-    filter->H = malloc(n * m * sizeof(double));
-    /* K(nxm) */
-    filter->K = malloc(n * sizeof(double));
+        /* Tnxm(nxm) */
+        ekf->Tnxm = matrix_new(n, m);
+        /* Tnxn(nxn) */
+        ekf->Tnxn = matrix_new(n, n);
+        /* Tmxm(mxm) */
+        ekf->Tmxm = matrix_new(m, m);
 
-    ekf->n = n;
-    ekf->m = m;
+        ekf->n = n;
+        ekf->m = m;
+        ekf->nw = nw;
+        ekf->nv = nv;
+    }
 
     return ekf;
 }
 
-void ekf_init(struct ekf *filter, int n, int m, double *Q, double *R)
+void ekf_delete(struct ekf *ekf)
 {
-    filter->make_process = make_process;
-    filter->make_measure = make_measure;
+    if (ekf) {
+        if (ekf->X)
+            matrix_delete(ekf->X);
+        if (ekf->P)
+            matrix_delete(ekf->P);
+        if (ekf->Q)
+            matrix_delete(ekf->Q);
+        if (ekf->R)
+            matrix_delete(ekf->R);
+        if (ekf->A)
+            matrix_delete(ekf->A);
+        if (ekf->H)
+            matrix_delete(ekf->H);
+        if (ekf->K)
+            matrix_delete(ekf->K);
+
+        free(ekf);
+    }
 }
 
-void ekf_predict(struct ekf *filter, double u[], double dt)
+void ekf_init(struct ekf *ekf, matrix_t *Q, matrix_t *R)
 {
-    double Pdot[7];
-    filter->make_A();
-    filter->make_process(u, filter->X, dt);
-    P[0] += Pdot[0] * dt;
-    P[1] += Pdot[1] * dt;
-    P[2] += Pdot[2] * dt;
-    P[3] += Pdot[3] * dt;
-    P[4] += Pdot[4] * dt;
-    P[5] += Pdot[5] * dt;
-    P[6] += Pdot[6] * dt;
+    if (Q != NULL)
+        ekf->Q = Q;
+    if (R != NULL)
+        ekf->R = R;
+}
+#if 0
+static void make_P(struct ekf *ekf/*, double dt*/)
+{
+    /*  
+     * continuous update
+     * Pdot = A * P + P * A' + Q 
+     */
+#ifdef EKF_UPDATE_CONTINUOUS
+    matrix_mult(ekf->Tnxn, ekf->A, ekf->P);
+    matrix_transpose(ekf->T1nxn, ekf->A);
+    matrix_mult(ekf->tnxn, ekf->P, ekf->T1nxn);
+    matrix_add(ekf->Pdot, ekf->Tnxn);
+    matrix_add(ekf->Pdot, ekf->tnxn);
+    matrix_add(ekf->Pdot, ekf->Q);
+#endif
+    /*  
+     * discrete update
+     * Pdot = A * P * A' + Q 
+     */
+#ifdef EKF_UPDATE_DISCRETE
+    matrix_transpose(ekf->Tnxn, ekf->A);
+    matrix_mult(ekf->T1nxn, ekf->A, ekf->P);
+    matrix_mult(ekf->tnxn, ekf->T1nxn, ekf->Tnxn);
+    matrix_add(ekf->Pdot, ekf->tnxn, ekf->Q);
+#endif
+    /* P = P + Pdot * dt */
+    matrix_smult(ekf->Pdot, dt);
+    matrix_add(ekf->P, ekf->P, ekf->Pdot);
+}
+#endif
+void ekf_predict(struct ekf *ekf, double u[], double dt)
+{
+    ekf->make_A(ekf);
+    ekf->make_process(ekf/*, u, , dt*/);
+    ekf->make_P(ekf);
 }
 
-void ekf_correct(struct ekf *filter, double z[])
+void ekf_correct(struct ekf *ekf, double z[])
 {
-    double euler[3];
-
-    K =;
-    quat2euler(X, euler);
-    err[0] = angle[0] - euler[0];
-    err[1] = angle[1] - euler[1];
-    err[2] = angle[2] - euler[2];
-    filter->make_H();
-    filter->make_measure();
+    ekf->make_H(ekf);
+    ekf->make_measure(ekf);
 }
+
+void *ekf_get_data(struct ekf *ekf)
+{
+    return ekf->data;
+}
+
+void ekf_set_data(struct ekf *ekf, void *data)
+{
+    ekf->data = data;
+}
+
+/**
+ * @}
+ */
