@@ -32,8 +32,8 @@ static void make_A(struct ekf *ekf)
         { q, -r,  0,  p, -q3, -q0,  q1 },
         { r,  q, -p,  0,  q2, -q1, -q0 },
         { 0,  0,  0,  0,   0,   0,   0 },
-        { 0,  0,  0,  0,   0,   1,   0 },
-        { 0,  0,  0,  0,   0,   0,   1 },
+        { 0,  0,  0,  0,   0,   0,   0 },
+        { 0,  0,  0,  0,   0,   0,   0 },
     };
     memset(X->data, 0, X->rows * X->cols * sizeof(double));   //??????????????????
     memcpy(X->data, array, X->rows * X->cols * sizeof(double)); //?????????????
