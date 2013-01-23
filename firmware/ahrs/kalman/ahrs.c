@@ -58,6 +58,29 @@ static void make_R(struct ekf *ekf)
 
 static void make_W(struct ekf *ekf)
 {
+    /* FIXME: No idea about this */
+    matrix_t *w = ekf->W;
+    double q0 = M_INDEX(x, 0, 0);
+    double q1 = M_INDEX(x, 1, 0);
+    double q2 = M_INDEX(x, 2, 0);
+    double q3 = M_INDEX(x, 3, 0);
+
+    M_INDEX(w, 6, 0) = q1 / 2;
+    M_INDEX(w, 6, 1) = q2 / 2;
+    M_INDEX(w, 6, 2) = q3 / 2;
+    M_INDEX(w, 7, 0) = -q0 / 2;
+    M_INDEX(w, 7, 1) = q3 / 2;
+    M_INDEX(w, 7, 2) = -q2 / 2;
+    M_INDEX(w, 8, 0) = -q3 / 2;
+    M_INDEX(w, 8, 1) = -q0 / 2;
+    M_INDEX(w, 8, 2) = q1 / 2;
+    M_INDEX(w, 9, 0) = q2 / 2;
+    M_INDEX(w, 9, 1) = -q1 / 2;
+    M_INDEX(w, 9, 2) = -q0 / 2;
+
+    M_INDEX(w, 10, 6) = 1;
+    M_INDEX(w, 11, 7) = 1;
+    M_INDEX(w, 12, 8) = 1;
 }
 
 static void make_Q(struct ekf *ekf)
