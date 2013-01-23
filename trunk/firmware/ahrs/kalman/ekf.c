@@ -81,6 +81,8 @@ void ekf_init(struct ekf *ekf, matrix_t *Q, matrix_t *R)
 void ekf_predict(struct ekf *ekf, double u[], double dt)
 {
     ekf->make_A(ekf);
+    if (ekf->make_W)
+        ekf->make_W(ekf);
     ekf->make_process(ekf);
     ekf->make_P(ekf);
 }
