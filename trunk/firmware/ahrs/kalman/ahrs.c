@@ -1,10 +1,29 @@
+/**
+ * @file ahrs.c
+ * @brief AHRS library implementation
+ */
 #include <string.h>
 
 #include "ekf.h"
 
+/**
+ * N is the number of element in state vector
+ */
 #define N   7
+
+/**
+ * M is the number of measure
+ */
 #define M   3
+
+/**
+ * NV is the number of measure noise random variables
+ */
 #define NV
+
+/**
+ * NW is the number of process noise random varibles
+ */
 #define NW
 
 struct kalman_data {
@@ -14,6 +33,20 @@ struct kalman_data {
     double z[3];
 };
 
+/**
+ * A is an \a n by \a n jacobian matrix of partial derivatives,
+ * defined as follow :
+ * \f[ A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = 1/2 *
+ * \left [ \begin{array}{ccccccc}
+ * 0 & -p & -q & -r & q1 & q2 & q3 \\ \\
+ * p & 0 & r & -q & -q0 & q3 & -q2 \\ \\
+ * q & -r & 0 & p & -q3 & -q0 & q1 \\ \\
+ * r & q & -p & 0 & q2 & -q1 & -q0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 
+ * \end{array} \right ] \f]
+ */
 static void make_A(struct ekf *ekf)
 {
 //    struct kalman_data *data = (struct kalman_data *)ekf->data;
@@ -39,6 +72,15 @@ static void make_A(struct ekf *ekf)
     memcpy(X->data, array, X->rows * X->cols * sizeof(double)); //?????????????
 }
 
+/**
+ * H is an \a m by \a n jacobian matrix of partial derivatives,
+ * defined as follow :
+ * \f[
+ * H_{[i,j]} = \frac{\partial h_{[i]}}{\partial x_{[j]}} =
+ * \left [ \begin{array}{ccccccc}
+ * \end{array} \right ]
+ * \f]
+ */
 static void make_H(struct ekf *ekf)
 {
 //    struct kalman_data *data = (struct kalman_data *)ekf->data;
@@ -46,6 +88,26 @@ static void make_H(struct ekf *ekf)
     memset(h->data, 0, h->rows * h->cols * sizeof(double));
 
 //    M_INDEX(h, 0, 0) = 0;
+//    M_INDEX(h, 0, 1) = 0;
+//    M_INDEX(h, 0, 2) = 0;
+//    M_INDEX(h, 0, 3) = 0;
+//    M_INDEX(h, 0, 4) = 0;
+//    M_INDEX(h, 0, 5) = 0;
+//    M_INDEX(h, 0, 6) = 0;
+//    M_INDEX(h, 1, 0) = 0;
+//    M_INDEX(h, 1, 1) = 0;
+//    M_INDEX(h, 1, 2) = 0;
+//    M_INDEX(h, 1, 3) = 0;
+//    M_INDEX(h, 1, 4) = 0;
+//    M_INDEX(h, 1, 5) = 0;
+//    M_INDEX(h, 1, 6) = 0;
+//    M_INDEX(h, 2, 0) = 0;
+//    M_INDEX(h, 2, 1) = 0;
+//    M_INDEX(h, 2, 2) = 0;
+//    M_INDEX(h, 2, 3) = 0;
+//    M_INDEX(h, 2, 4) = 0;
+//    M_INDEX(h, 2, 5) = 0;
+//    M_INDEX(h, 2, 6) = 0;
 }
 
 static void make_V(struct ekf *ekf)
@@ -148,8 +210,28 @@ static void make_process(struct ekf *ekf)
     matrix_delete(Xdot);
 }
 
+/**
+ * @a z is the measure vector
+ * \f[ z = \left [ \begin{array}{c} \phi \\ \\ \theta \\ \\ \psi \end{array} \right ] =
+ * \left [ \begin{array}{c}
+ * atan(\frac{2(q2q3+q0q1)}{1-2(q1^2+q2^2)}) \\ \\ -asin(2(q1q3-q0q2)) \\ \\ atan(\frac{2(q1q2+q0q3)}{1-2(q2^2+q3^2)})
+ * \end{array} \right ] \f]
+ * where \f$ \phi \f$ is roll angle  \n
+ * \f$ \theta \f$ is pitch angle \n
+ * \f$ \psi \f$ is yaw angle
+ */
 static void make_measure(struct ekf *ekf)
 {
+    struct kalman_data *data = (struct kalman_data *)ekf->data;
+    matrix_t *x = ekf->X;
+    double q0 = M_INDEX(x, 0, 0);
+    double q1 = M_INDEX(x, 1, 0);
+    double q2 = M_INDEX(x, 2, 0);
+    double q3 = M_INDEX(x, 3, 0);
+
+    data->z[0] = atan2(2 * (q2 * q3 + q0 * q1), 1 - 2 * (q1 * q1 + q2 * q2));
+    data->z[1] = -asin(2 * (q1 * q3 - q0 * q2));
+    data->z[2] = atan2(2 * (q1 * q2 + q0 * q3), 1 - 2 * (q2 * q2 + q3 * q3));
 }
 
 static void callback(struct ekf *ekf)

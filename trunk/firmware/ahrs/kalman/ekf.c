@@ -90,6 +90,8 @@ void ekf_predict(struct ekf *ekf, double u[], double dt)
 void ekf_correct(struct ekf *ekf, double z[])
 {
     ekf->make_H(ekf);
+    if (ekf->make_V)
+        ekf->make_V(ekf);
     ekf->make_measure(ekf);
 }
 
