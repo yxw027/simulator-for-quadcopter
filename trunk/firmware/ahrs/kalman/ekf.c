@@ -4,7 +4,7 @@
 #include "ekf.h"
 
 /**
- * @addtogroup kalman
+ * @addtogroup kalman Extended Kalman Filter
  * @{
  */
 

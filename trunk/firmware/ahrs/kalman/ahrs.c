@@ -7,6 +7,11 @@
 #include "ekf.h"
 
 /**
+ * @addtogroup ahrs Attitude & Heading Reference System
+ * @{
+ */
+
+/**
  * N is the number of element in state vector
  */
 #define N   7
@@ -36,7 +41,7 @@ struct kalman_data {
 /**
  * A is an \a n by \a n jacobian matrix of partial derivatives,
  * defined as follow :
- * \f[ A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = 1/2 *
+ * \f[ A_{[i,j]} = \frac{\partial f_{[i]}}{\partial x_{[j]}} = \frac{1}{2}
  * \left [ \begin{array}{ccccccc}
  * 0 & -p & -q & -r & q1 & q2 & q3 \\ \\
  * p & 0 & r & -q & -q0 & q3 & -q2 \\ \\
@@ -44,10 +49,10 @@ struct kalman_data {
  * r & q & -p & 0 & q2 & -q1 & -q0 \\ \\
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
  * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
- * 0 & 0 & 0 & 0 & 0 & 0 & 0 
+ * 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \\
  * \end{array} \right ] \f]
  */
-static void make_A(struct ekf *ekf)
+void make_A(struct ekf *ekf)
 {
 //    struct kalman_data *data = (struct kalman_data *)ekf->data;
     matrix_t *X = ekf->X;
@@ -78,10 +83,13 @@ static void make_A(struct ekf *ekf)
  * \f[
  * H_{[i,j]} = \frac{\partial h_{[i]}}{\partial x_{[j]}} =
  * \left [ \begin{array}{ccccccc}
+ * \frac{2R22q1}{R22^2+R12^2} & \frac{2(R22q0+2R12q1)}{R22^2+R12^2} & \frac{2R22q2}{R22^2+R12^2} & \frac{2R22q2}{R22^2+R12^2} & 0 & 0 & 0 \\ \\
+ * \frac{2q2}{\sqrt{1-R02^2}} & \frac{-2q3}{\sqrt{1-R02^2}} & \frac{2q0}{\sqrt{1-R02^2}} & \frac{-2q1}{\sqrt{1-R02^2}} & 0 & 0 & 0 \\ \\
+ * \frac{2R00q3}{R00^2+R01^2} & \frac{2R00q2}{R00^2+R01^2} & \frac{2(R00q1+2R01q2)}{R00^2+R01^2} & \frac{2(R00q0+2R01q3)}{R00^2+R01^2} & 0 & 0 & 0
  * \end{array} \right ]
  * \f]
  */
-static void make_H(struct ekf *ekf)
+void make_H(struct ekf *ekf)
 {
 //    struct kalman_data *data = (struct kalman_data *)ekf->data;
     matrix_t *h = ekf->H;
@@ -180,7 +188,39 @@ static void make_P(struct ekf *ekf)
 #endif
 }
 
-static void make_process(struct ekf *ekf)
+/**
+ * @a x is the state vector, and defined as follows :
+ * \f[ x = \left [ \begin{array}{c}
+ * q0 \\ \\ q1 \\ \\ q2 \\ \\ q3 \\ \\ bp \\ \\ bq \\ \\ br
+ * \end{array} \right ] = \frac{1}{2} \Omega \cdot q = \frac{1}{2}
+ * \left [ \begin{array}{ccccccc}
+ * 0 & -p & -q & -r & 0 & 0 & 0 \\ \\
+ * p & 0 & r & -q & 0 & 0 & 0 \\ \\
+ * q & -r & 0 & p & 0 & 0 & 0 \\ \\
+ * r & q & -p & 0 & 0 & 0 & 0 
+ * \end{array} \right ]
+ * \left [ \begin{array}{c}
+ * q0 \\ \\ q1 \\ \\ q2 \\ \\ q3 \\ \\ bp \\ \\ bq \\ \\ br
+ * \end{array} \right ] = \frac{1}{2} \cdot
+ * \left [ \begin{array}{c}
+ * -p \cdot q1 - q \cdot q2 - r \cdot q3 \\ \\
+ * p  \cdot q0 + r  \cdot q2 - q  \cdot q3 \\ \\
+ * q \cdot q0 - r \cdot q1 + p \cdot q3 \\ \\
+ * r \cdot q0 + q \cdot q1 - p \cdot q2 \\ \\
+ * 0 \\ \\
+ * 0 \\ \\
+ * 0 
+ * \end{array} \right ] \f]
+ * where \f[ {\left [ \begin{array}{cccc}
+ * q0 & q1 & q2 & q3
+ * \end{array} \right ]}^T \f]
+ * is the quaternion and
+ * \f[ {\left [ \begin{array}{ccc}
+ * bp & bq & br
+ * \end{array} \right ]}^T \f]
+ * is the gyroscope bais.
+ */
+void make_process(struct ekf *ekf)
 {
     struct kalman_data *data = (struct kalman_data *)ekf->data;
     matrix_t *x = ekf->X;
@@ -216,11 +256,12 @@ static void make_process(struct ekf *ekf)
  * \left [ \begin{array}{c}
  * atan(\frac{2(q2q3+q0q1)}{1-2(q1^2+q2^2)}) \\ \\ -asin(2(q1q3-q0q2)) \\ \\ atan(\frac{2(q1q2+q0q3)}{1-2(q2^2+q3^2)})
  * \end{array} \right ] \f]
- * where \f$ \phi \f$ is roll angle  \n
+ * where \n
+ * \f$ \phi \f$ is roll angle  \n
  * \f$ \theta \f$ is pitch angle \n
  * \f$ \psi \f$ is yaw angle
  */
-static void make_measure(struct ekf *ekf)
+void make_measure(struct ekf *ekf)
 {
     struct kalman_data *data = (struct kalman_data *)ekf->data;
     matrix_t *x = ekf->X;
