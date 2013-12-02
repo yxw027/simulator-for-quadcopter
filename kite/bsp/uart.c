@@ -26,22 +26,28 @@
   */
 static void NVIC_Configuration(void)
 {
-  NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
 
-  /* Configure the NVIC Preemption Priority Bits */
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+    /* Configure the NVIC Preemption Priority Bits */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 
-  /* Enable the USARTy Interrupt */
-//  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQ;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
+    /* Enable the USART1 Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 }
 
 static void uart_hw_init()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
+
+    /* Enable GPIO clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+
+    /* Enable UART clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 
     /* Configure USART Tx as alternate function push-pull */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
