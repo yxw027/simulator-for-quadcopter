@@ -21,7 +21,7 @@ struct ekf {
     matrix_t *X;  /**< Corrected state vector */
     matrix_t *P;  /**< State covariance matrix */
     matrix_t *A;  /**< A jacobian matrix */
-    matrix_t *H;  /**< A jacobian matrix */
+    matrix_t *H;  /**< H jacobian matrix */
     matrix_t *V;  /**< Measurement noise matrix */
     matrix_t *R;  /**< Measurement noise convariance matrix */
     matrix_t *W;  /**< Process noise matrix */
