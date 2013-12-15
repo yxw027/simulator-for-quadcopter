@@ -12,10 +12,10 @@
 #define SENSOR_ID_MAX       3
 
 typedef union sensor_event {
-    float val[3];
     struct {
         float x, y, z;
     };
+    float val[6];
 } sensor_event_t;
 
 typedef struct sensor {
