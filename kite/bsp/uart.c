@@ -74,7 +74,7 @@ static void uart_hw_init()
     USART_Cmd(USART1, ENABLE);
 
     /* NVIC configuration */
-    NVIC_Configuration();
+//    NVIC_Configuration();
 }
 
 void uart_init(void)

@@ -23,12 +23,6 @@ static void GPIO_Configuration(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    /* Disable the JTAG Port JTAG-DP & Enable SWJ-DP Port SWJ-DP */
-    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-
-    /* Enable SPI1 Pins Software Remapping */
-    GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE);
-
     /* Configure SCK and MOSI pins as Alternate Function Push Pull */
     GPIO_InitStructure.GPIO_Pin = SPI_MASTER_PIN_SCK | SPI_MASTER_PIN_MOSI;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -45,7 +39,7 @@ static void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(SPI_MASTER_GPIO, &GPIO_InitStructure);
 
-    GPIO_SetBits(GPIOA, GPIO_Pin_15);
+    GPIO_SetBits(SPI_MASTER_GPIO, SPI_MASTER_PIN_CS);
 }
 
 void spi_init(void)
