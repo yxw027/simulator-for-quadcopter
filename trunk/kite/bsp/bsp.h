@@ -3,6 +3,6 @@
 
 #include "led.h"
 
-void bsp_init(void);
+int bsp_init(void);
 
 #endif
