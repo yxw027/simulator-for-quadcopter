@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c 
+  * @file    stm32f10x_it.c 
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011
@@ -22,7 +22,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x_it.h"
+#include <stm32f10x_it.h>
+
+#include "mpu6000.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -145,6 +147,26 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f10x_xx.s).                                            */
 /******************************************************************************/
+
+/**
+  * @brief  This function handles USART1 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+/**
+  * @brief  This function handles External line 3 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void EXTI3_IRQHandler(void)
+{
+    if (EXTI_GetITStatus(EXTI_Line3) != RESET)
+    {
+        mpu6000_irq_handler();
+        /* Clear the EXTI line 3 pending bit */
+        EXTI_ClearITPendingBit(EXTI_Line3);
+    }
+}
 
 /**
   * @brief  This function handles PPP interrupt request.
