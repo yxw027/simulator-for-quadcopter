@@ -20,10 +20,19 @@ void spi_init(void);
 /*
 int spi_write(SPI_TypeDef *SPIx, const char *buf, int len);
 int spi_read(SPI_TypeDef *SPIx, char *buf, int len);
-
-int spi_master_xfer(SPI_TypeDef *SPIx, const char *tx, int tx_len, char *rx, int rx_len);
-{
-    if (tx != NULL)
-}
 */
+
+/**
+ * @brief tranfer block data via SPIx
+ *
+ * @param SPIx
+ * @param tx
+ * @param tx_len
+ * @param rx
+ * @param rx_len
+ * @return 0 success
+ * @note Only support SPI1
+ */
+int spi_master_xfer(SPI_TypeDef *SPIx, uint8_t *tx, int tx_len, uint8_t *rx, int rx_len);
+
 #endif /* _SPI_H */

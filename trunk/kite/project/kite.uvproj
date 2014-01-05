@@ -44,14 +44,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\</OutputDirectory>
+          <OutputDirectory>.\obj\</OutputDirectory>
           <OutputName>kite</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\</ListingPath>
+          <ListingPath>.\lst\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -355,9 +355,9 @@
             <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_STDPERIPH_DRIVER</Define>
+              <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\bsp;..\config;..\FreeRTOS\Source\include;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\Source\portable\RVDS\ARM_CM3</IncludePath>
+              <IncludePath>..\bsp;..\config;..\FreeRTOS\Source\include;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Libraries</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -439,9 +439,19 @@
               <FilePath>..\bsp\mpu6000.c</FilePath>
             </File>
             <File>
-              <FileName>mpu6000.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bsp\mpu6000.h</FilePath>
+              <FileName>stm32f10x_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\stm32f10x_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\delay.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -487,6 +497,18 @@
         </Group>
         <Group>
           <GroupName>Libraries</GroupName>
+          <Files>
+            <File>
+              <FileName>mymath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\mymath.c</FilePath>
+            </File>
+            <File>
+              <FileName>quaternion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\quaternion.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>CMSIS</GroupName>
@@ -645,6 +667,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>attitude.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\attitude.c</FilePath>
             </File>
           </Files>
         </Group>
