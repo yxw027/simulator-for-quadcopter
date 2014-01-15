@@ -4,50 +4,309 @@
  */
 #include <FreeRTOS.h>
 #include <FreeRTOS_IO.h>
+#include <FreeRTOSIOConfig.h>
+#include <FreeRTOS_DriverInterface.h>
 
-static size_t FreeRTOS_UART_read( Peripheral_Descriptor_t const pxPeripheral, void * const pvBuffer, const size_t xBytes )
+#include "stm32f10x.h"
+
+static GPIO_InitTypeDef GPIO_InitStructure;
+static USART_InitTypeDef USART_InitStructure;
+static NVIC_InitTypeDef NVIC_InitStructure;
+
+/*
+ * Stores the transfer control structures that are currently in use by the
+ * supported UART ports.
+ */
+static Transfer_Control_t *pxTxTransferControlStructs[ 3 ] = { NULL };
+static Transfer_Control_t *pxRxTransferControlStructs[ 3 ] = { NULL };
+
+/**
+ * @brief  Configures the different system clocks.
+ * @param  None
+ * @retval None
+ */
+static void RCC_Configuration(void)
+{
+    /* Enable GPIO clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+
+    /* Enable USART1 clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+}
+
+/**
+ * @brief  Configures the different GPIO ports.
+ * @param  None
+ * @retval None
+ */
+static void GPIO_Configuration(void)
+{
+    /* Configure USART1 TX as alternate function push-pull */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    /* Configure USART1 RX as input floating */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
+
+/**
+ * @brief  Configures the nested vectored interrupt controller.
+ * @param  None
+ * @retval None
+ */
+static void NVIC_Configuration(void)
+{
+    /* Configure the NVIC Preemption Priority Bits */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+
+    /* Enable the USART1 Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+
+static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, void * const pvBuffer, const size_t xBytes)
+{
+    Peripheral_Control_t * const pxPeripheralControl = (Peripheral_Control_t * const ) pxPeripheral;
+    size_t xReturn = 0U;
+    int8_t cPeripheralNumber;
+    USART_TypeDef * const pxUART =
+            (USART_TypeDef * const ) diGET_PERIPHERAL_BASE_ADDRESS( ( ( Peripheral_Control_t * const ) pxPeripheral ) );
+
+    if (diGET_RX_TRANSFER_STRUCT(pxPeripheralControl) == NULL) {
+    #if ioconfigUSE_UART_POLLED_RX == 1
+    {
+        /* No FreeRTOS objects exist to allow reception without blocking
+         the task, so just receive by polling.  No semaphore or queue is
+         used here, so the application must ensure only one task attempts
+         to make a polling read at a time. */
+        xReturn = USART_ReceiveData(pxUART);
+        *pvBuffer[0] = xReturn;
+        xBytes = 1;
+    }
+    #endif /* ioconfigUSE_UART_POLLED_RX */
+    } else {
+        cPeripheralNumber = diGET_PERIPHERAL_NUMBER(pxPeripheralControl);
+
+        switch (diGET_RX_TRANSFER_TYPE(pxPeripheralControl)) {
+        case ioctlUSE_CIRCULAR_BUFFER_RX:
+        #if ioconfigUSE_UART_CIRCULAR_BUFFER_RX == 1
+        {
+            /* There is nothing to prevent multiple tasks attempting to
+             read the circular buffer at any one time.  The implementation
+             of the circular buffer uses a semaphore to indicate when new
+             data is available, and the semaphore will ensure that only the
+             highest priority task that is attempting a read will actually
+             receive bytes. */
+            ioutilsRECEIVE_CHARS_FROM_CIRCULAR_BUFFER
+            (
+                    pxPeripheralControl,
+                    USART_ITConfig( pxUART, USART_IT_RXNE, DISABLE ), /* Disable peripheral. */
+                    USART_ITConfig( pxUART, USART_IT_RXNE, ENABLE ), /* Enable peripheral. */
+                    ( ( uint8_t * ) pvBuffer ), /* Data destination. */
+                    xBytes, /* Bytes to read. */
+                    xReturn /* Number of bytes read. */
+            );
+        }
+        #endif /* ioconfigUSE_UART_CIRCULAR_BUFFER_RX */
+            break;
+
+        case ioctlUSE_CHARACTER_QUEUE_RX:
+#if ioconfigUSE_UART_RX_CHAR_QUEUE == 1
+            {
+                /* The queue allows multiple tasks to attempt to read
+                 bytes, but ensures only the highest priority of these
+                 tasks will actually receive bytes.  If two tasks of equal
+                 priority attempt to read simultaneously, then the
+                 application must ensure mutual exclusion, as time slicing
+                 could result in the string being received being partially
+                 received by each task. */
+                xReturn = xIOUtilsReceiveCharsFromRxQueue( pxPeripheralControl, ( uint8_t * ) pvBuffer, xBytes );
+            }
+#endif /* ioconfigUSE_UART_RX_CHAR_QUEUE */
+            break;
+
+        default:
+            /* Other methods can be implemented here. */
+            configASSERT( xReturn );
+
+            /* Prevent compiler warnings when the configuration is set such
+             that the following parameters are not used. */
+            (void) pvBuffer;
+            (void) xBytes;
+            (void) pxUART;
+            break;
+        }
+    }
+}
+
+static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
+        const void *pvBuffer, const size_t xBytes)
 {
 
 }
 
-static size_t FreeRTOS_UART_write( Peripheral_Descriptor_t const pxPeripheral, const void *pvBuffer, const size_t xBytes )
-{
+static portBASE_TYPE FreeRTOS_UART_ioctl(Peripheral_Descriptor_t pxPeripheral, uint32_t ulRequest, void *pvValue) {
+    Peripheral_Control_t * const pxPeripheralControl = (Peripheral_Control_t * const) pxPeripheral;
+    portBASE_TYPE xReturn = pdPASS;
+    const int8_t cPeripheralNumber = diGET_PERIPHERAL_NUMBER(((Peripheral_Control_t * const)pxPeripheral));
 
+    switch (ulRequest) {
+    case ioctlSET_SPEED: {
+        uint32_t ulValue = (uint32_t) pvValue;
+        USART_InitStructure.USART_BaudRate = ulValue;
+        /* USART1 configuration */
+        USART_Init(USART1, &USART_InitStructure);
+        break;
+    }
+    case ioctlSET_INTERRUPT_PRIORITY: {
+        uint8_t ulValue = (uint8_t) pvValue;
+        NVIC_InitStructure.NVIC_IRQChannelSubPriority = ulValue;
+        NVIC_Init(&NVIC_InitStructure);
+        break;
+    }
+    case ioctlUSE_INTERRUPTS: {
+        uint32_t ulValue = (uint32_t) pvValue;
+        if (ulValue == pdFALSE) {
+            NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+            NVIC_Init(&NVIC_InitStructure);
+        } else {
+            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+            USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+            NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+            NVIC_Init(&NVIC_InitStructure);
+
+            pxRxTransferControlStructs[cPeripheralNumber] = pxPeripheralControl->pxRxControl;
+        }
+    }
+        break;
+
+    default:
+        xReturn = pdFAIL;
+        break;
+    }
+
+    return xReturn;
 }
 
-static portBASE_TYPE FreeRTOS_UART_ioctl( Peripheral_Descriptor_t pxPeripheral, uint32_t ulRequest, void *pvValue )
+portBASE_TYPE FreeRTOS_UART_open(Peripheral_Control_t * const pxPeripheralControl)
 {
-	portBASE_TYPE xReturn = pdPASS;
+    portBASE_TYPE xReturn;
+    const uint8_t cPeripheralNumber = pxPeripheralControl->cPeripheralNumber;
 
-	switch (ulRequest) {
-	case ioctlUSE_INTERRUPTS:
-		break;
-	default:
-		break;
-	}
+    if (cPeripheralNumber < 3/*MAX_UART_NUM*/) {
+        pxPeripheralControl->read = FreeRTOS_UART_read;
+        pxPeripheralControl->write = FreeRTOS_UART_write;
+        pxPeripheralControl->ioctl = FreeRTOS_UART_ioctl;
 
-	return xReturn;
+        taskENTER_CRITICAL();
+        {
+            RCC_Configuration();
+            GPIO_Configuration();
+            NVIC_Configuration();
+        }
+        taskEXIT_CRITICAL();
+
+        xReturn = pdPASS;
+    } else {
+        xReturn = pdFAIL;
+    }
+
+    return xReturn;
 }
 
-portBASE_TYPE FreeRTOS_UART_open( Peripheral_Control_t * const pxPeripheralControl )
+void uart1_irq_handler(void)
 {
-	portBASE_TYPE xReturn;
-	const uint8_t cPeripheralNumber = pxPeripheralControl->cPeripheralNumber;
+    uint32_t ulReceived = 0;
+    portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+    const unsigned portBASE_TYPE uxUARTNumber = 1UL;
+    Transfer_Control_t *pxTransferStruct;
 
-	if (cPeripheralNumber < 3/*MAX_UART_NUM*/) {
-		pxPeripheralControl->read = FreeRTOS_UART_read;
-		pxPeripheralControl->write = FreeRTOS_UART_write;
-		pxPeripheralControl->ioctl = FreeRTOS_UART_ioctl;
+    if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
+        pxTransferStruct = pxRxTransferControlStructs[uxUARTNumber];
+        if (pxTransferStruct != NULL) {
+            switch(diGET_TRANSFER_TYPE_FROM_CONTROL_STRUCT(pxTransferStruct)) {
+            case ioctlUSE_CIRCULAR_BUFFER_RX:
+            #if ioconfigUSE_UART_CIRCULAR_BUFFER_RX == 1
+            {
+                ioutilsRX_CHARS_INTO_CIRCULAR_BUFFER_FROM_ISR(
+                        pxTransferStruct,   /* The structure that contains the reference to the circular buffer. */
+                        (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET),    /* While loop condition. */
+                        USART_ReceiveData(USART1),         /* Register holding the received character. */
+                        ulReceived,
+                        xHigherPriorityTaskWoken
+            );
+            }
+            #endif /* ioconfigUSE_UART_CIRCULAR_BUFFER_RX */
+                break;
 
-		/* setup UART port */
-		{
+            case ioctlUSE_CHARACTER_QUEUE_RX:
+            #if ioconfigUSE_UART_RX_CHAR_QUEUE == 1
+            {
+                ioutilsRX_CHARS_INTO_QUEUE_FROM_ISR(
+                        pxTransferStruct,
+                        (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET),
+                        USART_ReceiveData(USART1),
+                        ulReceived,
+                        xHigherPriorityTaskWoken);
+            }
+            #endif /* ioconfigUSE_UART_RX_CHAR_QUEUE */
+                break;
 
-		}
+            default:
+                break;
+            }
+        }
+        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+    }
 
-		xReturn = pdPASS;
-	} else {
-		xReturn = pdFAIL;
-	}
+    if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
+        pxTransferStruct = pxRxTransferControlStructs[uxUARTNumber];
+        if (pxTransferStruct != NULL) {
+            switch (diGET_TRANSFER_TYPE_FROM_CONTROL_STRUCT(pxTransferStruct)) {
+            case ioctlUSE_ZERO_COPY_TX:
+            #if ioconfigUSE_UART_ZERO_COPY_TX == 1
+            {
+                iouitlsTX_CHARS_FROM_ZERO_COPY_BUFFER_FROM_ISR(
+                        pxTransferStruct,
+                        (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET),
+                        USART_SendData(USART1, ucChar),
+                        );
+            }
+            #endif /* ioconfigUSE_UART_ZERO_COPY_TX */
+                break;
 
-	return xReturn;
+            case ioctlUSE_CHARACTER_QUEUE_TX:
+            #if ioconfigUSE_UART_TX_CHAR_QUEUE == 1
+            {
+                ioutilsTX_CHARS_FROM_QUEUE_FROM_ISR(
+                        pxTransferStruct,
+                        (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET),
+                        USART_SendData(USART1, ucChar),
+                        xHigherPriorityTaskWoken);
+            }
+            #endif /* ioconfigUSE_UART_TX_CHAR_QUEUE */
+                break;
+
+            default:
+                /* This must be an error.  Force an assert. */
+                configASSERT( xHigherPriorityTaskWoken );
+                break;
+            }
+        }
+        USART_ClearITPendingBit(USART1, USART_IT_TXE);
+    }
+    /* The ulReceived parameter is not used by the UART ISR. */
+    (void) ulReceived;
+
+    /* If xHigherPriorityTaskWoken is now equal to pdTRUE, then a context
+    switch should be performed before the interrupt exists.  That ensures the
+    unblocked (higher priority) task is returned to immediately. */
+    portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
 }
