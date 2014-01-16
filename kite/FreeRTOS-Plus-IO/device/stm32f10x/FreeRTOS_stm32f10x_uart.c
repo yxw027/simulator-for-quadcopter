@@ -149,7 +149,65 @@ static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, voi
 static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
         const void *pvBuffer, const size_t xBytes)
 {
+    Peripheral_Control_t * const pxPeripheralControl = (Peripheral_Control_t * const)pxPeripheral;
+    size_t xReturn = 0U;
+    USART_TypeDef * const pxUART = (USART_TypeDef * const)diGET_PERIPHERAL_BASE_ADDRESS(((Peripheral_Control_t * const)pxPeripheral));
+    int8_t cPeripheralNumber;
 
+    if( diGET_TX_TRANSFER_STRUCT( pxPeripheralControl ) == NULL ) {
+        #if ioconfigUSE_UART_POLLED_TX == 1
+        {
+        /* No FreeRTOS objects exist to allow transmission without blocking
+        the task, so just send out by polling.  No semaphore or queue is
+        used here, so the application must ensure only one task attempts to
+        make a polling write at a time. */
+        xReturn = USART_Send(pxUART, ( uint8_t * ) pvBuffer, ( size_t ) xBytes, BLOCKING );
+
+        /* The UART is set to polling mode, so may as well poll the busy bit
+        too.  Change to interrupt driven mode to avoid wasting CPU time here. */
+        while( UART_CheckBusy( pxUART ) != RESET );
+        }
+    #endif /* ioconfigUSE_UART_POLLED_TX */
+    } else {
+        /* Remember which transfer control structure is being used.
+        The Tx interrupt will use this to continue to write data to the
+        Tx FIFO/UART until the length member of the structure reaches
+        zero. */
+        cPeripheralNumber = diGET_PERIPHERAL_NUMBER(pxPeripheralControl);
+        pxTxTransferControlStructs[cPeripheralNumber] = diGET_TX_TRANSFER_STRUCT(pxPeripheralControl);
+
+        switch(diGET_TX_TRANSFER_TYPE(pxPeripheralControl))
+        {
+        case ioctlUSE_ZERO_COPY_TX:
+        #if ioconfigUSE_UART_ZERO_COPY_TX == 1
+        {
+            /* The implementation of the zero copy write uses a semaphore
+            to indicate whether a write is complete (and so the buffer
+            being written free again) or not.  The semantics of using a
+            zero copy write dictate that a zero copy write can only be
+            attempted by a task, once the semaphore has been successfully
+            obtained by that task.  This ensure that only one task can
+            perform a zero copy write at any one time.  Ensure the semaphore
+            is not currently available, if this function has been called
+            without it being obtained first then it is an error. */
+            configASSERT( xIOUtilsGetZeroCopyWriteMutex( pxPeripheralControl, ioctlOBTAIN_WRITE_MUTEX, 0U ) == 0 );
+            xReturn = xBytes;
+            ioutilsINITIATE_ZERO_COPY_TX
+                (
+                    pxPeripheralControl,
+                    UART_TxCmd( pxUART, DISABLE ),  /* Disable peripheral function. */
+                    UART_TxCmd( pxUART, ENABLE ),   /* Enable peripheral function. */
+                    prvFillFifoFromBuffer( pxUART, ( uint8_t ** ) &( pvBuffer ), xBytes ), /* Write to peripheral function. */
+                    pvBuffer,                       /* Data source. */
+                    xReturn                         /* Number of bytes to be written. This will get set to zero if the write mutex is not held. */
+                );
+        }
+        #endif /* ioconfigUSE_UART_ZERO_COPY_TX */
+            break;
+
+        case
+        }
+    }
 }
 
 static portBASE_TYPE FreeRTOS_UART_ioctl(Peripheral_Descriptor_t pxPeripheral, uint32_t ulRequest, void *pvValue) {

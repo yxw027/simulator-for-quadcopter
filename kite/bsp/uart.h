@@ -15,7 +15,7 @@
  * @{
  */
 
-
+#define USART1_IRQHandler usart1_irq_hander
 /**
  * @brief Initialize UART ports
  *
