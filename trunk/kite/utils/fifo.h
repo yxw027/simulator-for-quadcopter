@@ -3,11 +3,17 @@
 
 #include <stdbool.h>
 
+#include "stm32f10x.h"
+
+#include "FreeRTOS.h"
+#include "semphr.h"
+
 struct fifo {
-	unsigned char *buf;
-	int size;
-	int start;
-	int end;
+    xSemaphoreHandle xMutex;
+    unsigned char *buf;
+    int size;
+    int start;
+    int end;
 };
 
 int fifo_init(struct fifo *fifo, unsigned char *buf, int len);
@@ -19,7 +25,7 @@ bool is_fifo_full(struct fifo *fifo);
 int fifo_available_space(struct fifo *fifo);
 
 int fifo_available_data(struct fifo *fifo);
-    
+
 int fifo_write(struct fifo* fifo, unsigned char *buffer, int len);
 
 int fifo_read(struct fifo* fifo, unsigned char *buffer, unsigned int len);

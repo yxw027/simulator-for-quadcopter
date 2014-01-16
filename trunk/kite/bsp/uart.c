@@ -19,6 +19,9 @@
  * @{
  */
 
+static struct fifo fifo_tx;
+static uint8_t buffer[8];
+
 /**
   * @brief  Configures the different system clocks.
   * @param  None
@@ -106,6 +109,8 @@ static void uart_hw_init()
 
     /* Enable USART1 */
     USART_Cmd(USART1, ENABLE);
+
+    fifo_init(&fifo_tx, buffer, sizeof(buffer));
 }
 
 void uart_init(void)
@@ -131,6 +136,45 @@ PUTCHAR_PROTOTYPE
   return ch;
 }
 
+/**
+ * Send buffer from usart via interrupt
+ *
+ * @return bytes has sent
+ */
+uint8_t uart_write(uint_t id, uint8_t *buf, uint8_t len)
+{
+    uint8_t retval = -1;
+    USART_TypeDef *USARTx;
+    switch (id) {
+    case 0:
+        USARTx = USART1;
+        break;
+    default:
+        config_ASSERT(USARTx);
+        break;
+    }
+
+    retval = fifo_write(fifo_tx, buf, len);
+    if (retval > 0)
+        USART_ITConfig(USARTx, USART_IT_TXE, ENABLE);
+
+    return retval;
+}
+
+void usart1_irq_handler(void)
+{
+    if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
+        /* get one byte from fifo */
+        uint8_t retval = fifo_read(fifo_tx, &ch, 1);
+        if (retval == 1) {
+            USART_SendData(USART1, ch);
+        } else {
+            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+        }
+
+        USART_ClearITPendingBit(USART1, USART_IT_TXE);
+    }
+}
 /** @} */
 
 /** @} */
