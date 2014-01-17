@@ -12,7 +12,30 @@
 static GPIO_InitTypeDef GPIO_InitStructure;
 static USART_InitTypeDef USART_InitStructure;
 static NVIC_InitTypeDef NVIC_InitStructure;
+static inline size_t prvFillFifoFromBuffer( USART_TypeDef * const pxUART, uint8_t **ppucBuffer, const size_t xTotalBytes )
+{
+size_t xBytesSent = 0U;
 
+    /* This function is only used by zero copy transmissions, so mutual
+    exclusion is already taken care of by the fact that a task must first
+    obtain a semaphore before initiating a zero copy transfer.  The semaphore
+    is part of the zero copy structure, not part of the application. */
+    /*while( ( pxUART->FIFOLVL & uartTX_FIFO_LEVEL_MASK ) != uartTX_FIFO_LEVEL_MASK )
+    {
+        if( xBytesSent >= xTotalBytes )
+        {
+            break;
+        }
+        else
+        {
+            pxUART->THR = **ppucBuffer;
+            ( *ppucBuffer )++;
+            xBytesSent++;
+        }
+    }*/
+
+    return xBytesSent;
+}
 /*
  * Stores the transfer control structures that are currently in use by the
  * supported UART ports.
@@ -155,18 +178,20 @@ static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
     int8_t cPeripheralNumber;
 
     if( diGET_TX_TRANSFER_STRUCT( pxPeripheralControl ) == NULL ) {
-        #if ioconfigUSE_UART_POLLED_TX == 1
-        {
+    #if ioconfigUSE_UART_POLLED_TX == 1
+    {
         /* No FreeRTOS objects exist to allow transmission without blocking
         the task, so just send out by polling.  No semaphore or queue is
         used here, so the application must ensure only one task attempts to
         make a polling write at a time. */
-        xReturn = USART_Send(pxUART, ( uint8_t * ) pvBuffer, ( size_t ) xBytes, BLOCKING );
+        USART_Send(pxUART, ( uint8_t * ) pvBuffer[0] );
 
         /* The UART is set to polling mode, so may as well poll the busy bit
         too.  Change to interrupt driven mode to avoid wasting CPU time here. */
-        while( UART_CheckBusy( pxUART ) != RESET );
-        }
+        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+
+        xReturn = 1;
+    }
     #endif /* ioconfigUSE_UART_POLLED_TX */
     } else {
         /* Remember which transfer control structure is being used.
@@ -195,8 +220,8 @@ static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
             ioutilsINITIATE_ZERO_COPY_TX
                 (
                     pxPeripheralControl,
-                    UART_TxCmd( pxUART, DISABLE ),  /* Disable peripheral function. */
-                    UART_TxCmd( pxUART, ENABLE ),   /* Enable peripheral function. */
+                    USART_ITConfig( pxUART, USART_IT_TXE, DISABLE ),  /* Disable peripheral function. */
+                    USART_ITConfig( pxUART, USART_IT_TXE, ENABLE ),   /* Enable peripheral function. */
                     prvFillFifoFromBuffer( pxUART, ( uint8_t ** ) &( pvBuffer ), xBytes ), /* Write to peripheral function. */
                     pvBuffer,                       /* Data source. */
                     xReturn                         /* Number of bytes to be written. This will get set to zero if the write mutex is not held. */
@@ -205,9 +230,44 @@ static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
         #endif /* ioconfigUSE_UART_ZERO_COPY_TX */
             break;
 
-        case
+        case ioctlUSE_CHARACTER_QUEUE_TX:
+        #if ioconfigUSE_UART_TX_CHAR_QUEUE == 1
+        {
+            /* The queue allows multiple tasks to attempt to write
+            bytes, but ensures only the highest priority of these tasks
+            will actually succeed.  If two tasks of equal priority
+            attempt to write simultaneously, then the application must
+            ensure mutual exclusion, as time slicing could result in
+            the strings being sent to the queue being interleaved. */
+            ioutilsBLOCKING_SEND_CHARS_TO_TX_QUEUE
+                (
+                    pxPeripheralControl,
+                    ( pxUART->LSR & uartTX_BUSY_MASK ) == uartTX_BUSY_MASK,  /* Peripheral busy condition. */
+                    pxUART->THR = ucChar,               /* Peripheral write function. */
+                    ( ( uint8_t * ) pvBuffer ),         /* Data source. */
+                    xBytes,                             /* Number of bytes to be written. */
+                    xReturn );
+        }
+        #endif /* ioconfigUSE_UART_TX_CHAR_QUEUE */
+            break;
+
+        default :
+            /* Other methods can be implemented here.  For now set the
+            stored transfer structure back to NULL as nothing is being
+            sent. */
+            configASSERT( xReturn );
+            pxTxTransferControlStructs[ cPeripheralNumber ] = NULL;
+
+            /* Prevent compiler warnings when the configuration is set such
+            that the following parameters are not used. */
+            ( void ) pvBuffer;
+            ( void ) xBytes;
+            ( void ) pxUART;
+            break;
         }
     }
+
+    return xReturn;
 }
 
 static portBASE_TYPE FreeRTOS_UART_ioctl(Peripheral_Descriptor_t pxPeripheral, uint32_t ulRequest, void *pvValue) {
