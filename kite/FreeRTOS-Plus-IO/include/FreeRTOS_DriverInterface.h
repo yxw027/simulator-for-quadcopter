@@ -48,7 +48,7 @@
 typedef enum
 {
 	eUART_TYPE = 0,
-	eSSP_TYPE,
+	eSPI_TYPE,
 	eI2C_TYPE
 } Peripheral_Types_t;
 

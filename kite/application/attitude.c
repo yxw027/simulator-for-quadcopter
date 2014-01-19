@@ -29,8 +29,9 @@ void vAttitudeTask(void *arg)
     for (;;) {
         if (xQueueReceive(xDataReady, &sensor_event, (portTickType)0)) {
             portTickType now = xTaskGetTickCount();
-            dt = (now == last) ? 0.002 : (now - last) * portTICK_RATE_MS / 1000.0f;
-            last = now;
+            //dt = (now == last) ? 0.002 : (now - last) * portTICK_RATE_MS / 1000.0f;
+            //last = now;
+			dt = now * portTICK_RATE_MS / 100;
             if (sensor_event.type == SENSOR_TYPE_MPU6000) {
                 ax = ((sensor_event.data.value[0] << 8) | sensor_event.data.value[1]);
                 ay = ((sensor_event.data.value[2] << 8) | sensor_event.data.value[3]);
@@ -39,7 +40,8 @@ void vAttitudeTask(void *arg)
                 gx = ((sensor_event.data.value[8] << 8) | sensor_event.data.value[9]);
                 gy = ((sensor_event.data.value[10] << 8) | sensor_event.data.value[11]);
                 gz = ((sensor_event.data.value[12] << 8) | sensor_event.data.value[13]);
-                ax -= a_offset[0];
+#if 0                
+				ax -= a_offset[0];
                 ay -= a_offset[1];
                 az -= a_offset[2];
                 ax = ax * GRAVITY / 8192.0f;
@@ -71,10 +73,12 @@ void vAttitudeTask(void *arg)
 #endif
                 q_norm(&q[0]);
                 qtoe(&e[0], &q[0]);
+#endif				
                 /* Toggle LED */
                 led_toggle(LED_BLUE);
-                printf("%c%c%c%c%c", '5', ',', '8', 0x0D, 0x0A);
-                //vTaskDelay(50 / portTICK_RATE_MS);
+                // printf("%d,%d,%d\n", ax, ay, az);
+				// printf("%d,%d,%d\n", gx, gy, gz);
+                vTaskDelay(50 / portTICK_RATE_MS);
                 //printf("%d\n", ax);
 
             }

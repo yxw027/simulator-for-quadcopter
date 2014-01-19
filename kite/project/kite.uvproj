@@ -357,7 +357,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\bsp;..\config;..\FreeRTOS\Source\include;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Libraries</IncludePath>
+              <IncludePath>..\bsp;..\config;..\FreeRTOS\Source\include;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Libraries;..\FreeRTOS-Plus-IO\include;..\FreeRTOS-Plus-CLI;..\FreeRTOS-Plus-IO\device;..\utils</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -672,6 +672,126 @@
               <FileName>attitude.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\application\attitude.c</FilePath>
+            </File>
+            <File>
+              <FileName>cli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\cli.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>freeRTOS-Plus-CLI</GroupName>
+          <Files>
+            <File>
+              <FileName>FreeRTOS_CLI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-CLI\FreeRTOS_CLI.c</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_CLI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-CLI\FreeRTOS_CLI.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>utils</GroupName>
+          <Files>
+            <File>
+              <FileName>fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\utils\fifo.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FreeRTOS-Plus-IO</GroupName>
+          <Files>
+            <File>
+              <FileName>FreeRTOS_DriverInterface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\common\FreeRTOS_DriverInterface.c</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_IOUtils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\common\FreeRTOS_IOUtils.c</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_CharQueueTxAndRx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\common\IOUtils_CharQueueTxAndRx.c</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_CircularBufferRx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\common\IOUtils_CircularBufferRx.c</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_ZeroCopyTx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\common\IOUtils_ZeroCopyTx.c</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_stm32f10x_DriverInterface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\device\FreeRTOS_stm32f10x_DriverInterface.c</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_stm32f10x_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\device\stm32f10x\FreeRTOS_stm32f10x_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_DriverInterface.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_DriverInterface.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_IO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_IO.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_IO_BSP.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_IO_BSP.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_ssp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_ssp.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOS_uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\FreeRTOS_uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_CharQueueTxAndRx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\IOUtils_CharQueueTxAndRx.h</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_CircularBufferRx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\IOUtils_CircularBufferRx.h</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_Common.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\IOUtils_Common.h</FilePath>
+            </File>
+            <File>
+              <FileName>IOUtils_ZeroCopyTx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FreeRTOS-Plus-IO\include\IOUtils_ZeroCopyTx.h</FilePath>
             </File>
           </Files>
         </Group>

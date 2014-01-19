@@ -3,18 +3,23 @@
  * @brief Implementation of the FreeRTOS+IO UART driver.
  */
 #include <FreeRTOS.h>
+#include <task.h>
+#include <queue.h>
+//#include <semphr.h>
+#include <stdio.h>
 #include <FreeRTOS_IO.h>
-#include <FreeRTOSIOConfig.h>
-#include <FreeRTOS_DriverInterface.h>
 
+//#include <FreeRTOSIOConfig.h>
+#include <FreeRTOS_DriverInterface.h>
+#include <IOUtils_Common.h>
 #include "stm32f10x.h"
 
 static GPIO_InitTypeDef GPIO_InitStructure;
 static USART_InitTypeDef USART_InitStructure;
 static NVIC_InitTypeDef NVIC_InitStructure;
-static inline size_t prvFillFifoFromBuffer( USART_TypeDef * const pxUART, uint8_t **ppucBuffer, const size_t xTotalBytes )
+static size_t prvFillFifoFromBuffer( USART_TypeDef * const pxUART, uint8_t **ppucBuffer, const size_t xTotalBytes )
 {
-size_t xBytesSent = 0U;
+    size_t xBytesSent = 0U;
 
     /* This function is only used by zero copy transmissions, so mutual
     exclusion is already taken care of by the fact that a task must first
@@ -33,6 +38,16 @@ size_t xBytesSent = 0U;
             xBytesSent++;
         }
     }*/
+
+    if( xBytesSent >= xTotalBytes )
+    {
+    }
+    else
+    {
+        USART_SendData(USART1, (uint8_t) **ppucBuffer);
+        ( *ppucBuffer )++;
+        xBytesSent++;
+    }
 
     return xBytesSent;
 }
@@ -110,8 +125,8 @@ static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, voi
          used here, so the application must ensure only one task attempts
          to make a polling read at a time. */
         xReturn = USART_ReceiveData(pxUART);
-        *pvBuffer[0] = xReturn;
-        xBytes = 1;
+        //*pvBuffer[0] = xReturn;
+        //xBytes = 1;
     }
     #endif /* ioconfigUSE_UART_POLLED_RX */
     } else {
@@ -141,7 +156,7 @@ static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, voi
             break;
 
         case ioctlUSE_CHARACTER_QUEUE_RX:
-#if ioconfigUSE_UART_RX_CHAR_QUEUE == 1
+        #if ioconfigUSE_UART_RX_CHAR_QUEUE == 1
             {
                 /* The queue allows multiple tasks to attempt to read
                  bytes, but ensures only the highest priority of these
@@ -152,7 +167,7 @@ static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, voi
                  received by each task. */
                 xReturn = xIOUtilsReceiveCharsFromRxQueue( pxPeripheralControl, ( uint8_t * ) pvBuffer, xBytes );
             }
-#endif /* ioconfigUSE_UART_RX_CHAR_QUEUE */
+        #endif /* ioconfigUSE_UART_RX_CHAR_QUEUE */
             break;
 
         default:
@@ -167,6 +182,8 @@ static size_t FreeRTOS_UART_read(Peripheral_Descriptor_t const pxPeripheral, voi
             break;
         }
     }
+
+    return xReturn;
 }
 
 static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
@@ -178,13 +195,13 @@ static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
     int8_t cPeripheralNumber;
 
     if( diGET_TX_TRANSFER_STRUCT( pxPeripheralControl ) == NULL ) {
-    #if ioconfigUSE_UART_POLLED_TX == 1
-    {
+        #if ioconfigUSE_UART_POLLED_TX == 1
+        {
         /* No FreeRTOS objects exist to allow transmission without blocking
         the task, so just send out by polling.  No semaphore or queue is
         used here, so the application must ensure only one task attempts to
         make a polling write at a time. */
-        USART_Send(pxUART, ( uint8_t * ) pvBuffer[0] );
+        // USART_Send(pxUART, *( uint8_t * ) pvBuffer[0] );
 
         /* The UART is set to polling mode, so may as well poll the busy bit
         too.  Change to interrupt driven mode to avoid wasting CPU time here. */
@@ -239,14 +256,14 @@ static size_t FreeRTOS_UART_write(Peripheral_Descriptor_t const pxPeripheral,
             attempt to write simultaneously, then the application must
             ensure mutual exclusion, as time slicing could result in
             the strings being sent to the queue being interleaved. */
-            ioutilsBLOCKING_SEND_CHARS_TO_TX_QUEUE
-                (
-                    pxPeripheralControl,
-                    ( pxUART->LSR & uartTX_BUSY_MASK ) == uartTX_BUSY_MASK,  /* Peripheral busy condition. */
-                    pxUART->THR = ucChar,               /* Peripheral write function. */
-                    ( ( uint8_t * ) pvBuffer ),         /* Data source. */
-                    xBytes,                             /* Number of bytes to be written. */
-                    xReturn );
+//            ioutilsBLOCKING_SEND_CHARS_TO_TX_QUEUE
+//                (
+//                    pxPeripheralControl,
+//                    ( pxUART->LSR & uartTX_BUSY_MASK ) == uartTX_BUSY_MASK,  /* Peripheral busy condition. */
+//                    pxUART->THR = ucChar,               /* Peripheral write function. */
+//                    ( ( uint8_t * ) pvBuffer ),         /* Data source. */
+//                    xBytes,                             /* Number of bytes to be written. */
+//                    xReturn );
         }
         #endif /* ioconfigUSE_UART_TX_CHAR_QUEUE */
             break;
@@ -276,31 +293,34 @@ static portBASE_TYPE FreeRTOS_UART_ioctl(Peripheral_Descriptor_t pxPeripheral, u
     const int8_t cPeripheralNumber = diGET_PERIPHERAL_NUMBER(((Peripheral_Control_t * const)pxPeripheral));
 
     switch (ulRequest) {
-    case ioctlSET_SPEED: {
+    case ioctlSET_SPEED:
+    {
         uint32_t ulValue = (uint32_t) pvValue;
         USART_InitStructure.USART_BaudRate = ulValue;
         /* USART1 configuration */
         USART_Init(USART1, &USART_InitStructure);
         break;
     }
-    case ioctlSET_INTERRUPT_PRIORITY: {
+    case ioctlSET_INTERRUPT_PRIORITY:
+    {
         uint8_t ulValue = (uint8_t) pvValue;
         NVIC_InitStructure.NVIC_IRQChannelSubPriority = ulValue;
         NVIC_Init(&NVIC_InitStructure);
         break;
     }
-    case ioctlUSE_INTERRUPTS: {
+    case ioctlUSE_INTERRUPTS:
+    {
         uint32_t ulValue = (uint32_t) pvValue;
         if (ulValue == pdFALSE) {
             NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
             NVIC_Init(&NVIC_InitStructure);
         } else {
-            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-            USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+            // USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+            // USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
             NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
             NVIC_Init(&NVIC_InitStructure);
 
-            pxRxTransferControlStructs[cPeripheralNumber] = pxPeripheralControl->pxRxControl;
+            // pxTxTransferControlStructs[cPeripheralNumber] = diGET_TX_TRANSFER_STRUCT(pxPeripheralControl);
         }
     }
         break;
@@ -367,9 +387,10 @@ void uart1_irq_handler(void)
             case ioctlUSE_CHARACTER_QUEUE_RX:
             #if ioconfigUSE_UART_RX_CHAR_QUEUE == 1
             {
+                size_t i = 1;
                 ioutilsRX_CHARS_INTO_QUEUE_FROM_ISR(
                         pxTransferStruct,
-                        (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET),
+                        /*(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET)*/i--,
                         USART_ReceiveData(USART1),
                         ulReceived,
                         xHigherPriorityTaskWoken);
@@ -385,19 +406,20 @@ void uart1_irq_handler(void)
     }
 
     if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
-        pxTransferStruct = pxRxTransferControlStructs[uxUARTNumber];
+        pxTransferStruct = pxTxTransferControlStructs[uxUARTNumber];
         if (pxTransferStruct != NULL) {
             switch (diGET_TRANSFER_TYPE_FROM_CONTROL_STRUCT(pxTransferStruct)) {
             case ioctlUSE_ZERO_COPY_TX:
             #if ioconfigUSE_UART_ZERO_COPY_TX == 1
             {
-                iouitlsTX_CHARS_FROM_ZERO_COPY_BUFFER_FROM_ISR(
+                iouitlsTX_SINGLE_CHAR_FROM_ZERO_COPY_BUFFER_FROM_ISR(
                         pxTransferStruct,
-                        (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET),
                         USART_SendData(USART1, ucChar),
-                        );
+                        xHigherPriorityTaskWoken);
             }
             #endif /* ioconfigUSE_UART_ZERO_COPY_TX */
+                if (xHigherPriorityTaskWoken != pdTRUE)
+                    USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
                 break;
 
             case ioctlUSE_CHARACTER_QUEUE_TX:

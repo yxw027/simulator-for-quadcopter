@@ -38,6 +38,9 @@
 #ifndef IOUTILS_TXANDRX_QUEUES_H
 #define IOUTILS_TXANDRX_QUEUES_H
 
+#include <FreeRTOS.h>
+#include <queue.h>
+
 /* The transfer structure used when a queue is used to send or receive
 characters. */
 typedef struct xCHAR_BY_CHAR_QUEUE_STATE
