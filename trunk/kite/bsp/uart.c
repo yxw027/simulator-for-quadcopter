@@ -4,10 +4,11 @@
  */
 
 #include <stdio.h>
-
+#include "FreeRTOS.h"
 #include <stm32f10x.h>
 
 #include "uart.h"
+#include "fifo.h"
 
 /**
  * @addtogroup kite
@@ -80,12 +81,12 @@ static void NVIC_Configuration(void)
 static void uart_hw_init()
 {
     USART_InitTypeDef USART_InitStructure;
-    //USART_ClockInitTypeDef USART_ClockInitStructure;
+
     /* System Clocks Configuration */
     RCC_Configuration();
 
     /* NVIC configuration */
-    // NVIC_Configuration();
+    NVIC_Configuration();
 
     /* Configure the GPIO ports */
     GPIO_Configuration();
@@ -97,13 +98,6 @@ static void uart_hw_init()
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-/*
-    USART_ClockInitStructure.USART_Clock = USART_Clock_Disable;
-        USART_ClockInitStructure.USART_CPOL = USART_CPOL_Low;
-        USART_ClockInitStructure.USART_CPHA = USART_CPHA_2Edge;
-        USART_ClockInitStructure.USART_LastBit = USART_LastBit_Disable;
-        USART_ClockInit(USART1, &USART_ClockInitStructure);
-*/
     /* USART1 configuration */
     USART_Init(USART1, &USART_InitStructure);
 
@@ -141,20 +135,20 @@ PUTCHAR_PROTOTYPE
  *
  * @return bytes has sent
  */
-uint8_t uart_write(uint_t id, uint8_t *buf, uint8_t len)
+uint8_t uart_write(uint8_t id, uint8_t *buf, uint8_t len)
 {
-    uint8_t retval = -1;
+    int retval = -1;
     USART_TypeDef *USARTx;
     switch (id) {
     case 0:
         USARTx = USART1;
         break;
     default:
-        config_ASSERT(USARTx);
+        // config_ASSERT(USARTx);
         break;
     }
 
-    retval = fifo_write(fifo_tx, buf, len);
+    retval = fifo_write(&fifo_tx, buf, len);
     if (retval > 0)
         USART_ITConfig(USARTx, USART_IT_TXE, ENABLE);
 
@@ -164,8 +158,9 @@ uint8_t uart_write(uint_t id, uint8_t *buf, uint8_t len)
 void usart1_irq_handler(void)
 {
     if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
+		uint8_t ch;
         /* get one byte from fifo */
-        uint8_t retval = fifo_read(fifo_tx, &ch, 1);
+        uint8_t retval = fifo_read(&fifo_tx, &ch, 1);
         if (retval == 1) {
             USART_SendData(USART1, ch);
         } else {

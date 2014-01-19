@@ -1,75 +1,63 @@
-#include <string.h>
-
-#include "FreeRTOS.h"
+/**
+ * @file cli.c
+ * @brief Command Line Interface
+ */
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include "FreeRTOS_IO.h"
-#define cmd50ms     ((void *)(50UL / portTICK_RATE_MS))
 
-#define cmdMAX_INPUT_SIZE   8
+#include <FreeRTOS_CLI.h>
 
-static const int8_t * const pcWelcomeMessage = (int8_t *)"FreeRTOS command server.\r\nType Help to view a list of registered commands.\r\n\r\n>";
-static const int8_t * const pcNewLine = (int8_t *)"\r\n";
+#define cmdMAX_INPUT_SIZE           64
+
+#define cmd50ms                     ( ( void * ) ( 50UL / portTICK_RATE_MS ) )
+
+static const int8_t * const pcWelcomeMessage = ( int8_t * ) "FreeRTOS command server.\r\nType Help to view a list of registered commands.\r\n\r\n>";
 
 static Peripheral_Descriptor_t xConsoleUART = NULL;
-static xTaskHandle xCLITaskHandle = NULL;
 
-static void prvCLITask(void *pvParammeters)
+static portBASE_TYPE xHelloWorld(int8_t *pcWriteBuffer,
+                                  size_t xWriteBufferLen,
+                                  const int8_t *pcCommandString)
 {
-    portBASE_TYPE portBASE_TYPE xReturned;
-    int8_t cRxedChar, cInputIndex = 0, *pcOutputString;
-    static int8_t cInputString[ cmdMAX_INPUT_SIZE ], cLastInputString[ cmdMAX_INPUT_SIZE ];
 
-    xConsoleUART = FreeRTOS_open("UART1", NULL);
-    configASSERT(xConsoleUART);
+    return pdFALSE;
+}
 
-    xReturned = FreeRTOS_iotcl(xConsoleUART, ioctlUSE_ZERO_COPY_TX, NULL);
-    configASSERT(xReturned);
+static const CLI_Command_Definition_t xHelloWorldCommand = {
+        "helloworld",
+        "helloworld help\n",
+        xHelloWorld,
+};
 
-    xReturned = FreeRTOS_iotcl(xConsoleUART, ioctlUSE_CHARACTER_QUEUE_RX, NULL);
-    configASSERT(xReturned);
+static void vCommandConsleTask(void *pvParameters)
+{
+    portBASE_TYPE xReturned;
 
-    if (FreeRTOS_ioctl(xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms)) {
-        FreeRTOS_write(xConsoleUART, pcWelcomeMessage, strlen((char *)pcWelcomeMessage));
+    xConsoleUART = FreeRTOS_open( "/UART1/", ( uint32_t ) NULL );
+    configASSERT( xConsoleUART );
+
+    xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_ZERO_COPY_TX, NULL );
+    configASSERT( xReturned );
+
+    xReturned = FreeRTOS_ioctl( xConsoleUART, ioctlUSE_CHARACTER_QUEUE_RX, ( void * ) cmdMAX_INPUT_SIZE );
+    configASSERT( xReturned );
+
+    if( FreeRTOS_ioctl( xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms ) == pdPASS )
+    {
+        FreeRTOS_write( xConsoleUART, pcWelcomeMessage, strlen( ( char * ) pcWelcomeMessage ) );
     }
+    // FreeRTOS_CLIRegisterCommand(&xHelloWorldCommand);
 
     for (; ;) {
-        FreeRTOS_read(xConsoleUART, cRxedChar, sizeof(cRxedChar));
 
-        if (FreeRTOS_ioctl(xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms)) {
-            FreeRTOS_write(xConsoleUART, cRxedChar, sizeof(cRxedChar));
-        }
-
-        if (cRxedChar == '\n') {
-            if (FreeRTOS_ioctl(xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms))
-                FreeRTOS_write(xConsoleUART, pcNewLine, strlen((char *)pcNewLine));
-            // TODO:
-
-            strcpy((char *)cLastInputString, (char *)cInputString);
-        } else {
-            if (cRxedChar == '\r') {
-                /* ignore the character */
-            } else if (cRxedChar == '\b') {
-                if (cInputIndex > 0) {
-                    cInputString[--cInputIndex] = '\0';
-                }
-            } else {
-                if (cRxedChar >= ' ' && cRxedChar <= '~') {
-                    if (cInputIndex < cmdMAX_INPUT_SIZE) {
-                        cInputString[cInputIndex++] = cRxedChar;
-                    }
-                }
-            }
-        }
     }
 }
-#define configCLI_TASK_STACK_SIZE   1
-#define configCLI_TASK_PRIORITY     1
-void CLITaskStart(void)
+
+void vCommandConsoleTaskInit(void)
 {
-    xTaskCreate(prvCLITask,
-            (const uint8_t *)"CLI",
-            configCLI_TASK_STACK_SIZE,
-            NULL,
-            configCLI_TASK_PRIORITY,
-            &xCLITaskHandle);
+    xTaskHandle xHandle = NULL;
+    xTaskCreate(vCommandConsleTask, (const signed portCHAR *)"CLI", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle);
+    configASSERT(xHandle);
 }

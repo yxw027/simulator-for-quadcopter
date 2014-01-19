@@ -153,6 +153,12 @@ void SysTick_Handler(void)
   * @param  None
   * @retval None
   */
+extern void uart1_irq_handler(void);
+void USART1_IRQHandler(void)
+{
+    uart1_irq_handler();
+}
+
 /**
   * @brief  This function handles External line 3 interrupt request.
   * @param  None

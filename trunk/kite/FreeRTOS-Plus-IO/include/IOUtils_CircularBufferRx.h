@@ -38,6 +38,10 @@
 #ifndef CIRCULAR_BUFFER_RX_H
 #define CIRCULAR_BUFFER_RX_H
 
+#include <FreeRTOS.h>
+#include <queue.h>
+#include <semphr.h>
+
 /* The transfer structure used when a circular buffer is used for
 reception. */
 typedef struct xCIRCULAR_BUFFER_RX_STATE

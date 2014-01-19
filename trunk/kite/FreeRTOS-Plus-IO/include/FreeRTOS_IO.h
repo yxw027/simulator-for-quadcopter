@@ -38,6 +38,8 @@
 #ifndef FREERTOS_IO_H
 #define FREERTOS_IO_H
 
+#include <FreeRTOS.h>
+
 #ifndef INC_FREERTOS_H
 	#error FreeRTOS.h must be #included before FreeRTOS_IO.h.
 #endif
