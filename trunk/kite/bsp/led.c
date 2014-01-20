@@ -7,31 +7,31 @@
 #include "stm32f10x.h"
 
 #if defined (__GCC__)
-static GPIO_TypeDef* led_gpio_port[] = {
-    [LED_GREEN] = GPIOB,
-    [LED_YELLOW] = GPIOB,
-    [LED_RED] = GPIOB,
-};
+    static GPIO_TypeDef* led_gpio_port[] = {
+        [0] = GPIOB,
+        [1] = GPIOB,
+        [2] = GPIOB,
+    };
 
-static uint16_t led_gpio_pin[] = {
-    [LED_GREEN] = GPIO_Pin_5,
-    [LED_YELLOW] = GPIO_Pin_6,
-    [LED_RED] = GPIO_Pin_7,
-};
+    static uint16_t led_gpio_pin[] = {
+        [0] = GPIO_Pin_5,
+        [1] = GPIO_Pin_6,
+        [2] = GPIO_Pin_7,
+    };
 #elif defined (__CC_ARM)
-static GPIO_TypeDef* led_gpio_port[] = {
-	GPIOB,
-	GPIOB,
-	GPIOB,
-	GPIOB,
-};
+    static GPIO_TypeDef* led_gpio_port[] = {
+        GPIOB,
+        GPIOB,
+        GPIOB,
+        GPIOB,
+    };
 
-static uint16_t led_gpio_pin[] = {
-	GPIO_Pin_5,
-	GPIO_Pin_6,
-	GPIO_Pin_7,
-	GPIO_Pin_3,
-};
+    static uint16_t led_gpio_pin[] = {
+        GPIO_Pin_5,
+        GPIO_Pin_6,
+        GPIO_Pin_7,
+        GPIO_Pin_3,
+    };
 #endif
 
 /**
