@@ -22,6 +22,16 @@ enum sensor_type {
     SENSOR_TYPE_MAX,
 };
 
+/**
+ * axis definition
+ */
+typedef enum axis {
+    X = 0,
+    Y,
+    Z,
+    MAX_AXIS,
+} axis_t;
+
 #pragma anon_unions
 typedef union sensor_data {
     struct {

@@ -6,8 +6,11 @@
 
 #include "bsp.h"
 #include "mymath.h"
+#include "filter.h"
 
 static int16_t a_offset[3] = { -100, 300, -120 };
+static float a[3]; //TODO: not to be static
+static float filtered[3];
 static int16_t g_offset[3];
 //extern xQueueHandle xGetLedQueue(void);
 static float q[4] = { 1, 0, 0, 0 };
@@ -31,7 +34,7 @@ void vAttitudeTask(void *arg)
             portTickType now = xTaskGetTickCount();
             //dt = (now == last) ? 0.002 : (now - last) * portTICK_RATE_MS / 1000.0f;
             //last = now;
-			dt = now * portTICK_RATE_MS / 100;
+            dt = now * portTICK_RATE_MS / 100;
             if (sensor_event.type == SENSOR_TYPE_MPU6000) {
                 ax = ((sensor_event.data.value[0] << 8) | sensor_event.data.value[1]);
                 ay = ((sensor_event.data.value[2] << 8) | sensor_event.data.value[3]);
@@ -40,8 +43,12 @@ void vAttitudeTask(void *arg)
                 gx = ((sensor_event.data.value[8] << 8) | sensor_event.data.value[9]);
                 gy = ((sensor_event.data.value[10] << 8) | sensor_event.data.value[11]);
                 gz = ((sensor_event.data.value[12] << 8) | sensor_event.data.value[13]);
-#if 0                
-				ax -= a_offset[0];
+                a[X] = ax; 
+                a[Y] = ay;
+                a[Z] = az;
+                low_pass(a, filtered);
+#if 0
+                ax -= a_offset[0];
                 ay -= a_offset[1];
                 az -= a_offset[2];
                 ax = ax * GRAVITY / 8192.0f;
@@ -73,13 +80,13 @@ void vAttitudeTask(void *arg)
 #endif
                 q_norm(&q[0]);
                 qtoe(&e[0], &q[0]);
-#endif				
+#endif
                 /* Toggle LED */
                 led_toggle(LED_BLUE);
                 // printf("%d,%d,%d\n", ax, ay, az);
-				// printf("%d,%d,%d\n", gx, gy, gz);
+                // printf("%d,%d,%d\n", gx, gy, gz);
+                // printf("%f,%f,%f\n", filtered.[X], filtered.[Y], filtered.[Z]);
                 vTaskDelay(50 / portTICK_RATE_MS);
-                //printf("%d\n", ax);
 
             }
         }

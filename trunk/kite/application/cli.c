@@ -11,7 +11,7 @@
 
 #define cmdMAX_INPUT_SIZE           64
 
-#define cmd50ms                     ( ( void * ) ( 50UL / portTICK_RATE_MS ) )
+#define cmd50ms     ((void *)(50UL / portTICK_RATE_MS))
 
 static const int8_t * const pcWelcomeMessage = ( int8_t * ) "FreeRTOS command server.\r\nType Help to view a list of registered commands.\r\n\r\n>";
 
@@ -33,6 +33,7 @@ static const CLI_Command_Definition_t xHelloWorldCommand = {
 
 static void vCommandConsleTask(void *pvParameters)
 {
+    int8_t cRxedChar, cInputIndex = 0, *pcOutputString;
     portBASE_TYPE xReturned;
 
     xConsoleUART = FreeRTOS_open( "/UART1/", ( uint32_t ) NULL );
@@ -48,10 +49,15 @@ static void vCommandConsleTask(void *pvParameters)
     {
         FreeRTOS_write( xConsoleUART, pcWelcomeMessage, strlen( ( char * ) pcWelcomeMessage ) );
     }
-    // FreeRTOS_CLIRegisterCommand(&xHelloWorldCommand);
 
     for (; ;) {
+        /* Only interested in reading one character at a time. */
+        FreeRTOS_read(xConsoleUART, &cRxedChar, sizeof(cRxedChar));
 
+        /* Echo the character back. */
+        if (FreeRTOS_ioctl(xConsoleUART, ioctlOBTAIN_WRITE_MUTEX, cmd50ms) == pdPASS) {
+            FreeRTOS_write(xConsoleUART, &cRxedChar, sizeof(cRxedChar));
+        }
     }
 }
 
