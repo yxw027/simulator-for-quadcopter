@@ -1,6 +1,9 @@
 #include "FreeRTOS.h"
+#include "task.h"
 
-static portBASE_TYPE prvTaskStatusCommand(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
+#include "FreeRTOS_CLI.h"
+
+static portBASE_TYPE prvTaskStatsCommand(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString)
 {
     const int8_t *const pcTaskTableHeader = (int8_t *)"Task          State  Priority  Stack  #\r\n************************************************\r\n";
 
@@ -9,6 +12,13 @@ static portBASE_TYPE prvTaskStatusCommand(int8_t *pcWriteBuffer, size_t xWriteBu
 
     return pdFALSE;
 }
+
+static const CLI_Command_Definition_t prvTaskStatsCommandDefinition = {
+    (const int8_t * const)"task-stats", /* The command string to type. */
+    (const int8_t * const)"task-stats:\r\n Displays a table showing the state of each FreeRTOS task\r\n\r\n",
+    prvTaskStatsCommand, /* The function to run. */
+    0 /* No parameters are expected. */
+};
 
 /**
  * @brief perform sensors calibration
@@ -42,3 +52,20 @@ static portBASE_TYPE prvCalbibrationCommand(int8_t *pcWriteBuffer, size_t xWrite
     }
 }
 
+static const CLI_Command_Definition_t prvCalibrationCommandDefinition = {
+    (const int8_t * const)"cali", /* The command string to type. */
+    (const int8_t * const)"task-stats:\r\n Displays a table showing the state of each FreeRTOS task\r\n\r\n",
+    prvTaskStatsCommand, /* The function to run. */
+    0 /* No parameters are expected. */
+};
+
+void vRegisterCLICommands(void)
+{
+    /* Register all the command line commands defined immediately above. */
+    FreeRTOS_CLIRegisterCommand(&prvTaskStatsCommandDefinition);
+    FreeRTOS_CLIRegisterCommand(&prvCalibrationCommandDefinition);
+    // FreeRTOS_CLIRegisterCommand( &prvThreeParameterEchoCommandDefinition );
+    // FreeRTOS_CLIRegisterCommand( &prvMultiParameterEchoCommandDefinition );
+    // FreeRTOS_CLIRegisterCommand( &prvCreateTaskCommandDefinition );
+    // FreeRTOS_CLIRegisterCommand( &prvDeleteTaskCommandDefinition );
+}
