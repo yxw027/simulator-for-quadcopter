@@ -15,6 +15,10 @@ static int16_t g_offset[3];
 //extern xQueueHandle xGetLedQueue(void);
 static float q[4] = { 1, 0, 0, 0 };
 
+float exInt = 0, eyInt = 0, ezInt = 0;        // scaled integral error
+#define Kp 2.0f         // proportional gain governs rate of convergence to accelerometer/magnetometer
+#define Ki 0.005f       // integral gain governs rate of convergence of gyroscope biases
+
 void vAttitudeTask(void *arg)
 {
     static portTickType last = 0;
@@ -23,6 +27,9 @@ void vAttitudeTask(void *arg)
     int16_t ax, ay, az;
     int16_t temp;
     int16_t gx, gy, gz;
+    float norm;
+    float vx, vy, vz;
+    float ex, ey, ez;
     float e[3];
     float dq[4];
     float dt = 0.001;
@@ -47,6 +54,32 @@ void vAttitudeTask(void *arg)
                 a[Y] = ay;
                 a[Z] = az;
                 low_pass(a, filtered);
+
+                // normalise the measurements
+                norm = sqrt(ax*ax + ay*ay + az*az);
+                ax = ax / norm;
+                ay = ay / norm;
+                az = az / norm;
+
+                // estimated direction of gravity
+                vx = -(2 * (q[1] * q[3] - q[0] * q[2]));
+                vy = -(2 * (q[2] * q[3] + q[0] * q[1]));
+                vz = -(q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+
+                // error is sum of cross product between reference direction of field and direction measured by sensor
+                ex = (ay * vz - az * vy);
+                ey = (az * vx - ax * vz);
+                ez = (ax * vy - ay * vx);
+
+                // integral error scaled integral gain
+                exInt = exInt + ex * Ki;
+                eyInt = eyInt + ey * Ki;
+                ezInt = ezInt + ez * Ki;
+
+                // adjusted gyroscope measurements
+                gx = gx + Kp * ex + exInt;
+                gy = gy + Kp * ey + eyInt;
+                gz = gz + Kp * ez + ezInt;
 #if 0
                 ax -= a_offset[0];
                 ay -= a_offset[1];
