@@ -24,7 +24,7 @@ void high_pass(float input[3], float filtered[3])
     int i;
 
     for (i = 0; i < 3; i++) {
-        filtered[i] = alpha * (filtered[i] + input[i] - tmp[3]);
+        filtered[i] = alpha * (filtered[i] + input[i] - tmp[i]);
         tmp[i] = input[i];
     }
 }
